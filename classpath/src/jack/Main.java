@@ -5,4 +5,6 @@ public class Main {
 	B b;
 	C c;
 	D d;
+	Itf i;
+	ItfImpl im;
 }
