@@ -1,3 +1,4 @@
-target/
+bin/
+libs/windows32/
 .classpath
 .project
