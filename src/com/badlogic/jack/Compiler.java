@@ -88,13 +88,13 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.options.Options;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.Tag;
-import soot.toolkits.scalar.UnusedLocalEliminator;
 
 import com.badlogic.jack.build.FileDescriptor;
 
@@ -102,7 +102,7 @@ public class Compiler {
 	static int ident;
 	
 	public static void main(String[] args) {
-		
+		Options.v().set_keep_line_number(true);		
 		Scene.v().setSootClassPath("classpath/bin/;");
 		Scene.v().loadClassAndSupport("jack.Main");
 		
