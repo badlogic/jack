@@ -1,27 +1,39 @@
 #ifndef vm_vmarray_h
 #define vm_vmarray_h
 
+#include "classes/java_lang_Object.h"
+#include <string.h>
+
 template <class T>
-class VmArray {
+class Array: public java_lang_Object {
 public:
-	VmArray(int size) {
-		this->size = size;
-		this->elements = new T[size];
+	Array(int size) {
+		this->length = size;
+		if(size > 0) {
+			this->elements = new T[size];
+			memset(this->elements, 0, sizeof(T) * size);
+		} else {
+			this->elements = 0;
+		}
 	}
 
-	T get(int idx) {
-		// TODO add bounds check and throw
-		// exception via JNIEnv
+	inline T get(int idx) {
+		// TODO add bounds check		
 		return elements[idx];
 	}
 
-	T set(int idx, T val) {
+	inline T set(int idx, T val) {
+		// TODO add bounds check		
 		elements[idx] = val;
 	}
 
+	inline T& operator[] (int idx) {
+		return elements[idx];
+	}
+
+	int length;
 private:
-	T* elements;
-	int size;
+	T* elements;	
 };
 
 #endif

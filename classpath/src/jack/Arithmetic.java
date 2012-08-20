@@ -1,7 +1,7 @@
 package jack;
 
 public class Arithmetic {
-	public void arithmetic() {
+	public int arithmetic() {
 		byte b = 1;
 		short s = 1;
 		char c = 1;
@@ -10,10 +10,13 @@ public class Arithmetic {
 		float a = 1;
 		double d = 1;
 		
-		double r = b + c * i / l % d;
+		double r = b + c * i / l;
+		r %= d;
+		r = -r;
 		
 		int shift = s << b;
 		shift = s >> b;
 		shift = s >>> b;
+		return (int)(r + shift);
 	}
 }

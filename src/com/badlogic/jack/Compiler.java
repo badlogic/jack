@@ -1,9 +1,12 @@
 package com.badlogic.jack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -13,6 +16,7 @@ import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
+import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
@@ -61,6 +65,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
 import soot.jimple.NopStmt;
+import soot.jimple.NullConstant;
 import soot.jimple.NumericConstant;
 import soot.jimple.OrExpr;
 import soot.jimple.ParameterRef;
@@ -89,6 +94,7 @@ import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.Tag;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 import com.badlogic.jack.build.FileDescriptor;
 
@@ -100,6 +106,9 @@ public class Compiler {
 		Scene.v().setSootClassPath("classpath/bin/;");
 		Scene.v().loadClassAndSupport("jack.Main");
 		
+		// load a bunch of exceptions we need...
+		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
 		
@@ -107,18 +116,26 @@ public class Compiler {
 		wl(buffer, "#ifndef jack_all_classes");
 		wl(buffer, "#define jack_all_classes");
 		
-		for(SootClass c: Scene.v().getClasses()) {
-			System.out.println("translating " + c.getName());
-			String header = generateHeader(c);
-			String cFile = generateCFile(c);
-			new FileDescriptor("native/classes/" + nor(c.getName()) + ".h").writeString(header, false);
-			new FileDescriptor("native/classeS/" + nor(c.getName()) + ".cpp").writeString(cFile, false);
+		SootClass string = Scene.v().loadClassAndSupport("java.lang.String");
+		generateClass(string);
 		
+		for(SootClass c: Scene.v().getClasses()) {
+			generateClass(c);		
 			wl(buffer, "#include \"classes/" + nor(c.getName()) + ".h\"");
 		}
 		
+		// add array.h for arrays
+		wl(buffer, "#include \"vm/array.h\"");
 		wl(buffer, "#endif");
 		new FileDescriptor("native/classes/classes.h").writeString(buffer.toString(), false);
+	}
+	
+	public static void generateClass(SootClass clazz) {
+		System.out.println("translating " + clazz.getName());
+		String header = generateHeader(clazz);
+		String cFile = generateCFile(clazz);
+		new FileDescriptor("native/classes/" + nor(clazz.getName()) + ".h").writeString(header, false);
+		new FileDescriptor("native/classeS/" + nor(clazz.getName()) + ".cpp").writeString(cFile, false);
 	}
 		
 	public static String generateHeader(SootClass clazz) {
@@ -260,7 +277,12 @@ public class Compiler {
 	private static String toCType(Type type) {
 		if(type instanceof RefType) {
 			return nor(type.toString()) + "*";			
-		} else {
+		} else if(type instanceof ArrayType) {
+			ArrayType t = (ArrayType)type;			
+			String elementType = toCType(t.baseType);
+			String array = generateArraySig(elementType, t.numDimensions) + "*";
+			return array;			
+		} else {		
 			if(type instanceof BooleanType) return "j_bool";
 			else if(type instanceof ByteType) return "j_byte";
 			else if(type instanceof CharType) return "j_char";
@@ -274,14 +296,26 @@ public class Compiler {
 		}
 	}
 	
+	private static String toUnsignedCType(Type type) {
+		if(type instanceof PrimType) {	
+			if(type instanceof ByteType) return "j_ubyte";			
+			if(type instanceof ShortType) return "j_ushort";
+			if(type instanceof IntType) return "j_uint";
+			if(type instanceof LongType) return "j_ulong";						
+		}
+		throw new RuntimeException("Can't create unsigned primitive type of " + type);			
+	}
+	
 	public static String generateCFile(SootClass clazz) {
 		StringBuffer buffer = new StringBuffer();
 		
-		String fullName = nor(clazz.getName());
+		String fullName = nor(clazz.getName());		
 		
 		// FIXME include all dependencies, using all classes for now :p
 //		wl(buffer, "#include \"classes/" + fullName + ".h\"");
 		wl(buffer, "#include \"classes/classes.h\"");
+		// needed for fmod
+		wl(buffer, "#include <math.h>"); 
 		wl(buffer, "");
 		
 		// generate static fields
@@ -323,6 +357,7 @@ public class Compiler {
 	private static void generateMethodImplementation(StringBuffer buffer, SootMethod method) {
 		
 		if(method.isAbstract()) return;
+		
 		labelNum = 0;
 		labels.clear();
 		SootClass clazz = method.getDeclaringClass();
@@ -350,8 +385,9 @@ public class Compiler {
 	}
 	
 	private static void generateMethodBody(StringBuffer buffer, SootMethod method) {
-		method.retrieveActiveBody();		
-		JimpleBody body = (JimpleBody)method.getActiveBody();
+		method.retrieveActiveBody();
+		JimpleBody body = (JimpleBody)method.getActiveBody();		
+		
 		System.out.println(body);
 		// declare locals
 		for(Local local: body.getLocals()) {
@@ -378,9 +414,25 @@ public class Compiler {
 			AssignStmt s = (AssignStmt)stmt;
 			Value leftOp = s.getLeftOp();
 			Value rightOp = s.getRightOp();
-			String l = translateValue(leftOp);
-			String r = translateValue(rightOp);
-			wl(buffer, l + " = " + r + ";");
+			// need to special case for multi array creation
+			// as it needs a couple of lines of code to create
+			// the nested structure, see generateMultiArray();
+			if(rightOp instanceof NewMultiArrayExpr) {
+				String target = translateValue(leftOp);
+				NewMultiArrayExpr v = (NewMultiArrayExpr)rightOp;
+				String elementType = toCType(v.getBaseType().baseType);
+				List<String> sizes = new ArrayList<String>();
+				for(Object size: v.getSizes()) {
+					Value arraySize = (Value)size;
+					sizes.add(translateValue(arraySize));
+				}
+				// FIXME use garbage collector!
+				wl(buffer, generateMultiArray(target, elementType, sizes));
+			} else {
+				String l = translateValue(leftOp);
+				String r = translateValue(rightOp);
+				wl(buffer, l + " = " + r + ";");
+			}
 		} else if(stmt instanceof IdentityStmt) {
 			IdentityStmt s = (IdentityStmt)stmt;
 			Value leftOp = s.getLeftOp();
@@ -427,7 +479,6 @@ public class Compiler {
 			String v = translateValue(s.getOp());
 			wl(buffer, "return " + v + ";");
 		} else if(stmt instanceof ReturnVoidStmt) {
-			ReturnVoidStmt s = (ReturnVoidStmt)stmt;
 			wl(buffer, "return;");
 		} else if(stmt instanceof TableSwitchStmt) {
 			TableSwitchStmt s = (TableSwitchStmt)stmt;
@@ -455,7 +506,9 @@ public class Compiler {
 	private static String translateRef(Ref val) {
 		if(val instanceof ArrayRef) {
 			ArrayRef v = (ArrayRef)val;
-			throw new UnsupportedOperationException();
+			String target = translateValue(v.getBase());
+			String index = translateValue(v.getIndex());
+			return "(*" + target + ")[" + index + "]";
 		} else if(val instanceof StaticFieldRef) {
 			StaticFieldRef v = (StaticFieldRef)val;
 			return nor(v.getField().getDeclaringClass().getName()) + "::" + v.getField().getName();
@@ -482,6 +535,8 @@ public class Compiler {
 		} else if(val instanceof MetaConstant) {
 			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
+		} else if(val instanceof NullConstant) {
+			return "0";
 		} else if(val instanceof NumericConstant) {
 			NumericConstant v = (NumericConstant)val;
 			return v.toString();
@@ -563,7 +618,7 @@ public class Compiler {
 			   v.getOp1().getType() instanceof FloatType ||
 			   v.getOp2().getType() instanceof DoubleType ||
 			   v.getOp2().getType() instanceof FloatType)
-				return l + " % " + r;
+				return "fmod(" + l + ", " + r +")";
 			else
 				return l + " % " + r;
 		} else if(val instanceof ShlExpr) {
@@ -583,8 +638,9 @@ public class Compiler {
 			UshrExpr v = (UshrExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			// FIXME this is fishy
-			return "((unsigned " + v.getOp1().getType() + ")" + l + ") >> " + r;
+			// FIXME this should work in C++, unsigned types will produce unsigned right shift
+			// (no 1-padding in the top most bits.
+			return "((" + toUnsignedCType(v.getOp1().getType()) + ")" + l + ") >> " + r;
 		} else if(val instanceof XorExpr) {
 			XorExpr v = (XorExpr)val;
 			throw new UnsupportedOperationException();
@@ -602,8 +658,6 @@ public class Compiler {
 		} else if(val instanceof InterfaceInvokeExpr) {
 			InterfaceInvokeExpr v = (InterfaceInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			// Type not needed, would require explicit cast which would introduce local 
-			// String type = nor(v.getMethod().getDeclaringClass().getName());
 			String method = nor(v.getMethod().getName());
 			String invoke = target + "->" + method + "(";
 			int i = 0;
@@ -618,10 +672,9 @@ public class Compiler {
 		} else if(val instanceof SpecialInvokeExpr) {
 			SpecialInvokeExpr v = (SpecialInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			// Type not needed, would require explicit cast which would introduce local 
-			// String type = nor(v.getMethod().getDeclaringClass().getName());
+			String type = nor(v.getMethod().getDeclaringClass().getName());
 			String method = nor(v.getMethod().getName());
-			String invoke = target + "->" + method + "(";
+			String invoke = target + "->" + type + "::" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
 				String a = translateValue(arg);
@@ -639,23 +692,43 @@ public class Compiler {
 			throw new UnsupportedOperationException();
 		} else if(val instanceof NewArrayExpr) {
 			NewArrayExpr v = (NewArrayExpr)val;
-			throw new UnsupportedOperationException();
+			String type = toCType(v.getBaseType());
+			String size = translateValue(v.getSize());
+			// FIXME use garbage collector!
+			return "new Array<" + type + ">(" + size + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME use garbage collector!
 			return "new " + nor(v.getType().toString()) + "()";
 		} else if(val instanceof NewMultiArrayExpr) {
-			NewMultiArrayExpr v = (NewMultiArrayExpr)val;
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");
 		} else if(val instanceof LengthExpr) {
 			LengthExpr v = (LengthExpr)val;
 			throw new UnsupportedOperationException();
 		} else if(val instanceof NegExpr) {
 			NegExpr v = (NegExpr)val;
-			throw new UnsupportedOperationException();
+			return "-" + translateValue(v.getOp());
 		} else throw new RuntimeException("Unkown Expr Value " + val);
 	}
+	
+	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
+		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
+		return newMultiArray;
+	}
+	
+	private static String generateSubArray(String target, String elementType, int outerSize, int innerSize) {
+		return null;
+	}
 
+	private static String generateArraySig(String elementType, int numDimensions) {
+		String array = "";
+		for(int i = 0; i < numDimensions; i++) array += "Array<";							
+		array += elementType;
+		for(int i = 0; i < numDimensions - 1; i++) array += ">*";
+		array += ">";
+		return array;
+	}
+	
 	private static String nor(String name) {
 		return name.replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}

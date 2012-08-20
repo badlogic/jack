@@ -11,20 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\native\classes\jack_A.cpp" />
-    <ClCompile Include="..\native\classes\jack_B.cpp" />
-    <ClCompile Include="..\native\classes\jack_C.cpp" />
-    <ClCompile Include="..\native\classes\jack_D.cpp" />
-    <ClCompile Include="..\native\classes\jack_Itf.cpp" />
-    <ClCompile Include="..\native\classes\jack_ItfImpl.cpp" />
-    <ClCompile Include="..\native\classes\jack_Main.cpp" />
-    <ClCompile Include="..\native\classes\jack_Statics.cpp" />
-    <ClCompile Include="..\native\classes\java_lang_Object.cpp" />
-    <ClCompile Include="..\native\jack.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\native\classes\classes.h" />
     <ClInclude Include="..\native\classes\jack_A.h" />
+    <ClInclude Include="..\native\classes\jack_Arithmetic.h" />
+    <ClInclude Include="..\native\classes\jack_Arrays.h" />
     <ClInclude Include="..\native\classes\jack_B.h" />
     <ClInclude Include="..\native\classes\jack_C.h" />
     <ClInclude Include="..\native\classes\jack_D.h" />
@@ -32,9 +22,27 @@
     <ClInclude Include="..\native\classes\jack_ItfImpl.h" />
     <ClInclude Include="..\native\classes\jack_Main.h" />
     <ClInclude Include="..\native\classes\jack_Statics.h" />
+    <ClInclude Include="..\native\classes\java_lang_Class.h" />
     <ClInclude Include="..\native\classes\java_lang_Object.h" />
+    <ClInclude Include="..\native\classes\java_lang_String.h" />
     <ClInclude Include="..\native\vm\array.h" />
     <ClInclude Include="..\native\vm\types.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\native\classes\jack_A.cpp" />
+    <ClCompile Include="..\native\classes\jack_Arithmetic.cpp" />
+    <ClCompile Include="..\native\classes\jack_Arrays.cpp" />
+    <ClCompile Include="..\native\classes\jack_B.cpp" />
+    <ClCompile Include="..\native\classes\jack_C.cpp" />
+    <ClCompile Include="..\native\classes\jack_D.cpp" />
+    <ClCompile Include="..\native\classes\jack_Itf.cpp" />
+    <ClCompile Include="..\native\classes\jack_ItfImpl.cpp" />
+    <ClCompile Include="..\native\classes\jack_Main.cpp" />
+    <ClCompile Include="..\native\classes\jack_Statics.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_Class.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_Object.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_String.cpp" />
+    <ClCompile Include="..\native\jack.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AC967C16-FEC9-432A-BE58-AB19A8106846}</ProjectGuid>
@@ -73,10 +81,10 @@
     <ClCompile>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>D:\workspaces\libgdx-new\jack\native;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\native;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -1,25 +1,38 @@
-#include "classes/classes.h"
+﻿#include "classes/classes.h"
 #include <stdio.h>
+#include <string>
+#include <math.h>
 
-struct test$_ {
-	int a;
-};
+int arithmetic() {
+		j_byte b = 1;
+		j_short s = 1;
+		j_char c = 1;
+		j_int i = 1;
+		j_long l = 1;
+		j_float a = 1;
+		j_double d = 1;
 
-class Test {
-public: 
-	Test() {
-	}
+		j_double r = b + c * i / l;
+		r = fmod(r, d);
+		r = -r;
 
-	void run() {
-	}
-private:
-	int a;
-};
+		j_int shift = s << b;
+		shift = s >> b;
+		shift = ((unsigned short)s) >> b;
+		return (int)(r + shift);
+}
 
-int main(int argc, char** argv) {
-	jack_B obj;
-	obj.a = 123;
-	printf("%d\n", sizeof(jack_A));
-	printf("%d\n", sizeof(Test));
+int main() {
+	jack_Main main;
+
+	Array<int>* a = new Array<int>(20);
+	(*a)[0] = 123;
+	j_int c = (*a)[0] + 1;
+	(*a)[0] = c;
+	printf("%d\n", (*a)[0]);	
+
+	jack_Arrays* arrays = new jack_Arrays();
+	arrays->init();
+	arrays->arrays();
 	return 0;
 }
