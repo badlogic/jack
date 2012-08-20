@@ -10,6 +10,6 @@ typedef long j_long;
 typedef float j_float;
 typedef double j_double;
 
-#include "vm/vmarray.h"
+#include "vm/array.h"
 
 #endif

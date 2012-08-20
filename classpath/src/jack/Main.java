@@ -7,4 +7,6 @@ public class Main {
 	D d;
 	Itf i;
 	ItfImpl im;
+	Statics s;
+	Arithmetic ar;
 }

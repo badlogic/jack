@@ -15,7 +15,10 @@
     <ClCompile Include="..\native\classes\jack_B.cpp" />
     <ClCompile Include="..\native\classes\jack_C.cpp" />
     <ClCompile Include="..\native\classes\jack_D.cpp" />
+    <ClCompile Include="..\native\classes\jack_Itf.cpp" />
+    <ClCompile Include="..\native\classes\jack_ItfImpl.cpp" />
     <ClCompile Include="..\native\classes\jack_Main.cpp" />
+    <ClCompile Include="..\native\classes\jack_Statics.cpp" />
     <ClCompile Include="..\native\classes\java_lang_Object.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
   </ItemGroup>
@@ -25,8 +28,12 @@
     <ClInclude Include="..\native\classes\jack_B.h" />
     <ClInclude Include="..\native\classes\jack_C.h" />
     <ClInclude Include="..\native\classes\jack_D.h" />
+    <ClInclude Include="..\native\classes\jack_Itf.h" />
+    <ClInclude Include="..\native\classes\jack_ItfImpl.h" />
     <ClInclude Include="..\native\classes\jack_Main.h" />
+    <ClInclude Include="..\native\classes\jack_Statics.h" />
     <ClInclude Include="..\native\classes\java_lang_Object.h" />
+    <ClInclude Include="..\native\vm\array.h" />
     <ClInclude Include="..\native\vm\types.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
