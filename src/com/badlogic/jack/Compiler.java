@@ -552,10 +552,12 @@ public class Compiler {
 			throw new UnsupportedOperationException();
 		} else if(stmt instanceof EnterMonitorStmt) {
 			EnterMonitorStmt s = (EnterMonitorStmt)stmt;
-			throw new UnsupportedOperationException();
+			// FIXME LOWPRIO
+			wl(buffer, "// enter monitor");
 		} else if(stmt instanceof ExitMonitorStmt) {
 			ExitMonitorStmt s = (ExitMonitorStmt)stmt;
-			throw new UnsupportedOperationException();
+			// FIXME LOWPRIO
+			wl(buffer, "// exit monitor");			
 		} else if(stmt instanceof NopStmt) {
 			// nothing do to here
 		} else if(stmt instanceof RetStmt) {
@@ -572,8 +574,8 @@ public class Compiler {
 			throw new UnsupportedOperationException();
 		} else if(stmt instanceof ThrowStmt) {
 			ThrowStmt s = (ThrowStmt)stmt;
+			// FIXME LOWPRIO!
 			wl(buffer, "throw \"exception\";");
-			// FIXME PRIO!
 		} else {
 			throw new RuntimeException("Unkown statement " + stmt);
 		}
@@ -620,7 +622,9 @@ public class Compiler {
 	private static String translateImmediate(Immediate val) {
 		if(val instanceof ClassConstant) {
 			ClassConstant v = (ClassConstant)val;
-			throw new UnsupportedOperationException();
+			// FIXME PRIO PRIO PRIO!
+			return "getClass(" + v.value + ")";
+//			throw new UnsupportedOperationException();
 		} else if(val instanceof MetaConstant) {
 			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
@@ -656,13 +660,22 @@ public class Compiler {
 			return l + " & " + r; // FIXME PRIO fishy, what about logical or (should be the same in C++, no need for precendence)?			
 		} else if(val instanceof CmpExpr) {
 			CmpExpr v = (CmpExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			return "(" + l + " > " + r + ") - (" + l + " < " + r + ")";
 		} else if(val instanceof CmplExpr) {
 			CmplExpr v = (CmplExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			return String.format("(%s != %s || %s != %s) ? -1 : (%s > %s) - (%s < %s)", l, l, r, r, l, r, l, r);
 		} else if(val instanceof CmpgExpr) {
 			CmpgExpr v = (CmpgExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			return String.format("(%s != %s || %s != %s) ? 1 : (%s > %s) - (%s < %s)", l, l, r, r, l, r, l, r);
 		} else if(val instanceof EqExpr) {
 			EqExpr v = (EqExpr)val;
 			String l = translateValue(v.getOp1());
