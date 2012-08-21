@@ -36,6 +36,8 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
+import soot.JastAddJ.Flags;
+import soot.JastAddJ.Modifiers;
 import soot.coffi.ClassFile;
 import soot.coffi.CoffiMethodSource;
 import soot.jimple.AddExpr;
@@ -124,7 +126,7 @@ public class Compiler {
 		// load the base classes that don't get loaded by loadClassAndSupport
 //		loadBaseClasses();
 		
-		generateClass(Scene.v().loadClassAndSupport("jack.Arrays"));
+		generateClass(Scene.v().loadClassAndSupport("java.lang.StringBuilder"));
 		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
@@ -984,7 +986,9 @@ public class Compiler {
 	}
 	
 	private static String nor(SootMethod method) {
-		return "m_" + method.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+		return ((method.getModifiers() & Modifiers.ACC_BRIDGE) == 1? "b": "") + 
+			   ((method.getModifiers() & Flags.ACC_SYNTHETIC) == 1? "s": "") +
+				"m_" + method.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}
 	
 	private static String nor(SootMethodRef methodRef) {
