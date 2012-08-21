@@ -6,4 +6,5 @@ public class Main {
 	Arrays arrays;
 	Primes primes;
 	Exceptions exceptions;
+	Strings strings;
 }

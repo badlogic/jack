@@ -17,6 +17,11 @@ public:
 		}
 	}
 
+	Array(T* elements, int size) {
+		this->length = size;
+		this->elements = elements;
+	}
+
 	inline T get(int idx) {
 		// TODO add bounds check		
 		return elements[idx];

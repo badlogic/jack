@@ -1,21 +1,28 @@
 package com.badlogic.jack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
+import soot.ClassSource;
+import soot.CoffiClassSource;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
+import soot.MethodSource;
+import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
@@ -23,16 +30,20 @@ import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.SourceLocator;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
+import soot.coffi.ClassFile;
+import soot.coffi.CoffiMethodSource;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BreakpointStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
 import soot.jimple.CmpExpr;
 import soot.jimple.CmpgExpr;
@@ -102,22 +113,22 @@ public class Compiler {
 	static int ident;
 	
 	public static void main(String[] args) {
-		Options.v().set_keep_line_number(true);		
+		Options.v().set_keep_line_number(true);
+		Options.v().set_process_dir(Arrays.asList("classpath/bin/"));
 		Scene.v().setSootClassPath("classpath/bin/;");
+		Scene.v().loadNecessaryClasses();
+		Scene.v().loadDynamicClasses();
 		Scene.v().loadClassAndSupport("jack.Main");
 		
-		// load the basic java.lang Throwables
-		loadBaseThrowables();
+		// load the base classes that don't get loaded by loadClassAndSupport
+//		loadBaseClasses();
 		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
 		
 		StringBuffer buffer = new StringBuffer();
 		wl(buffer, "#ifndef jack_all_classes");
-		wl(buffer, "#define jack_all_classes");
-		
-		SootClass string = Scene.v().loadClassAndSupport("java.lang.String");
-		generateClass(string);
+		wl(buffer, "#define jack_all_classes");				
 		
 		for(SootClass c: Scene.v().getClasses()) {
 			generateClass(c);		
@@ -130,7 +141,7 @@ public class Compiler {
 		new FileDescriptor("native/classes/classes.h").writeString(buffer.toString(), false);
 	}
 	
-	public static void loadBaseThrowables() {
+	public static void loadBaseClasses() {
 		// load a bunch of exceptions we need...
 		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
 		Scene.v().loadClassAndSupport("java.lang.ArithmeticException");
@@ -158,6 +169,22 @@ public class Compiler {
 		Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
 		Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
 		Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
+		
+		// base classes that don't get loaded for whatever reason
+		Scene.v().loadClassAndSupport("avian.Utf8");
+		Scene.v().loadClassAndSupport("avian.Iso88591");
+		Scene.v().loadClassAndSupport("java.lang.System");
+		Scene.v().loadClassAndSupport("java.lang.Boolean");
+		Scene.v().loadClassAndSupport("java.lang.Byte");		
+		Scene.v().loadClassAndSupport("java.lang.Character");
+		Scene.v().loadClassAndSupport("java.lang.Short");
+		Scene.v().loadClassAndSupport("java.lang.Integer");
+		Scene.v().loadClassAndSupport("java.lang.Long");
+		Scene.v().loadClassAndSupport("java.lang.Float");
+		Scene.v().loadClassAndSupport("java.lang.Double");
+		Scene.v().loadClassAndSupport("java.lang.Math");
+		Scene.v().loadClassAndSupport("java.util.regex.Pattern");
+		Scene.v().loadClassAndSupport("java.util.regex.Matcher");
 	}
 	
 	public static void generateClass(SootClass clazz) {
@@ -293,7 +320,7 @@ public class Compiler {
 		}
 		
 		methodSig +=")";
-		if(clazz.isInterface()) methodSig += " = 0";
+		if(clazz.isInterface() || method.isAbstract()) methodSig += " = 0";
 		methodSig += ";";
 		wl(buffer, methodSig);
 	}
@@ -322,6 +349,7 @@ public class Compiler {
 			else if(type instanceof FloatType) return "j_float";
 			else if(type instanceof DoubleType) return "j_double";
 			else if(type instanceof VoidType) return "void";
+			else if(type instanceof NullType) return "0";
 			else throw new RuntimeException("Unknown primitive type " + type);
 		}
 	}
@@ -331,22 +359,35 @@ public class Compiler {
 			if(type instanceof ByteType) return "j_ubyte";			
 			if(type instanceof ShortType) return "j_ushort";
 			if(type instanceof IntType) return "j_uint";
-			if(type instanceof LongType) return "j_ulong";						
+			if(type instanceof LongType) return "j_ulong";
+			if(type instanceof CharType) return "j_char";
 		}
 		throw new RuntimeException("Can't create unsigned primitive type of " + type);			
 	}
 	
-	public static String generateCFile(SootClass clazz) {
+	static final Map<String, String> literals = new HashMap<String, String>();
+	static int nextLiteralId = 0;
+	public static String generateCFile(SootClass clazz) {		
+		// we generate the methods first as we gather some info while
+		// walking all the statements, e.g. string literals.
 		StringBuffer buffer = new StringBuffer();
+		literals.clear();
+		nextLiteralId = 0;
+				
+		// generate methods, including clinit for interfaces and abstract classes etc.	
+		for(SootMethod method: clazz.getMethods()) {
+			generateMethodImplementation(buffer, method);
+			wl(buffer, "");
+		}
 		
+		// generate header after the fact, including string literals and
+		// static fields. Need to do this as string literals are gathered
+		// during method generation.		
 		String fullName = nor(clazz.getName());		
-		
-		// FIXME include all dependencies, using all classes for now :p
-//		wl(buffer, "#include \"classes/" + fullName + ".h\"");
-		wl(buffer, "#include \"classes/classes.h\"");
-		// needed for fmod
-		wl(buffer, "#include <math.h>"); 
-		wl(buffer, "");
+		StringBuffer headerBuffer = new StringBuffer();		
+		wl(headerBuffer, "#include \"classes/classes.h\"");
+		wl(headerBuffer, "#include <math.h>"); 
+		wl(headerBuffer, "");
 		
 		// generate static fields
 		for(SootField field: clazz.getFields()) {
@@ -370,15 +411,16 @@ public class Compiler {
 		}
 		wl(buffer, "");
 		
-		// generate methods
-		if(!clazz.isInterface()) {
-			for(SootMethod method: clazz.getMethods()) {
-				generateMethodImplementation(buffer, method);
-				wl(buffer, "");
-			}
-		}
+		// output string literals
 		
-		return buffer.toString();
+		return headerBuffer.toString() + buffer.toString();
+	}
+	
+	public static void generateStringLiterals(StringBuffer buffer, SootClass clazz) {
+		for(SootMethod method: clazz.getMethods()) {
+			if(!method.isConcrete()) continue;
+			method.retrieveActiveBody();			
+		}	
 	}
 	
 	/** used to generate labels in methods, see {@link #translateStatement(StringBuffer, Stmt, SootMethod) **/
@@ -386,7 +428,7 @@ public class Compiler {
 	static Map<Stmt, String> labels = new HashMap<Stmt, String>();
 	private static void generateMethodImplementation(StringBuffer buffer, SootMethod method) {
 		
-		if(method.isAbstract()) return;
+		if(!method.isConcrete()) return;
 		
 		labelNum = 0;
 		labels.clear();
@@ -530,7 +572,8 @@ public class Compiler {
 			throw new UnsupportedOperationException();
 		} else if(stmt instanceof ThrowStmt) {
 			ThrowStmt s = (ThrowStmt)stmt;
-			throw new UnsupportedOperationException();
+			wl(buffer, "throw \"exception\";");
+			// FIXME PRIO!
 		} else {
 			throw new RuntimeException("Unkown statement " + stmt);
 		}
@@ -564,6 +607,7 @@ public class Compiler {
 		} else if(val instanceof IdentityRef) {
 			IdentityRef v = (IdentityRef)val;
 			if(v instanceof ThisRef) return "this";
+			if(v instanceof CaughtExceptionRef) return "(0)"; // FIXME PRIO!
 			else return "param" + ((ParameterRef)v).getIndex();
 		} else throw new RuntimeException("Unknown Ref Value " + val);
 	}
@@ -587,7 +631,12 @@ public class Compiler {
 			return v.toString();
 		} else if(val instanceof StringConstant) {
 			StringConstant v = (StringConstant)val;
-			throw new UnsupportedOperationException();
+			String literalId = literals.get(v.value);
+			if(literalId == null) {
+				literalId = "literal" + nextLiteralId++;
+				literals.put(v.value, literalId);
+			}
+			return literalId;			
 		} else if(val instanceof Local) {
 			Local v = (Local)val;
 			return v.getName();
@@ -602,7 +651,9 @@ public class Compiler {
 			return l + " + " + r;
 		} else if(val instanceof AndExpr) {
 			AndExpr v = (AndExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			return l + " & " + r; // FIXME PRIO fishy, what about logical or (should be the same in C++, no need for precendence)?			
 		} else if(val instanceof CmpExpr) {
 			CmpExpr v = (CmpExpr)val;
 			throw new UnsupportedOperationException();
@@ -654,7 +705,9 @@ public class Compiler {
 			return l + " * " + r;
 		} else if(val instanceof OrExpr) {
 			OrExpr v = (OrExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			return l + " | " + r; // FIXME PRIO fishy, what about logical or (should be the same in C++, no need for precendence)?			
 		} else if(val instanceof RemExpr) {
 			RemExpr v = (RemExpr)val;
 			String l = translateValue(v.getOp1());
@@ -690,7 +743,9 @@ public class Compiler {
 			return "((" + toUnsignedCType(v.getOp1().getType()) + ")" + l + ") >> " + r;
 		} else if(val instanceof XorExpr) {
 			XorExpr v = (XorExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			return l + " ^ " + r; // FIXME PRIO! fishy
 		} else if(val instanceof CastExpr) {
 			CastExpr v = (CastExpr)val;
 			String type = toCType(v.getCastType());
@@ -698,7 +753,10 @@ public class Compiler {
 			return "(" + type + ")" + target;
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
-			throw new UnsupportedOperationException();
+			String type = translateValue(v.getOp());
+			String checkType = toCType(v.getCheckType());
+			// FIXME PRIO! this is unlikely to actually work, test with interfaces etc.
+			return "(dynamic_cast<const " + checkType + ">(" + type + ") != 0)";					
 		} else if(val instanceof DynamicInvokeExpr) {
 			DynamicInvokeExpr v = (DynamicInvokeExpr)val;
 			throw new UnsupportedOperationException();
@@ -719,8 +777,8 @@ public class Compiler {
 		} else if(val instanceof SpecialInvokeExpr) {
 			SpecialInvokeExpr v = (SpecialInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			String type = nor(v.getMethod().getDeclaringClass().getName());
-			String method = nor(v.getMethod().getName());
+			String type = nor(v.getMethodRef().declaringClass().getName());
+			String method = nor(v.getMethodRef().name());
 			String invoke = target + "->" + type + "::" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
@@ -746,8 +804,19 @@ public class Compiler {
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof StaticInvokeExpr) {
-			StaticInvokeExpr v = (StaticInvokeExpr)val;
-			throw new UnsupportedOperationException();
+			StaticInvokeExpr v = (StaticInvokeExpr)val;			
+			String target = nor(v.getMethod().getDeclaringClass().getName());
+			String method = nor(v.getMethod().getName());
+			String invoke = target + "::" + method + "(";
+			int i = 0;
+			for(Value arg: v.getArgs()) {
+				String a = translateValue(arg);
+				if(i > 0) invoke += ", " + a;
+				else invoke += a;
+				i++;
+			}
+			invoke += ");";
+			return invoke;
 		} else if(val instanceof NewArrayExpr) {
 			NewArrayExpr v = (NewArrayExpr)val;
 			String type = toCType(v.getBaseType());

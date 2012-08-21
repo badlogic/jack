@@ -40,18 +40,16 @@ public class StackTraceElement {
 	}
 
 	public String toString() {
-		// FIXME PRIO! implement StringBuilder!
-//		StringBuilder sb = new StringBuilder();
-//		sb.append(class_).append(".").append(method);
-//
-//		if (line == NativeLine) {
-//			sb.append(" (native)");
-//		} else if (line >= 0) {
-//			sb.append(" (line ").append(line).append(")");
-//		}
-//
-//		return sb.toString();
-		return super.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append(class_).append(".").append(method);
+
+		if (line == NativeLine) {
+			sb.append(" (native)");
+		} else if (line >= 0) {
+			sb.append(" (line ").append(line).append(")");
+		}
+
+		return sb.toString();
 	}
 
 	public String getClassName() {

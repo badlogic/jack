@@ -48,5 +48,9 @@ int main() {
 	float took = (timeGetTime() - start) / 1000.f;
 	printf("%lu\n", sum);
 	printf("%f\n", took);
+
+	j_char[] ca;
+	new Array<j_char>(ca = {0, 1, 2, 3, 4}, 5);
+
 	return 0;
 }
