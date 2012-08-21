@@ -106,8 +106,8 @@ public class Compiler {
 		Scene.v().setSootClassPath("classpath/bin/;");
 		Scene.v().loadClassAndSupport("jack.Main");
 		
-		// load a bunch of exceptions we need...
-		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+		// load the basic java.lang Throwables
+		loadBaseThrowables();
 		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
@@ -128,6 +128,36 @@ public class Compiler {
 		wl(buffer, "#include \"vm/array.h\"");
 		wl(buffer, "#endif");
 		new FileDescriptor("native/classes/classes.h").writeString(buffer.toString(), false);
+	}
+	
+	public static void loadBaseThrowables() {
+		// load a bunch of exceptions we need...
+		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+		Scene.v().loadClassAndSupport("java.lang.ArithmeticException");
+		Scene.v().loadClassAndSupport("java.lang.ArrayStoreException");
+		Scene.v().loadClassAndSupport("java.lang.ClassCastException");
+		Scene.v().loadClassAndSupport("java.lang.IllegalMonitorStateException");
+		Scene.v().loadClassAndSupport("java.lang.IndexOutOfBoundsException");
+		Scene.v().loadClassAndSupport("java.lang.ArrayIndexOutOfBoundsException");
+		Scene.v().loadClassAndSupport("java.lang.NegativeArraySizeException");
+		Scene.v().loadClassAndSupport("java.lang.NullPointerException");
+		Scene.v().loadClassAndSupport("java.lang.InstantiationError");
+		Scene.v().loadClassAndSupport("java.lang.InternalError");
+		Scene.v().loadClassAndSupport("java.lang.OutOfMemoryError");
+		Scene.v().loadClassAndSupport("java.lang.StackOverflowError");
+		Scene.v().loadClassAndSupport("java.lang.UnknownError");
+		Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
+		Scene.v().loadClassAndSupport("java.lang.ClassCircularityError");
+		Scene.v().loadClassAndSupport("java.lang.ClassFormatError");
+		Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
+		Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");
+		Scene.v().loadClassAndSupport("java.lang.LinkageError");
+		Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError");
+		Scene.v().loadClassAndSupport("java.lang.VerifyError");
+		Scene.v().loadClassAndSupport("java.lang.NoSuchFieldError");
+		Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
+		Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
+		Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
 	}
 	
 	public static void generateClass(SootClass clazz) {
