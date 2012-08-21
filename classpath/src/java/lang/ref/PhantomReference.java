@@ -8,12 +8,18 @@
    There is NO WARRANTY for this software.  See license.txt for
    details. */
 
-package java.util;
+package java.lang.ref;
 
-public interface Iterator<T> {
-  public T next();
+public class PhantomReference<T> extends Reference<T> {
+  public PhantomReference(T target, ReferenceQueue<? super T> queue) {
+    super(target, queue);    
+  }
 
-  public boolean hasNext();
+  public PhantomReference(T target) {
+    this(target, null);
+  }
 
-  public void remove();
+  public T get() {
+    return null;
+  }
 }

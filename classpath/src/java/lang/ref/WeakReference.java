@@ -8,12 +8,14 @@
    There is NO WARRANTY for this software.  See license.txt for
    details. */
 
-package java.util;
+package java.lang.ref;
 
-public interface Iterator<T> {
-  public T next();
+public class WeakReference<T> extends Reference<T> {
+  public WeakReference(T target, ReferenceQueue<? super T> queue) {
+    super(target, queue);    
+  }
 
-  public boolean hasNext();
-
-  public void remove();
+  public WeakReference(T target) {
+    this(target, null);
+  }
 }

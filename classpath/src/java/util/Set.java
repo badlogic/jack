@@ -10,10 +10,4 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
-
-  public boolean hasNext();
-
-  public void remove();
-}
+public interface Set<T> extends Collection<T> { }

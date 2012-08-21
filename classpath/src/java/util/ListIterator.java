@@ -10,10 +10,7 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
-
-  public boolean hasNext();
-
-  public void remove();
+public interface ListIterator<E> extends Iterator<E> {
+  public boolean hasPrevious();
+  public E previous();
 }

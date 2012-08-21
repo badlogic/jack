@@ -10,10 +10,12 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public class NoSuchElementException extends RuntimeException {
+  public NoSuchElementException(String message) {
+    super(message);
+  }
 
-  public boolean hasNext();
-
-  public void remove();
+  public NoSuchElementException() {
+    super();
+  }
 }

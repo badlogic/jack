@@ -10,10 +10,8 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public interface Enumeration<T> {
+  public T nextElement();
 
-  public boolean hasNext();
-
-  public void remove();
+  public boolean hasMoreElements();
 }

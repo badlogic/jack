@@ -6,12 +6,17 @@ public class System {
 	}
 	
 	public static String getProperty(String key) {
-		// FIXME
+		// FIXME PRIO!
 		return null;
 	}
 
 	public static long currentTimeMillis() {
-		// FIXME
+		// FIXME PRIO!
+		return 0;
+	}
+	
+	public static int identityHashCode(Object x) {
+		// FIXME PRIO!
 		return 0;
 	}
 }

@@ -10,10 +10,24 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public class Date {
+  public final long when;
 
-  public boolean hasNext();
+  public Date() {
+    when = System.currentTimeMillis();
+  }
 
-  public void remove();
+  public Date(long when) {
+    this.when = when;
+  }
+
+  public long getTime() {
+    return when;
+  }
+
+  public String toString() {
+    return toString(when);
+  }
+
+  private static native String toString(long when);
 }

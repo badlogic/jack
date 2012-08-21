@@ -10,10 +10,6 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public interface EventListener {
 
-  public boolean hasNext();
-
-  public void remove();
 }

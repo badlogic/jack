@@ -8,12 +8,8 @@
    There is NO WARRANTY for this software.  See license.txt for
    details. */
 
-package java.util;
+package java.lang;
 
-public interface Iterator<T> {
-  public T next();
+public @interface Override {
 
-  public boolean hasNext();
-
-  public void remove();
 }

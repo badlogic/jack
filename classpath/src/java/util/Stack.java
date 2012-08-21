@@ -10,10 +10,21 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public class Stack<T> extends Vector<T> {
+  public boolean empty() {
+    return size() == 0;
+  }
 
-  public boolean hasNext();
+  public T peek() {
+    return get(size() - 1);
+  }
 
-  public void remove();
+  public T pop() {
+    return remove(size() - 1);
+  }
+
+  public T push(T element) {
+    add(element);
+    return element;
+  }
 }

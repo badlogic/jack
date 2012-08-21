@@ -10,10 +10,14 @@
 
 package java.util;
 
-public interface Iterator<T> {
-  public T next();
+public class EventObject {
+  protected Object source;
 
-  public boolean hasNext();
+  public EventObject(Object source) {
+    this.source = source;
+  }
 
-  public void remove();
+  public Object getSource() {
+    return source;
+  }
 }

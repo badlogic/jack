@@ -8,12 +8,7 @@
    There is NO WARRANTY for this software.  See license.txt for
    details. */
 
-package java.util;
+package java.lang.annotation;
 
-public interface Iterator<T> {
-  public T next();
-
-  public boolean hasNext();
-
-  public void remove();
+public interface Annotation {
 }
