@@ -9,5 +9,9 @@ public class Statics {
 	static final long l = 1;
 	static final float f = 1;
 	static double d = 1;
-	static A a = new A(); 
+	static Object a;
+	
+	static {
+		a = new Object();
+	}
 }

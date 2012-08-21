@@ -106,8 +106,8 @@ public class Compiler {
 		Scene.v().setSootClassPath("classpath/bin/;");
 		Scene.v().loadClassAndSupport("jack.Main");
 		
-		// load a bunch of exceptions we need...
-		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+		// load the basic java.lang Throwables
+		loadBaseThrowables();
 		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
@@ -128,6 +128,36 @@ public class Compiler {
 		wl(buffer, "#include \"vm/array.h\"");
 		wl(buffer, "#endif");
 		new FileDescriptor("native/classes/classes.h").writeString(buffer.toString(), false);
+	}
+	
+	public static void loadBaseThrowables() {
+		// load a bunch of exceptions we need...
+		Scene.v().loadClassAndSupport("java.lang.RuntimeException");
+		Scene.v().loadClassAndSupport("java.lang.ArithmeticException");
+		Scene.v().loadClassAndSupport("java.lang.ArrayStoreException");
+		Scene.v().loadClassAndSupport("java.lang.ClassCastException");
+		Scene.v().loadClassAndSupport("java.lang.IllegalMonitorStateException");
+		Scene.v().loadClassAndSupport("java.lang.IndexOutOfBoundsException");
+		Scene.v().loadClassAndSupport("java.lang.ArrayIndexOutOfBoundsException");
+		Scene.v().loadClassAndSupport("java.lang.NegativeArraySizeException");
+		Scene.v().loadClassAndSupport("java.lang.NullPointerException");
+		Scene.v().loadClassAndSupport("java.lang.InstantiationError");
+		Scene.v().loadClassAndSupport("java.lang.InternalError");
+		Scene.v().loadClassAndSupport("java.lang.OutOfMemoryError");
+		Scene.v().loadClassAndSupport("java.lang.StackOverflowError");
+		Scene.v().loadClassAndSupport("java.lang.UnknownError");
+		Scene.v().loadClassAndSupport("java.lang.ThreadDeath");
+		Scene.v().loadClassAndSupport("java.lang.ClassCircularityError");
+		Scene.v().loadClassAndSupport("java.lang.ClassFormatError");
+		Scene.v().loadClassAndSupport("java.lang.IllegalAccessError");
+		Scene.v().loadClassAndSupport("java.lang.IncompatibleClassChangeError");
+		Scene.v().loadClassAndSupport("java.lang.LinkageError");
+		Scene.v().loadClassAndSupport("java.lang.NoClassDefFoundError");
+		Scene.v().loadClassAndSupport("java.lang.VerifyError");
+		Scene.v().loadClassAndSupport("java.lang.NoSuchFieldError");
+		Scene.v().loadClassAndSupport("java.lang.AbstractMethodError");
+		Scene.v().loadClassAndSupport("java.lang.NoSuchMethodError");
+		Scene.v().loadClassAndSupport("java.lang.UnsatisfiedLinkError");
 	}
 	
 	public static void generateClass(SootClass clazz) {
@@ -395,6 +425,27 @@ public class Compiler {
 			wl(buffer, cType + " " + local.getName() + " = 0;");
 		}
 		
+		// generate labels for each statement another statement points to
+		for(Unit unit: body.getUnits()) {
+			Stmt stmt = (Stmt)unit;
+			Stmt labeledStmt = null;
+			
+			if(unit instanceof IfStmt) {
+				labeledStmt = ((IfStmt)stmt).getTarget();
+			}
+			if(unit instanceof GotoStmt) {
+				labeledStmt = (Stmt)((GotoStmt)stmt).getTarget();
+			}
+			
+			if(labeledStmt != null) {
+				String label = labels.get((Stmt)labeledStmt);
+				if(label == null) {
+					label = "label" + labelNum++;
+					labels.put((Stmt)labeledStmt, label);
+				}
+			}
+		}
+		
 		// translate statements
 		for(Unit unit: body.getUnits()) {
 			translateStatement(buffer, (Stmt)unit, method);
@@ -443,19 +494,13 @@ public class Compiler {
 		} else if(stmt instanceof GotoStmt) {
 			GotoStmt s = (GotoStmt)stmt;
 			String label = labels.get((Stmt)s.getTarget());
-			if(label == null) {
-				label = "label" + labelNum++;
-				labels.put((Stmt)s.getTarget(), label);
-			}
+			if(label == null) throw new RuntimeException("No label for goto target!");
 			wl(buffer, "goto " + label + ";");
 		} else if(stmt instanceof IfStmt) {
 			IfStmt s = (IfStmt)stmt;
 			String condition = translateValue(s.getCondition());
 			String label = labels.get(s.getTarget());
-			if(label == null) {
-				label = "label" + labelNum++;
-				labels.put(s.getTarget(), label);
-			}
+			if(label == null) throw new RuntimeException("No label for if target!");
 			wl(buffer, "if(" + condition + ") goto " + label + ";");
 		} else if(stmt instanceof InvokeStmt) {
 			InvokeStmt s = (InvokeStmt)stmt;
@@ -605,7 +650,7 @@ public class Compiler {
 		} else if(val instanceof MulExpr) {
 			MulExpr v = (MulExpr)val;
 			String l = translateValue(v.getOp1());
-			String r = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
 			return l + " * " + r;
 		} else if(val instanceof OrExpr) {
 			OrExpr v = (OrExpr)val;
@@ -633,7 +678,9 @@ public class Compiler {
 			return l + " >> " + r;
 		} else if(val instanceof SubExpr) {
 			SubExpr v = (SubExpr)val;
-			throw new UnsupportedOperationException();
+			String l = translateValue(v.getOp1());
+			String r = translateValue(v.getOp2());
+			return l + " - " + r;
 		} else if(val instanceof UshrExpr) {
 			UshrExpr v = (UshrExpr)val;
 			String l = translateValue(v.getOp1());
@@ -686,7 +733,18 @@ public class Compiler {
 			return invoke;
 		} else if(val instanceof VirtualInvokeExpr) {
 			VirtualInvokeExpr v = (VirtualInvokeExpr)val;
-			throw new UnsupportedOperationException();
+			String target = translateValue(v.getBase());
+			String method = nor(v.getMethod().getName());
+			String invoke = target + "->" + method + "(";
+			int i = 0;
+			for(Value arg: v.getArgs()) {
+				String a = translateValue(arg);
+				if(i > 0) invoke += ", " + a;
+				else invoke += a;
+				i++;
+			}
+			invoke += ");";
+			return invoke;
 		} else if(val instanceof StaticInvokeExpr) {
 			StaticInvokeExpr v = (StaticInvokeExpr)val;
 			throw new UnsupportedOperationException();
@@ -704,7 +762,8 @@ public class Compiler {
 			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");
 		} else if(val instanceof LengthExpr) {
 			LengthExpr v = (LengthExpr)val;
-			throw new UnsupportedOperationException();
+			String target = translateValue(v.getOp());
+			return target + "->length";
 		} else if(val instanceof NegExpr) {
 			NegExpr v = (NegExpr)val;
 			return "-" + translateValue(v.getOp());
@@ -713,13 +772,32 @@ public class Compiler {
 	
 	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
 		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
+		String counter = target + "_c0";
+		for(int i = 0; i < sizes.size() - 1; i++) {
+			newMultiArray += i() + "for(int " + counter + " = 0; " + counter + " < " + sizes.get(i) + "; " + counter + "++) {\n";
+			push();
+			String subArray = generateArraySig(elementType, sizes.size() - i - 1); 
+			newMultiArray += i();
+			for(int j = 0; j < i + 1; j++) {
+				newMultiArray += "(*";
+			}
+			newMultiArray += target + ")";
+			for(int j = 0; j < i + 1; j++) {
+				if(j < i)
+					newMultiArray += "[" + target + "_c" + j + "])"; 
+				else
+					newMultiArray += "[" + target + "_c" + j + "]";
+			}
+			newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ");\n";
+			counter = target + "_c" + (i+1);
+		}
+		for(int i = 0; i < sizes.size() - 1; i++) {
+			pop();
+			newMultiArray += i() + "}\n";
+		}
 		return newMultiArray;
 	}
 	
-	private static String generateSubArray(String target, String elementType, int outerSize, int innerSize) {
-		return null;
-	}
-
 	private static String generateArraySig(String elementType, int numDimensions) {
 		String array = "";
 		for(int i = 0; i < numDimensions; i++) array += "Array<";							
@@ -733,10 +811,16 @@ public class Compiler {
 		return name.replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}
 	
-	private static void wl(StringBuffer buffer, String message) {
+	private static String i() {
+		StringBuffer buffer = new StringBuffer();
 		for(int i = 0; i < ident; i++) {
 			buffer.append("\t");
 		}
+		return buffer.toString();
+	}
+	
+	private static void wl(StringBuffer buffer, String message) {
+		buffer.append(i());
 		buffer.append(message);
 		buffer.append("\n");
 	}
