@@ -33,24 +33,21 @@ int main() {
 	printf("%d\n", (*a)[0]);	
 
 	jack_Arrays* arrays = new jack_Arrays();
-	arrays->init();
-	arrays->arrays();
+	arrays->m_init();
+	arrays->m_arrays();
 
 	DWORD start = timeGetTime();
 	jack_Primes* primes = new jack_Primes();
-	primes->init();
+	primes->m_init();
 
 	long long sum = 0;
 	for(int i = 0; i < 100000; i++) {
-		sum += primes->next();
+		sum += primes->m_next();
 		if(i % 1000 == 0) printf("%d: %f, %lu\n", i, (timeGetTime() - start) / 1000.f, sum);
 	}
 	float took = (timeGetTime() - start) / 1000.f;
 	printf("%lu\n", sum);
 	printf("%f\n", took);
-
-	j_char[] ca;
-	new Array<j_char>(ca = {0, 1, 2, 3, 4}, 5);
 
 	return 0;
 }

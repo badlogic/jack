@@ -30,6 +30,7 @@ import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.SootMethodRef;
 import soot.SourceLocator;
 import soot.Type;
 import soot.Unit;
@@ -123,6 +124,8 @@ public class Compiler {
 		// load the base classes that don't get loaded by loadClassAndSupport
 //		loadBaseClasses();
 		
+		generateClass(Scene.v().loadClassAndSupport("jack.Arrays"));
+		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
 		
@@ -132,7 +135,7 @@ public class Compiler {
 		
 		for(SootClass c: Scene.v().getClasses()) {
 			generateClass(c);		
-			wl(buffer, "#include \"classes/" + nor(c.getName()) + ".h\"");
+			wl(buffer, "#include \"classes/" + nor(c) + ".h\"");
 		}
 		
 		// add array.h for arrays
@@ -191,13 +194,13 @@ public class Compiler {
 		System.out.println("translating " + clazz.getName());
 		String header = generateHeader(clazz);
 		String cFile = generateCFile(clazz);
-		new FileDescriptor("native/classes/" + nor(clazz.getName()) + ".h").writeString(header, false);
-		new FileDescriptor("native/classeS/" + nor(clazz.getName()) + ".cpp").writeString(cFile, false);
+		new FileDescriptor("native/classes/" + nor(clazz) + ".h").writeString(header, false);
+		new FileDescriptor("native/classeS/" + nor(clazz) + ".cpp").writeString(cFile, false);
 	}
 		
 	public static String generateHeader(SootClass clazz) {
 		StringBuffer buffer = new StringBuffer();
-		String fullName = nor(clazz.getName());
+		String fullName = nor(clazz);
 		
 		// include guards
 		wl(buffer, "#ifndef " + fullName + "_h");
@@ -211,7 +214,6 @@ public class Compiler {
 		// include forward declarations of types used
 		// as method params and fields
 		wl(buffer, "// forward declaration of referenced types");
-		wl(buffer, "// interfaces are typedefed to java.lang.Object");
 		generateForwardDeclarations(buffer, clazz);
 		generateClassHeader(buffer, clazz);
 		
@@ -242,23 +244,30 @@ public class Compiler {
 	}
 	
 	private static void generateClassHeader(StringBuffer buffer, SootClass clazz) {
-		String fullName = nor(clazz.getName());
+		String fullName = nor(clazz);
 		// class header, specifying inheritance
 		// interfaces do not inherit from java.lang.Object
 		if(clazz.hasSuperclass() || clazz.getInterfaceCount() > 0) {
 			String classHeader = "class " + fullName;
 			if(clazz.hasSuperclass() && !clazz.isInterface()) {
-				classHeader += ": public " + nor(clazz.getSuperclass().getName());
+				classHeader += ": public " + nor(clazz.getSuperclass());
 			}
 			Iterator<SootClass> iter = clazz.getInterfaces().iterator();
+			int addedInterfaces = 0;
 			for(int i = 0; i < clazz.getInterfaceCount(); i++) {
 				SootClass itf = iter.next();
-				if(i == 0) {
-					if(!clazz.hasSuperclass()) classHeader +=": public " + nor(itf.getName());
-					else classHeader += ", public " + nor(itf.getName());
+				
+				// check if the interface is already implemented by a super
+				// class and omit it in that case.
+				if(interfaceImplementedBySuperClass(clazz, itf)) continue;
+				
+				if(addedInterfaces == 0) {
+					if(!clazz.hasSuperclass() || clazz.isInterface()) classHeader +=": public " + nor(itf);
+					else classHeader += ", public " + nor(itf);
 				} else {
-					classHeader +=", public " + nor(itf.getName());
+					classHeader +=", public " + nor(itf);
 				}
+				addedInterfaces++;
 			}
 			classHeader += " {";
 			wl(buffer, classHeader);
@@ -267,35 +276,90 @@ public class Compiler {
 		}
 	}
 	
+	private static boolean interfaceImplementedBySuperClass(SootClass clazz, SootClass itf) {
+		// if this class is an interface, it has not super class
+		// need to go through all the interfaces it implements, recursively
+		if(clazz.isInterface()) {
+			if(clazz.equals(itf)) return true;
+			for(SootClass otherItf: clazz.getInterfaces()) {
+				if(interfaceImplementedBySuperClass(otherItf, itf)) return true;
+			}
+			return false;
+		} else {
+			if(!clazz.hasSuperclass()) return false;
+			SootClass superClass = clazz.getSuperclass();
+			while(superClass != null) {
+				for(SootClass otherItf: superClass.getInterfaces()) {
+					if(otherItf.equals(itf)) {
+						System.out.println("Omitting interface " + itf.getName() + " from " + clazz.getName() + " because superclass " + superClass.getName() + " already implements it");
+						return true;
+					}
+				}
+				superClass = superClass.hasSuperclass()? superClass.getSuperclass(): null;
+			}
+			return false;
+		}
+	}
+	
 	private static void generateForwardDeclarations(StringBuffer buffer, SootClass clazz) {
 		// output superclass and interface forward decls
 		if(clazz.hasSuperclass()) {
-			wl(buffer, "#include \"classes/" + nor(clazz.getSuperclass().getName()) + ".h\"");
+			wl(buffer, "#include \"classes/" + nor(clazz.getSuperclass()) + ".h\"");
 		}
 		for(SootClass itf: clazz.getInterfaces()) {
-			wl(buffer, "#include \"classes/" + nor(itf.getName()) + ".h\"");
+			wl(buffer, "#include \"classes/" + nor(itf) + ".h\"");
 		}
 		
-		// output field forward decls.
+		// forward declare array template
+		wl(buffer, "template <class T> class Array;");
+		
+		Set<String> forwardedClasses = new HashSet<String>();
+		
+		// gather field forward decls.
 		for(SootField field: clazz.getFields()) {
-			if(field.getType() instanceof RefType) {
-				wl(buffer, "class " + nor(field.getType().toString()) + ";");
-			}
+			forwardedClasses.add(forwardDeclareType(buffer, field.getType()));
 		}
 		
 		// go through each method signature and
-		// output forward decls. for return types and parameters
+		// gather forward decls. for return types and parameters
 		for(SootMethod method: clazz.getMethods()) {
 			for(Object type: method.getParameterTypes()) {
-				if(type instanceof RefType) {
-					wl(buffer, "class " + nor(type.toString()) + ";");
-				}
+				forwardedClasses.add(forwardDeclareType(buffer, (Type)type));
 			}
 			if(method.getReturnType() instanceof RefType) {
-				wl(buffer, "class " + nor(method.getReturnType().toString()) + ";");
+				forwardedClasses.add(forwardDeclareType(buffer, method.getReturnType()));
+			}
+		}
+		
+		// remove super class and interfaces from forward decls
+		if(clazz.hasSuperclass()) {
+			forwardedClasses.remove(nor(clazz.getSuperclass()));
+		}
+		for(SootClass itf: clazz.getInterfaces()) {
+			forwardedClasses.remove(nor(itf));
+		}
+		
+		// output the forward decls.
+		for(String forwardedClass: forwardedClasses) {
+			if(forwardedClass == null) continue; // FIXME ...
+			if(!forwardedClass.equals(nor(clazz))) {
+				wl(buffer, "class " + forwardedClass + ";");
 			}
 		}
 		wl(buffer, "");
+	}
+	
+	private static String forwardDeclareType(StringBuffer buffer, Type type) {
+		if(type instanceof RefType) {
+			return nor(type);
+		}
+		if(type instanceof ArrayType) {
+			// forward declare base type of arrays if it's not a primitive type
+			if(!(((ArrayType) type).baseType instanceof PrimType)) {
+				return nor(((ArrayType) type).baseType);
+			}
+		}
+		return null;
 	}
 	
 	public static void generateMethod(StringBuffer buffer, SootMethod method) {
@@ -309,7 +373,7 @@ public class Compiler {
 		}
 		
 		methodSig += toCType(method.getReturnType());
-		methodSig += " " + nor(method.getName()) + "(";
+		methodSig += " " + nor(method) + "(";
 		
 		int i = 0;
 		for(Object paramType: method.getParameterTypes()) {
@@ -328,12 +392,12 @@ public class Compiler {
 	private static void generateField(StringBuffer buffer, SootField field) {
 		// determine type and convert to C type
 		String cType = toCType(field.getType());
-		wl(buffer, (field.isStatic()?"static ":"") + cType + " " + nor(field.getName()) + ";");			
+		wl(buffer, (field.isStatic()?"static ":"") + cType + " " + nor(field) + ";");			
 	}
 	
 	private static String toCType(Type type) {
 		if(type instanceof RefType) {
-			return nor(type.toString()) + "*";			
+			return nor(type) + "*";			
 		} else if(type instanceof ArrayType) {
 			ArrayType t = (ArrayType)type;			
 			String elementType = toCType(t.baseType);
@@ -383,7 +447,7 @@ public class Compiler {
 		// generate header after the fact, including string literals and
 		// static fields. Need to do this as string literals are gathered
 		// during method generation.		
-		String fullName = nor(clazz.getName());		
+		String fullName = nor(clazz);		
 		StringBuffer headerBuffer = new StringBuffer();		
 		wl(headerBuffer, "#include \"classes/classes.h\"");
 		wl(headerBuffer, "#include <math.h>"); 
@@ -404,9 +468,9 @@ public class Compiler {
 				}
 				
 				if(constantValue == null)
-					wl(buffer, cType + " " + fullName + "::" + nor(field.getName()) + " = 0;");
+					wl(buffer, cType + " " + fullName + "::" + nor(field) + " = 0;");
 				else
-					wl(buffer, cType + " " + fullName + "::" + nor(field.getName()) + " = " + constantValue + ";");
+					wl(buffer, cType + " " + fullName + "::" + nor(field) + " = " + constantValue + ";");
 			}
 		}
 		wl(buffer, "");
@@ -436,7 +500,7 @@ public class Compiler {
 		String methodSig = "";
 		
 		methodSig += toCType(method.getReturnType());
-		methodSig += " " + nor(clazz.getName()) + "::" + nor(method.getName()) + "(";
+		methodSig += " " + nor(clazz) + "::" + nor(method) + "(";
 		
 		int i = 0;
 		for(Object paramType: method.getParameterTypes()) {
@@ -623,11 +687,11 @@ public class Compiler {
 			return "(*" + target + ")[" + index + "]";
 		} else if(val instanceof StaticFieldRef) {
 			StaticFieldRef v = (StaticFieldRef)val;
-			return nor(v.getField().getDeclaringClass().getName()) + "::" + v.getField().getName();
+			return nor(v.getField().getDeclaringClass()) + "::" + v.getField().getName();
 		} else if(val instanceof InstanceFieldRef) {
 			InstanceFieldRef v = (InstanceFieldRef)val;
 			String target = translateValue(v.getBase());
-			return target + "->" + nor(v.getField().getName()); 
+			return target + "->" + nor(v.getField()); 
 		} else if(val instanceof IdentityRef) {
 			IdentityRef v = (IdentityRef)val;
 			if(v instanceof ThisRef) return "this";
@@ -798,7 +862,7 @@ public class Compiler {
 		} else if(val instanceof InterfaceInvokeExpr) {
 			InterfaceInvokeExpr v = (InterfaceInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			String method = nor(v.getMethod().getName());
+			String method = nor(v.getMethod());
 			String invoke = target + "->" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
@@ -812,8 +876,8 @@ public class Compiler {
 		} else if(val instanceof SpecialInvokeExpr) {
 			SpecialInvokeExpr v = (SpecialInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			String type = nor(v.getMethodRef().declaringClass().getName());
-			String method = nor(v.getMethodRef().name());
+			String type = nor(v.getMethodRef().declaringClass());
+			String method = nor(v.getMethodRef());
 			String invoke = target + "->" + type + "::" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
@@ -827,7 +891,7 @@ public class Compiler {
 		} else if(val instanceof VirtualInvokeExpr) {
 			VirtualInvokeExpr v = (VirtualInvokeExpr)val;
 			String target = translateValue(v.getBase());
-			String method = nor(v.getMethod().getName());
+			String method = nor(v.getMethod());
 			String invoke = target + "->" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
@@ -840,8 +904,8 @@ public class Compiler {
 			return invoke;
 		} else if(val instanceof StaticInvokeExpr) {
 			StaticInvokeExpr v = (StaticInvokeExpr)val;			
-			String target = nor(v.getMethod().getDeclaringClass().getName());
-			String method = nor(v.getMethod().getName());
+			String target = nor(v.getMethod().getDeclaringClass());
+			String method = nor(v.getMethod());
 			String invoke = target + "::" + method + "(";
 			int i = 0;
 			for(Value arg: v.getArgs()) {
@@ -861,7 +925,7 @@ public class Compiler {
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME use garbage collector!
-			return "new " + nor(v.getType().toString()) + "()";
+			return "new " + nor(v.getType()) + "()";
 		} else if(val instanceof NewMultiArrayExpr) {
 			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");
 		} else if(val instanceof LengthExpr) {
@@ -911,8 +975,28 @@ public class Compiler {
 		return array;
 	}
 	
-	private static String nor(String name) {
-		return name.replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+//	private static String nor(String name) {
+//		return name.replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+//	}
+	
+	private static String nor(SootField field) {
+		return "f_" + field.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+	}
+	
+	private static String nor(SootMethod method) {
+		return "m_" + method.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+	}
+	
+	private static String nor(SootMethodRef methodRef) {
+		return "m_" + methodRef.name().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+	}
+	
+	private static String nor(SootClass clazz) {
+		return clazz.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+	}
+	
+	private static String nor(Type type) {
+		return type.toString().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}
 	
 	private static String i() {
