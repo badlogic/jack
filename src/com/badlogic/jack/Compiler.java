@@ -594,7 +594,6 @@ public class Compiler {
 			}
 			pop();
 			wl(buffer, "}");
-			throw new UnsupportedOperationException();
 		} else if(stmt instanceof ThrowStmt) {
 			ThrowStmt s = (ThrowStmt)stmt;
 			// FIXME LOWPRIO!
