@@ -460,7 +460,6 @@ public class Compiler {
 		method.retrieveActiveBody();
 		JimpleBody body = (JimpleBody)method.getActiveBody();		
 		
-		System.out.println(body);
 		// declare locals
 		for(Local local: body.getLocals()) {
 			String cType = toCType(local.getType());
@@ -469,21 +468,22 @@ public class Compiler {
 		
 		// generate labels for each statement another statement points to
 		for(Unit unit: body.getUnits()) {
-			Stmt stmt = (Stmt)unit;
-			Stmt labeledStmt = null;
-			
 			if(unit instanceof IfStmt) {
-				labeledStmt = ((IfStmt)stmt).getTarget();
+				makeLabel(((IfStmt)unit).getTarget());
 			}
 			if(unit instanceof GotoStmt) {
-				labeledStmt = (Stmt)((GotoStmt)stmt).getTarget();
+				makeLabel((Stmt)((GotoStmt)unit).getTarget());
 			}
-			
-			if(labeledStmt != null) {
-				String label = labels.get((Stmt)labeledStmt);
-				if(label == null) {
-					label = "label" + labelNum++;
-					labels.put((Stmt)labeledStmt, label);
+			if(unit instanceof TableSwitchStmt) {
+				TableSwitchStmt stmt = (TableSwitchStmt)unit;
+				for(Object target: stmt.getTargets()) {
+					makeLabel((Stmt)target);
+				}
+			}
+			if(unit instanceof LookupSwitchStmt) {
+				LookupSwitchStmt stmt = (LookupSwitchStmt)unit;
+				for(Object target: stmt.getTargets()) {
+					makeLabel((Stmt)target);
 				}
 			}
 		}
@@ -491,6 +491,14 @@ public class Compiler {
 		// translate statements
 		for(Unit unit: body.getUnits()) {
 			translateStatement(buffer, (Stmt)unit, method);
+		}
+	}
+	
+	private static void makeLabel(Stmt stmt) {
+		String label = labels.get(stmt);
+		if(label == null) {
+			label = "label" + labelNum++;
+			labels.put(stmt, label);
 		}
 	}
 	
@@ -549,7 +557,14 @@ public class Compiler {
 			wl(buffer, translateValue(s.getInvokeExpr()));
 		} else if(stmt instanceof LookupSwitchStmt) {
 			LookupSwitchStmt s = (LookupSwitchStmt)stmt;
-			throw new UnsupportedOperationException();
+			wl(buffer, "switch(" + translateValue(s.getKey()) + ") {");
+			push();
+			for(int i = 0; i < s.getLookupValues().size(); i++) {
+				String target = labels.get(s.getTargets().get(i));
+				wl(buffer, "case " + translateValue((Value)s.getLookupValues().get(i)) + ": goto " + target);
+			}
+			pop();
+			wl(buffer, "}");		
 		} else if(stmt instanceof EnterMonitorStmt) {
 			EnterMonitorStmt s = (EnterMonitorStmt)stmt;
 			// FIXME LOWPRIO
@@ -571,6 +586,14 @@ public class Compiler {
 			wl(buffer, "return;");
 		} else if(stmt instanceof TableSwitchStmt) {
 			TableSwitchStmt s = (TableSwitchStmt)stmt;
+			wl(buffer, "switch(" + translateValue(s.getKey()) + ") {");
+			push();
+			for(int i = s.getLowIndex(); i <= s.getHighIndex(); i++) {
+				String target = labels.get(s.getTargets().get(i - s.getLowIndex()));
+				wl(buffer, "case " + i + ": goto " + target);
+			}
+			pop();
+			wl(buffer, "}");
 			throw new UnsupportedOperationException();
 		} else if(stmt instanceof ThrowStmt) {
 			ThrowStmt s = (ThrowStmt)stmt;
