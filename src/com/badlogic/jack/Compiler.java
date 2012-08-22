@@ -108,41 +108,49 @@ public class Compiler {
 	static int ident;
 	
 	public static void main(String[] args) {
+		if(args.length != 2) {
+			System.out.println("Usage: Compiler <sourceDir> <outputDir>");
+			System.exit(0);
+		}
+		
+		String sourceDir = args[0].endsWith("/")? args[0]: args[0] + "/";
+		String outputDir = args[1].endsWith("/")? args[1]: args[1] + "/";
+		
 		Options.v().set_keep_line_number(true);
-		Options.v().set_process_dir(Arrays.asList("classpath/bin/"));
-		Scene.v().setSootClassPath("classpath/bin/;");
+		Options.v().set_process_dir(Arrays.asList(sourceDir));
+		Scene.v().setSootClassPath(sourceDir);
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
 		// load the base classes that don't get loaded by loadClassAndSupport
 //		loadBaseClasses();
 		
-		generateClass(Scene.v().loadClassAndSupport("java.util.List"));
+//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.util.LinkedList"));
 		
-		new FileDescriptor("native/classes/").deleteDirectory();
-		new FileDescriptor("native/classes/").mkdirs();
+		new FileDescriptor(outputDir).deleteDirectory();
+		new FileDescriptor(outputDir).mkdirs();
 		
 		StringBuffer buffer = new StringBuffer();
 		wl(buffer, "#ifndef jack_all_classes");
 		wl(buffer, "#define jack_all_classes");				
 		
 		for(SootClass c: Scene.v().getClasses()) {
-			generateClass(c);		
+			generateClass(outputDir, c);		
 			wl(buffer, "#include \"classes/" + nor(c) + ".h\"");
 		}
 		
 		// add array.h for arrays
 		wl(buffer, "#include \"vm/array.h\"");
 		wl(buffer, "#endif");
-		new FileDescriptor("native/classes/classes.h").writeString(buffer.toString(), false);
+		new FileDescriptor(outputDir + "/classes.h").writeString(buffer.toString(), false);
 	}
 	
-	public static void generateClass(SootClass clazz) {
+	public static void generateClass(String outputDir, SootClass clazz) {
 		System.out.println("translating " + clazz.getName());
 		String header = generateHeader(clazz);
 		String cFile = generateCFile(clazz);
-		new FileDescriptor("native/classes/" + nor(clazz) + ".h").writeString(header, false);
-		new FileDescriptor("native/classeS/" + nor(clazz) + ".cpp").writeString(cFile, false);
+		new FileDescriptor(outputDir + nor(clazz) + ".h").writeString(header, false);
+		new FileDescriptor(outputDir + nor(clazz) + ".cpp").writeString(cFile, false);
 	}
 		
 	public static String generateHeader(SootClass clazz) {
@@ -185,6 +193,33 @@ public class Compiler {
 				continue;
 			}
 			generateMethod(buffer, method);
+		}
+		
+		// if this is an abstract class that implements interfaces, gather all methods
+		// from it's base that are not directly implemented.
+		// Generate synthetic methods calling into the base. This resolves any
+		// ambiguities with the interfaces.
+		if(clazz.isAbstract() && clazz.getInterfaceCount() > 0 && !clazz.getSuperclass().getName().equals("java.lang.Object")) {
+			List<SootMethod> missingMethods = new ArrayList<SootMethod>();
+			SootClass superClass = clazz.getSuperclass();
+			for(SootMethod superMethod: superClass.getMethods()) {
+				boolean found = false;
+				for(SootMethod method: clazz.getMethods()) {
+					if(method.getName().equals(superMethod.getName())) {											
+						if(superMethod.getParameterTypes().equals(method.getParameterTypes())) {
+							found = true;
+							break;
+						}
+					}
+				}
+				if(!found) missingMethods.add(superMethod);
+			}
+			if(missingMethods.size() > 0) {
+				System.out.println("generating synthetic methods: " + missingMethods);
+				for(SootMethod method: missingMethods) {
+					generateSyntheticMethod(buffer, method);
+				}
+			}
 		}
 		
 		pop();
@@ -353,6 +388,31 @@ public class Compiler {
 		wl(buffer, methodSig);
 	}
 	
+	public static void generateSyntheticMethod(StringBuffer buffer, SootMethod method) {
+		SootClass clazz = method.getDeclaringClass();
+		String methodSig = "";
+		
+		methodSig +="virtual ";		
+		methodSig += toCType(method.getReturnType());
+		methodSig += " " + nor(method) + "(";
+		
+		int i = 0;
+		for(Object paramType: method.getParameterTypes()) {
+			if(i > 0) methodSig += ", ";
+			methodSig += toCType((Type)paramType);
+			methodSig += " param" + i;
+			i++;
+		}
+		
+		methodSig +=") { " + nor(method.getDeclaringClass()) + "::" + nor(method) + "(";
+		for(i = 0; i < method.getParameterTypes().size(); i++) {
+			if(i > 0) methodSig += ", ";
+			methodSig += " param" + i;
+		}
+		methodSig += "); };";
+		wl(buffer, methodSig);
+	}
+	
 	private static void generateField(StringBuffer buffer, SootField field) {
 		// determine type and convert to C type
 		String cType = toCType(field.getType());
@@ -361,7 +421,7 @@ public class Compiler {
 	
 	private static String toCType(Type type) {
 		if(type instanceof RefType) {
-			return nor(type) + "*";			
+			return nor(type) + "*";
 		} else if(type instanceof ArrayType) {
 			ArrayType t = (ArrayType)type;			
 			String elementType = toCType(t.baseType);
@@ -490,7 +550,14 @@ public class Compiler {
 		
 		// declare locals
 		for(Local local: body.getLocals()) {
-			String cType = toCType(local.getType());
+			String cType = null;
+			// null types need special treatment, they arise
+			// for e.g. objec1 = object2 = null
+			if(local.getType() instanceof NullType) {
+				cType = "void*";
+			} else {
+				cType = toCType(local.getType());
+			}
 			wl(buffer, cType + " " + local.getName() + " = 0;");
 		}
 		
@@ -557,6 +624,12 @@ public class Compiler {
 				}
 				// FIXME use garbage collector!
 				wl(buffer, generateMultiArray(target, elementType, sizes));
+			} 
+			// null type need special treatment too, can't assign void* to class*
+			else if(rightOp.getType() instanceof NullType) {
+				String l = translateValue(leftOp);
+				String r = "0";
+				wl(buffer, l + " = " + r + ";");
 			} else {
 				String l = translateValue(leftOp);
 				String r = translateValue(rightOp);
@@ -813,7 +886,11 @@ public class Compiler {
 			CastExpr v = (CastExpr)val;
 			String type = toCType(v.getCastType());
 			String target = translateValue(v.getOp());
-			return "static_cast<" + type + ">(" + target + ")";
+			if(v.getCastType() instanceof PrimType) {
+				return "static_cast<" + type + ">(" + target + ")";
+			} else {
+				return "reinterpret_cast<" + type + ">(" + target + ")";
+			}
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
 			String type = translateValue(v.getOp());

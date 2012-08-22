@@ -1,5 +1,6 @@
 package java.lang;
 
+// FIXME PRIO!
 public class Object {
 	protected Object clone() {
 		return null;

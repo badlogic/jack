@@ -1,23 +1,33 @@
-class Z {
+class Base {
+	virtual void init() {
+	}
+};
+
+class Collection: public virtual Base {
 public:
-	virtual void bar();
+	virtual bool isEmpty() = 0;
 };
 
-class A : public virtual Z {
+class AbstractCollection: public virtual Base, public virtual Collection {
 public:
-	virtual void foo() = 0;
+	virtual bool isEmpty() {
+		return false;
+	}
 };
 
-class B: public virtual A, public virtual Z {
+class List: public virtual Base, public virtual Collection {
+public:
+	virtual bool isEmpty() = 0;
 };
 
-class C: public B, public virtual Z {
-	void foo() {
+class AbstractList: public virtual AbstractCollection, public virtual List {
+public:
+	virtual bool isEmpty() {
+		return AbstractCollection::isEmpty();
 	}
 };
 
 void test() {
-	C* c = new C();
-	B* b = (B*)c;
-	b->foo();
+	Base* obj = new AbstractList();
+	List* list = dynamic_cast<List*>(obj);
 }
