@@ -36,7 +36,7 @@ void test() {
 	List* list = dynamic_cast<List*>(obj);
 }*/
 
-class List {
+/*class List {
 public:
 	virtual void add(void* ptr, int a) = 0;
 };
@@ -47,4 +47,21 @@ public:
 	virtual void add(void* ptr) {
 		add(ptr, 0);
 	}
+};*/
+
+#include "vm/array.h"
+
+
+class B {
+	virtual ~B() { };
 };
+
+class D: public virtual B {
+};
+
+void test() {
+	Array<D*>* a = new Array<D*>(10);
+	Array<B*>* b = (Array<B*>*)a;
+	b->set(0, new D());
+	b->set(1, new D());
+}
