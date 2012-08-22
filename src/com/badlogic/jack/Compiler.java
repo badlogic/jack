@@ -125,7 +125,7 @@ public class Compiler {
 		// load the base classes that don't get loaded by loadClassAndSupport
 //		loadBaseClasses();
 		
-//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.util.LinkedList"));
+//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.lang.System"));
 		
 		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
@@ -187,10 +187,12 @@ public class Compiler {
 		wl(buffer, "// methods");
 		// add methods
 		for(SootMethod method: clazz.getMethods()) {
-			// FIXME oh god, i kill bridge methods...
+			// FIXME PRIO! aoh god, i kill bridge methods...
 			if((method.getModifiers() & 0x40) != 0) {
-				System.out.println("skipping method " + method + ", bridge method");
-				continue;
+				if(!shouldEmitBridgeMethod(clazz, method)) {
+					System.out.println("skipping method " + method + ", bridge method");
+					continue;
+				}
 			}
 			generateMethod(buffer, method);
 		}
@@ -229,6 +231,35 @@ public class Compiler {
 		wl(buffer, "");
 		wl(buffer, "#endif");
 		return buffer.toString();
+	}
+	
+	private static boolean shouldEmitBridgeMethod(SootClass clazz, SootMethod bridgeMethod) {
+		// check if there's a method with the same parameter list but only a different
+		// return type. In all cases this seems to be T versus java.lang.Object for
+		// generic types.
+		
+		boolean found = false;
+		for(SootMethod otherMethod: clazz.getMethods()) {
+			if(otherMethod.equals(bridgeMethod)) continue;
+			if(otherMethod.getName().equals(bridgeMethod.getName())) {				
+				if(otherMethod.getParameterCount() != bridgeMethod.getParameterCount()) {
+					continue;
+				}
+				boolean paramsEqual = true;
+				for(int i = 0; i < otherMethod.getParameterCount(); i++) {
+					if(!otherMethod.getParameterTypes().get(i).equals(bridgeMethod.getParameterType(i))) {
+						paramsEqual = false;
+						break;
+					}
+				}
+				if(paramsEqual) {
+					found = true;
+					break;					
+				}
+			}
+		}
+		
+		return !found;
 	}
 	
 	private static void generateClassHeader(StringBuffer buffer, SootClass clazz) {
@@ -464,6 +495,11 @@ public class Compiler {
 				
 		// generate methods, including clinit for interfaces and abstract classes etc.	
 		for(SootMethod method: clazz.getMethods()) {
+			if((method.getModifiers() & 0x40) != 0) {
+				if(!shouldEmitBridgeMethod(clazz, method)) {
+					continue;
+				}
+			}
 			generateMethodImplementation(buffer, method);
 			wl(buffer, "");
 		}
