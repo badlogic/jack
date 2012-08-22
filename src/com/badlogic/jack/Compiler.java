@@ -13,15 +13,12 @@ import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
-import soot.ClassSource;
-import soot.CoffiClassSource;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
-import soot.MethodSource;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
@@ -31,15 +28,10 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootMethodRef;
-import soot.SourceLocator;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.VoidType;
-import soot.JastAddJ.Flags;
-import soot.JastAddJ.Modifiers;
-import soot.coffi.ClassFile;
-import soot.coffi.CoffiMethodSource;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
@@ -108,7 +100,6 @@ import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
-import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 
 import com.badlogic.jack.build.FileDescriptor;
@@ -122,12 +113,11 @@ public class Compiler {
 		Scene.v().setSootClassPath("classpath/bin/;");
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
-		Scene.v().loadClassAndSupport("jack.Main");
 		
 		// load the base classes that don't get loaded by loadClassAndSupport
 //		loadBaseClasses();
 		
-		generateClass(Scene.v().loadClassAndSupport("jack.Statics"));
+		generateClass(Scene.v().loadClassAndSupport("java.util.List"));
 		
 		new FileDescriptor("native/classes/").deleteDirectory();
 		new FileDescriptor("native/classes/").mkdirs();
@@ -213,8 +203,7 @@ public class Compiler {
 		if(clazz.hasSuperclass() || clazz.getInterfaceCount() > 0) {
 			String classHeader = "class " + fullName;
 			if(clazz.hasSuperclass() && !clazz.isInterface()) {
-				boolean superIsObject = clazz.getSuperclass().getName().equals("java.lang.Object");
-				classHeader += ": public " + (superIsObject? "virtual ": "") + nor(clazz.getSuperclass());
+				classHeader += ": public virtual " + nor(clazz.getSuperclass());
 			}
 			if(clazz.isInterface()) {
 				classHeader += ": public virtual java_lang_Object";
@@ -229,10 +218,10 @@ public class Compiler {
 				if(interfaceImplementedBySuperClass(clazz, itf)) continue;
 				
 				if(addedInterfaces == 0) {
-					if(!clazz.hasSuperclass() || clazz.isInterface()) classHeader +=": public " + nor(itf);
-					else classHeader += ", public " + nor(itf);
+					if(!clazz.hasSuperclass()) classHeader +=": public virtual " + nor(itf);
+					else classHeader += ", public virtual " + nor(itf);
 				} else {
-					classHeader +=", public " + nor(itf);
+					classHeader +=", public virtual " + nor(itf);
 				}
 				addedInterfaces++;
 			}
@@ -243,13 +232,21 @@ public class Compiler {
 		}
 	}
 	
+	private static boolean interfaceImplementedBySuperInterface(SootClass clazz, SootClass itf) {
+		if(clazz.equals(itf)) return true;
+		for(SootClass otherItf: clazz.getInterfaces()) {
+			if(interfaceImplementedBySuperInterface(otherItf, itf)) return true;
+		}
+		return false;
+	}
+	
 	private static boolean interfaceImplementedBySuperClass(SootClass clazz, SootClass itf) {
 		// if this class is an interface, it has not super class
 		// need to go through all the interfaces it implements, recursively
 		if(clazz.isInterface()) {
-			if(clazz.equals(itf)) return true;
 			for(SootClass otherItf: clazz.getInterfaces()) {
-				if(interfaceImplementedBySuperClass(otherItf, itf)) return true;
+				if(otherItf.equals(itf)) continue; // skip the ocurrance in this class' itf list
+				if(interfaceImplementedBySuperInterface(otherItf, itf)) return true;
 			}
 			return false;
 		} else {
@@ -816,7 +813,7 @@ public class Compiler {
 			CastExpr v = (CastExpr)val;
 			String type = toCType(v.getCastType());
 			String target = translateValue(v.getOp());
-			return "(" + type + ")" + target;
+			return "static_cast<" + type + ">(" + target + ")";
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
 			String type = translateValue(v.getOp());

@@ -459,6 +459,7 @@
     <ClCompile Include="..\native\classes\java_util_WeakHashMap$MyHelper.cpp" />
     <ClCompile Include="..\native\classes\java_util_WeakHashMap.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
+    <ClCompile Include="..\native\test.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AC967C16-FEC9-432A-BE58-AB19A8106846}</ProjectGuid>
