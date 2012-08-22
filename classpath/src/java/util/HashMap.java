@@ -124,7 +124,7 @@ public class HashMap<K, V> implements Map<K, V> {
         if (p == null) {
           array[index] = c.next();
         } else {
-          p.setNext(c.next());
+          p.setNext(c.next());          
         }
         -- size;
         break;

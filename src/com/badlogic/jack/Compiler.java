@@ -30,7 +30,9 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
+import soot.UnitBox;
 import soot.Value;
+import soot.ValueBox;
 import soot.VoidType;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -185,6 +187,7 @@ public class Compiler {
 
 		wl(buffer, "");
 		wl(buffer, "// methods");
+		List<SootMethod> emittedMethods = new ArrayList<SootMethod>();
 		// add methods
 		for(SootMethod method: clazz.getMethods()) {
 			// FIXME PRIO! aoh god, i kill bridge methods...
@@ -195,31 +198,37 @@ public class Compiler {
 				}
 			}
 			generateMethod(buffer, method);
+			emittedMethods.add(method);
 		}
 		
 		// if this is an abstract class that implements interfaces, gather all methods
-		// from it's base that are not directly implemented.
+		// from it's base that are not directly implemented. 
 		// Generate synthetic methods calling into the base. This resolves any
 		// ambiguities with the interfaces.
 		if(clazz.isAbstract() && clazz.getInterfaceCount() > 0 && !clazz.getSuperclass().getName().equals("java.lang.Object")) {
-			List<SootMethod> missingMethods = new ArrayList<SootMethod>();
-			SootClass superClass = clazz.getSuperclass();
-			for(SootMethod superMethod: superClass.getMethods()) {
-				boolean found = false;
-				for(SootMethod method: clazz.getMethods()) {
-					if(method.getName().equals(superMethod.getName())) {											
-						if(superMethod.getParameterTypes().equals(method.getParameterTypes())) {
-							found = true;
-							break;
-						}
-					}
-				}
-				if(!found) missingMethods.add(superMethod);
-			}
+			List<SootMethod> missingMethods = gatherMissingMethods(clazz, clazz.getSuperclass());
 			if(missingMethods.size() > 0) {
 				System.out.println("generating synthetic methods: " + missingMethods);
 				for(SootMethod method: missingMethods) {
-					generateSyntheticMethod(buffer, method);
+					generateSyntheticMethod(buffer, method, false);
+					emittedMethods.add(method);
+				}
+			}
+		}
+		
+		// if this is an abstract class that implements interfaces, gather all
+		// methods from the interfaces that are not directly implemented (including synthetic
+		// methods generated above) and emit pure virtual methods.
+		if(clazz.isAbstract() && clazz.getInterfaceCount() > 0 && !clazz.getSuperclass().getName().equals("java.lang.Object")) {
+			for(SootClass itf: clazz.getInterfaces()) {
+				List<SootMethod> missingMethods = gatherMissingMethods(clazz, itf);
+				if(missingMethods.size() > 0) {
+					System.out.println("generating synthetic pure methods: " + missingMethods);
+					for(SootMethod method: missingMethods) {
+						if(!containsSameSignatureMethod(emittedMethods, method)) {
+							generateSyntheticMethod(buffer, method, true);
+						}
+					}
 				}
 			}
 		}
@@ -231,6 +240,34 @@ public class Compiler {
 		wl(buffer, "");
 		wl(buffer, "#endif");
 		return buffer.toString();
+	}
+	
+	private static boolean containsSameSignatureMethod(List<SootMethod> methods, SootMethod method) {
+		for(SootMethod otherMethod: methods) {
+			if(method.getName().equals(otherMethod.getName())) {
+				if(method.getParameterTypes().equals(otherMethod.getParameterTypes())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	private static List<SootMethod> gatherMissingMethods(SootClass clazz, SootClass otherClass) {
+		List<SootMethod> missingMethods = new ArrayList<SootMethod>();
+		for(SootMethod superMethod: otherClass.getMethods()) {
+			boolean found = false;
+			for(SootMethod method: clazz.getMethods()) {
+				if(method.getName().equals(superMethod.getName())) {											
+					if(superMethod.getParameterTypes().equals(method.getParameterTypes())) {
+						found = true;
+						break;
+					}
+				}
+			}
+			if(!found) missingMethods.add(superMethod);
+		}
+		return missingMethods;
 	}
 	
 	private static boolean shouldEmitBridgeMethod(SootClass clazz, SootMethod bridgeMethod) {
@@ -419,7 +456,7 @@ public class Compiler {
 		wl(buffer, methodSig);
 	}
 	
-	public static void generateSyntheticMethod(StringBuffer buffer, SootMethod method) {
+	public static void generateSyntheticMethod(StringBuffer buffer, SootMethod method, boolean pure) {
 		SootClass clazz = method.getDeclaringClass();
 		String methodSig = "";
 		
@@ -435,12 +472,16 @@ public class Compiler {
 			i++;
 		}
 		
-		methodSig +=") { " + nor(method.getDeclaringClass()) + "::" + nor(method) + "(";
-		for(i = 0; i < method.getParameterTypes().size(); i++) {
-			if(i > 0) methodSig += ", ";
-			methodSig += " param" + i;
+		if(!pure) {
+			methodSig +=") { " + nor(method.getDeclaringClass()) + "::" + nor(method) + "(";
+			for(i = 0; i < method.getParameterTypes().size(); i++) {
+				if(i > 0) methodSig += ", ";
+				methodSig += " param" + i;
+			}
+			methodSig += "); };";
+		} else {
+			methodSig +=") = 0;";
 		}
-		methodSig += "); };";
 		wl(buffer, methodSig);
 	}
 	
@@ -587,10 +628,11 @@ public class Compiler {
 		// declare locals
 		for(Local local: body.getLocals()) {
 			String cType = null;
-			// null types need special treatment, they arise
-			// for e.g. objec1 = object2 = null
+			// null types need special treatment, we don't output them
+			// we also won't generate statements that use a nullType
+			// as a target.
 			if(local.getType() instanceof NullType) {
-				cType = "void*";
+				continue;
 			} else {
 				cType = toCType(local.getType());
 			}
@@ -598,7 +640,7 @@ public class Compiler {
 		}
 		
 		// generate labels for each statement another statement points to
-		for(Unit unit: body.getUnits()) {
+		for(Unit unit: body.getUnits()) {			
 			if(unit instanceof IfStmt) {
 				makeLabel(((IfStmt)unit).getTarget());
 			}
@@ -619,12 +661,28 @@ public class Compiler {
 			}
 		}
 		
-		// translate statements
+		// translate statements, but only those that
+		// don't have a null type local in them.
 		for(Unit unit: body.getUnits()) {
-			translateStatement(buffer, (Stmt)unit, method);
+			if(!hasNullTypeLocal((Stmt)unit)) {
+				translateStatement(buffer, (Stmt)unit, method);
+			}
 		}
+		
+		Compiler[] fa = new Compiler[0];
+		Object[] o = fa;
 	}
 	
+	private static boolean hasNullTypeLocal(Stmt unit) {
+		for(ValueBox box: unit.getDefBoxes()) {
+			if(box.getValue() instanceof Local && ((Local)box.getValue()).getType() instanceof NullType) return true;
+		}
+		for(ValueBox box: unit.getUseBoxes()) {
+			if(box.getValue() instanceof Local && ((Local)box.getValue()).getType() instanceof NullType) return true;
+		}		
+		return false;
+	}
+
 	private static void makeLabel(Stmt stmt) {
 		String label = labels.get(stmt);
 		if(label == null) {
