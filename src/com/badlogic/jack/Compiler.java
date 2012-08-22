@@ -108,6 +108,7 @@ import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.SyntheticTag;
 import soot.tagkit.Tag;
 
 import com.badlogic.jack.build.FileDescriptor;
@@ -233,6 +234,11 @@ public class Compiler {
 		wl(buffer, "// methods");
 		// add methods
 		for(SootMethod method: clazz.getMethods()) {
+			// FIXME oh god, i kill bridge methods...
+			if((method.getModifiers() & 0x40) != 0) {
+				System.out.println("skipping method " + method + ", bridge method");
+				continue;
+			}
 			generateMethod(buffer, method);
 		}
 		
@@ -986,9 +992,7 @@ public class Compiler {
 	}
 	
 	private static String nor(SootMethod method) {
-		return ((method.getModifiers() & Modifiers.ACC_BRIDGE) == 1? "b": "") + 
-			   ((method.getModifiers() & Flags.ACC_SYNTHETIC) == 1? "s": "") +
-				"m_" + method.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+		return "m_" + method.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}
 	
 	private static String nor(SootMethodRef methodRef) {
