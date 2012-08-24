@@ -1,4 +1,4 @@
-package jack;
+package com.badlogic.jack;
 
 public class Primes {
 

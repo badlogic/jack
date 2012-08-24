@@ -48,20 +48,3 @@ public:
 		add(ptr, 0);
 	}
 };*/
-
-#include "vm/array.h"
-
-
-class B {
-	virtual ~B() { };
-};
-
-class D: public virtual B {
-};
-
-void test() {
-	Array<D*>* a = new Array<D*>(10);
-	Array<B*>* b = (Array<B*>*)a;
-	b->set(0, new D());
-	b->set(1, new D());
-}

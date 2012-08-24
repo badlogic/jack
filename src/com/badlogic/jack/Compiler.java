@@ -30,9 +30,7 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
-import soot.UnitBox;
 import soot.Value;
-import soot.ValueBox;
 import soot.VoidType;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -46,11 +44,13 @@ import soot.jimple.CmpExpr;
 import soot.jimple.CmpgExpr;
 import soot.jimple.CmplExpr;
 import soot.jimple.DivExpr;
+import soot.jimple.DoubleConstant;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
 import soot.jimple.Expr;
+import soot.jimple.FloatConstant;
 import soot.jimple.GeExpr;
 import soot.jimple.GotoStmt;
 import soot.jimple.GtExpr;
@@ -96,6 +96,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.jimple.internal.JInstanceFieldRef;
 import soot.options.Options;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.tagkit.DoubleConstantValueTag;
@@ -124,10 +125,7 @@ public class Compiler {
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
-		// load the base classes that don't get loaded by loadClassAndSupport
-//		loadBaseClasses();
-		
-//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.lang.System"));
+//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.util.HashMap"));
 		
 		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
@@ -210,7 +208,7 @@ public class Compiler {
 			if(missingMethods.size() > 0) {
 				System.out.println("generating synthetic methods: " + missingMethods);
 				for(SootMethod method: missingMethods) {
-					generateSyntheticMethod(buffer, method, false);
+					generateSyntheticMethod(buffer, method, method.isAbstract());
 					emittedMethods.add(method);
 				}
 			}
@@ -318,7 +316,7 @@ public class Compiler {
 				
 				// check if the interface is already implemented by a super
 				// class and omit it in that case.
-				if(interfaceImplementedBySuperClass(clazz, itf)) continue;
+				if(isInterfaceImplementedBySuperClass(clazz, itf)) continue;
 				
 				if(addedInterfaces == 0) {
 					if(!clazz.hasSuperclass()) classHeader +=": public virtual " + nor(itf);
@@ -335,21 +333,21 @@ public class Compiler {
 		}
 	}
 	
-	private static boolean interfaceImplementedBySuperInterface(SootClass clazz, SootClass itf) {
+	private static boolean isInterfaceImplementedBySuperInterface(SootClass clazz, SootClass itf) {
 		if(clazz.equals(itf)) return true;
 		for(SootClass otherItf: clazz.getInterfaces()) {
-			if(interfaceImplementedBySuperInterface(otherItf, itf)) return true;
+			if(isInterfaceImplementedBySuperInterface(otherItf, itf)) return true;
 		}
 		return false;
 	}
 	
-	private static boolean interfaceImplementedBySuperClass(SootClass clazz, SootClass itf) {
+	private static boolean isInterfaceImplementedBySuperClass(SootClass clazz, SootClass itf) {
 		// if this class is an interface, it has not super class
 		// need to go through all the interfaces it implements, recursively
 		if(clazz.isInterface()) {
 			for(SootClass otherItf: clazz.getInterfaces()) {
 				if(otherItf.equals(itf)) continue; // skip the ocurrance in this class' itf list
-				if(interfaceImplementedBySuperInterface(otherItf, itf)) return true;
+				if(isInterfaceImplementedBySuperInterface(otherItf, itf)) return true;
 			}
 			return false;
 		} else {
@@ -457,7 +455,6 @@ public class Compiler {
 	}
 	
 	public static void generateSyntheticMethod(StringBuffer buffer, SootMethod method, boolean pure) {
-		SootClass clazz = method.getDeclaringClass();
 		String methodSig = "";
 		
 		methodSig +="virtual ";		
@@ -471,9 +468,9 @@ public class Compiler {
 			methodSig += " param" + i;
 			i++;
 		}
-		
+		boolean hasReturnType = !(method.getReturnType() instanceof VoidType);
 		if(!pure) {
-			methodSig +=") { " + nor(method.getDeclaringClass()) + "::" + nor(method) + "(";
+			methodSig +=") { " + (hasReturnType?"return ":"") + nor(method.getDeclaringClass()) + "::" + nor(method) + "(";
 			for(i = 0; i < method.getParameterTypes().size(); i++) {
 				if(i > 0) methodSig += ", ";
 				methodSig += " param" + i;
@@ -527,12 +524,14 @@ public class Compiler {
 	
 	static final Map<String, String> literals = new HashMap<String, String>();
 	static int nextLiteralId = 0;
-	public static String generateCFile(SootClass clazz) {		
+	static SootClass currClass = null;
+	public static String generateCFile(SootClass clazz) {
 		// we generate the methods first as we gather some info while
 		// walking all the statements, e.g. string literals.
 		StringBuffer buffer = new StringBuffer();
 		literals.clear();
 		nextLiteralId = 0;
+		currClass = clazz;
 				
 		// generate methods, including clinit for interfaces and abstract classes etc.	
 		for(SootMethod method: clazz.getMethods()) {
@@ -552,6 +551,7 @@ public class Compiler {
 		StringBuffer headerBuffer = new StringBuffer();		
 		wl(headerBuffer, "#include \"classes/classes.h\"");
 		wl(headerBuffer, "#include <math.h>"); 
+		wl(headerBuffer, "#include <limits>");
 		wl(headerBuffer, "");
 		
 		// generate static fields
@@ -561,8 +561,8 @@ public class Compiler {
 				String constantValue = null;
 				
 				for(Tag tag: field.getTags()) {
-					if(tag instanceof FloatConstantValueTag) constantValue = Float.toString(((FloatConstantValueTag)tag).getFloatValue());
-					if(tag instanceof DoubleConstantValueTag) constantValue = Double.toString(((DoubleConstantValueTag)tag).getDoubleValue());
+					if(tag instanceof FloatConstantValueTag) constantValue = norFloat(Float.toString(((FloatConstantValueTag)tag).getFloatValue()));
+					if(tag instanceof DoubleConstantValueTag) constantValue = norDouble(Double.toString(((DoubleConstantValueTag)tag).getDoubleValue()));
 					if(tag instanceof IntegerConstantValueTag) constantValue = Integer.toString(((IntegerConstantValueTag)tag).getIntValue());
 					if(tag instanceof LongConstantValueTag) constantValue = Long.toString(((LongConstantValueTag)tag).getLongValue());
 					if(constantValue != null) break;
@@ -577,6 +577,24 @@ public class Compiler {
 		wl(headerBuffer, "");
 		
 		// output string literals
+		for(String literal: literals.keySet()) {
+			String id = literals.get(literal);
+			String literalDef = "";
+						
+			literalDef += "j_char " + id + "_array[] = {";
+			if(literal.length() == 0) {
+				literalDef += "0";
+			} else {
+				for(int i = 0; i < literal.length(); i++) {
+					if(i > 0) literalDef += ", ";
+					literalDef += Short.toString((short)literal.charAt(i)); // FIXME i'm not good with type conversions...
+				}
+			}
+			literalDef += "};\n";
+			literalDef += "java_lang_String* " + id + " = 0;";
+			wl(headerBuffer, literalDef);
+		}
+		wl(headerBuffer, "");
 		
 		return headerBuffer.toString() + buffer.toString();
 	}
@@ -593,8 +611,40 @@ public class Compiler {
 	static Map<Stmt, String> labels = new HashMap<Stmt, String>();
 	private static void generateMethodImplementation(StringBuffer buffer, SootMethod method) {
 		
-		if(!method.isConcrete()) return;
-		
+		if(!method.isConcrete()) {
+			if(method.isNative()) {
+				generateNativeMethodImplementation(buffer, method);
+			}
+			return;
+		} else {		
+			labelNum = 0;
+			labels.clear();
+			SootClass clazz = method.getDeclaringClass();
+			String methodSig = "";
+			
+			methodSig += toCType(method.getReturnType());
+			methodSig += " " + nor(clazz) + "::" + nor(method) + "(";
+			
+			int i = 0;
+			for(Object paramType: method.getParameterTypes()) {
+				if(i > 0) methodSig += ", ";
+				methodSig += toCType((Type)paramType);
+				methodSig += " param" + i;
+				i++;
+			}
+			
+			methodSig +=")";
+			if(clazz.isInterface()) methodSig += " = 0";
+			methodSig += " {";
+			wl(buffer, methodSig);
+			push();
+			generateMethodBody(buffer, method);
+			pop();
+			wl(buffer, "}");
+		}
+	}
+	
+	private static void generateNativeMethodImplementation(StringBuffer buffer, SootMethod method) {
 		labelNum = 0;
 		labels.clear();
 		SootClass clazz = method.getDeclaringClass();
@@ -616,7 +666,11 @@ public class Compiler {
 		methodSig += " {";
 		wl(buffer, methodSig);
 		push();
-		generateMethodBody(buffer, method);
+		if(method.getReturnType() instanceof VoidType) {
+			wl(buffer, "return;");
+		} else {
+			wl(buffer, "return 0;");
+		}
 		pop();
 		wl(buffer, "}");
 	}
@@ -632,7 +686,7 @@ public class Compiler {
 			// we also won't generate statements that use a nullType
 			// as a target.
 			if(local.getType() instanceof NullType) {
-				continue;
+				cType = "java_lang_Object*";
 			} else {
 				cType = toCType(local.getType());
 			}
@@ -664,24 +718,9 @@ public class Compiler {
 		// translate statements, but only those that
 		// don't have a null type local in them.
 		for(Unit unit: body.getUnits()) {
-			if(!hasNullTypeLocal((Stmt)unit)) {
-				translateStatement(buffer, (Stmt)unit, method);
-			}
+			translateStatement(buffer, (Stmt)unit, method);
 		}
-		
-		Compiler[] fa = new Compiler[0];
-		Object[] o = fa;
-	}
-	
-	private static boolean hasNullTypeLocal(Stmt unit) {
-		for(ValueBox box: unit.getDefBoxes()) {
-			if(box.getValue() instanceof Local && ((Local)box.getValue()).getType() instanceof NullType) return true;
-		}
-		for(ValueBox box: unit.getUseBoxes()) {
-			if(box.getValue() instanceof Local && ((Local)box.getValue()).getType() instanceof NullType) return true;
-		}		
-		return false;
-	}
+	}	
 
 	private static void makeLabel(Stmt stmt) {
 		String label = labels.get(stmt);
@@ -704,6 +743,19 @@ public class Compiler {
 			AssignStmt s = (AssignStmt)stmt;
 			Value leftOp = s.getLeftOp();
 			Value rightOp = s.getRightOp();
+			
+			// if we try to assign to a NullType, we omit the statement!
+			if(leftOp.getType() instanceof NullType) {
+				return;
+			}
+			// if we try to assign to a field of a NullType, we omit the statement!
+			if(leftOp instanceof JInstanceFieldRef) {
+				JInstanceFieldRef ref = (JInstanceFieldRef)leftOp;
+				if(ref.getBase().getType() instanceof NullType) {
+					return;
+				}
+			}
+			
 			// need to special case for multi array creation
 			// as it needs a couple of lines of code to create
 			// the nested structure, see generateMultiArray();
@@ -748,7 +800,7 @@ public class Compiler {
 			if(label == null) throw new RuntimeException("No label for if target!");
 			wl(buffer, "if(" + condition + ") goto " + label + ";");
 		} else if(stmt instanceof InvokeStmt) {
-			InvokeStmt s = (InvokeStmt)stmt;
+			InvokeStmt s = (InvokeStmt)stmt;			
 			wl(buffer, translateValue(s.getInvokeExpr()));
 		} else if(stmt instanceof LookupSwitchStmt) {
 			LookupSwitchStmt s = (LookupSwitchStmt)stmt;
@@ -849,12 +901,14 @@ public class Compiler {
 			return "0";
 		} else if(val instanceof NumericConstant) {
 			NumericConstant v = (NumericConstant)val;
-			return v.toString();
+			if(v instanceof FloatConstant) return norFloat(v.toString());
+			if(v instanceof DoubleConstant) return norDouble(v.toString());
+			else return v.toString();
 		} else if(val instanceof StringConstant) {
 			StringConstant v = (StringConstant)val;
 			String literalId = literals.get(v.value);
 			if(literalId == null) {
-				literalId = "literal" + nextLiteralId++;
+				literalId = nor(currClass) + "_literal" + nextLiteralId++;
 				literals.put(v.value, literalId);
 			}
 			return literalId;			
@@ -996,45 +1050,30 @@ public class Compiler {
 			throw new UnsupportedOperationException();
 		} else if(val instanceof InterfaceInvokeExpr) {
 			InterfaceInvokeExpr v = (InterfaceInvokeExpr)val;
+			if(v.getBase().getType() instanceof NullType) return ""; // If we invoke on a NullType, we omit the expression.
 			String target = translateValue(v.getBase());
 			String method = nor(v.getMethod());
-			String invoke = target + "->" + method + "(";
-			int i = 0;
-			for(Value arg: v.getArgs()) {
-				String a = translateValue(arg);
-				if(i > 0) invoke += ", " + a;
-				else invoke += a;
-				i++;
-			}
+			String invoke = target + "->" + method + "(";			
+			invoke = outputArguments(invoke, v.getArgs(), v.getMethod().getParameterTypes());
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof SpecialInvokeExpr) {
 			SpecialInvokeExpr v = (SpecialInvokeExpr)val;
+			if(v.getBase().getType() instanceof NullType) return ""; // If we invoke on a NullType, we omit the expression.
 			String target = translateValue(v.getBase());
 			String type = nor(v.getMethodRef().declaringClass());
 			String method = nor(v.getMethodRef());
 			String invoke = target + "->" + type + "::" + method + "(";
-			int i = 0;
-			for(Value arg: v.getArgs()) {
-				String a = translateValue(arg);
-				if(i > 0) invoke += ", " + a;
-				else invoke += a;
-				i++;
-			}
+			invoke = outputArguments(invoke, v.getArgs(), v.getMethod().getParameterTypes());
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof VirtualInvokeExpr) {
 			VirtualInvokeExpr v = (VirtualInvokeExpr)val;
-			String target = translateValue(v.getBase());
+			if(v.getBase().getType() instanceof NullType) return ""; // If we invoke on a NullType, we omit the expression.
+			String target = translateValue(v.getBase());			
 			String method = nor(v.getMethod());
 			String invoke = target + "->" + method + "(";
-			int i = 0;
-			for(Value arg: v.getArgs()) {
-				String a = translateValue(arg);
-				if(i > 0) invoke += ", " + a;
-				else invoke += a;
-				i++;
-			}
+			invoke = outputArguments(invoke, v.getArgs(), v.getMethod().getParameterTypes());
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof StaticInvokeExpr) {
@@ -1042,13 +1081,7 @@ public class Compiler {
 			String target = nor(v.getMethod().getDeclaringClass());
 			String method = nor(v.getMethod());
 			String invoke = target + "::" + method + "(";
-			int i = 0;
-			for(Value arg: v.getArgs()) {
-				String a = translateValue(arg);
-				if(i > 0) invoke += ", " + a;
-				else invoke += a;
-				i++;
-			}
+			invoke = outputArguments(invoke, v.getArgs(), v.getMethod().getParameterTypes());
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof NewArrayExpr) {
@@ -1071,6 +1104,17 @@ public class Compiler {
 			NegExpr v = (NegExpr)val;
 			return "-" + translateValue(v.getOp());
 		} else throw new RuntimeException("Unkown Expr Value " + val);
+	}
+	
+	private static String outputArguments(String output, List<Value> args, List types) {
+		int i = 0;
+		for(Value arg: args) {
+			String a = translateValue(arg);
+			if(i > 0) output += ", (" + toCType((Type)types.get(i)) + ")" + a;
+			else output += "(" + toCType((Type)types.get(i)) + ")" + a;
+			i++;
+		}
+		return output;
 	}
 	
 	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
@@ -1110,10 +1154,6 @@ public class Compiler {
 		return array;
 	}
 	
-//	private static String nor(String name) {
-//		return name.replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
-//	}
-	
 	private static String nor(SootField field) {
 		return "f_" + field.getName().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
 	}
@@ -1132,6 +1172,20 @@ public class Compiler {
 	
 	private static String nor(Type type) {
 		return type.toString().replace('.', '_').replace('<', ' ').replace('>', ' ').trim();
+	}
+	
+	private static String norFloat(String numeric) {
+		if(numeric.equals("Infinity")) return "std::numeric_limits<float>::infinity();";
+		if(numeric.equals("-Infinity")) return "-std::numeric_limits<float>::infinity();";
+		if(numeric.equals("NaN")) return "std::numeric_limits<float>::signaling_NaN();";
+		return numeric;
+	}
+	
+	private static String norDouble(String numeric) {
+		if(numeric.equals("Infinity")) return "std::numeric_limits<double>::infinity();";
+		if(numeric.equals("-Infinity")) return "-std::numeric_limits<double>::infinity();";
+		if(numeric.equals("NaN")) return "std::numeric_limits<float>::signaling_NaN();";
+		return numeric;
 	}
 	
 	private static String i() {
