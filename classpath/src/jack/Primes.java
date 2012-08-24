@@ -49,15 +49,15 @@ public class Primes {
 		}
 	}
 	
-	public static void main(String[] args) {
-		Primes primes = new Primes();
-		long start = System.nanoTime();
-		long sum = 0;
-		for(int i = 0; i < 10000; i++) {
-			sum += primes.next();
-			if(i % 1000 == 0) System.out.println(i + ": " + (System.nanoTime() - start) / 1000000000.0f + ", " + sum);
-		}
-		System.out.println(sum);
-		System.out.println((System.nanoTime() - start) / 1000000000.0f);
-	}
+//	public static void main(String[] args) {
+//		Primes primes = new Primes();
+//		long start = System.nanoTime();
+//		long sum = 0;
+//		for(int i = 0; i < 10000; i++) {
+//			sum += primes.next();
+//			if(i % 1000 == 0) System.out.println(i + ": " + (System.nanoTime() - start) / 1000000000.0f + ", " + sum);
+//		}
+//		System.out.println(sum);
+//		System.out.println((System.nanoTime() - start) / 1000000000.0f);
+//	}
 }
