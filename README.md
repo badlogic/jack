@@ -3,7 +3,8 @@ jack
 
 Java to C transpiler, ignores memory model and other stuff, uses Boehm GC for extra slowness and GC pauses.
 
-TODO (in order)
+TODO (in order, check FIXME Prio! for each step, e.g. 
+System.arraycopy() etc)
 - clinit
 - string literal initialization (add clinit to every class/interface, create strings first)
 - Add Boehm GC
