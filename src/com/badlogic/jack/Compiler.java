@@ -102,6 +102,7 @@ import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LineNumberTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.Tag;
 
@@ -109,19 +110,24 @@ import com.badlogic.jack.build.FileDescriptor;
 
 public class Compiler {
 	static int ident;
+	static JavaSourceProvider provider;
 	
 	public static void main(String[] args) {
-		if(args.length != 2) {
-			System.out.println("Usage: Compiler <sourceDir> <outputDir>");
+		if(args.length != 3) {
+			System.out.println("Usage: Compiler <classpath> <sources> <outputdir>");
 			System.exit(0);
 		}
 		
-		String sourceDir = args[0].endsWith("/")? args[0]: args[0] + "/";
-		String outputDir = args[1].endsWith("/")? args[1]: args[1] + "/";
+		String classpath = args[0].endsWith("/")? args[0]: args[0] + "/";
+		String sources = args[1].endsWith("/")? args[1]: args[1] + "/";
+		String outputDir = args[2].endsWith("/")? args[2]: args[2] + "/";
+		
+		provider = new JavaSourceProvider();
+		provider.load(new FileDescriptor(sources));
 		
 		Options.v().set_keep_line_number(true);
-		Options.v().set_process_dir(Arrays.asList(sourceDir));
-		Scene.v().setSootClassPath(sourceDir);
+		Options.v().set_process_dir(Arrays.asList(classpath));
+		Scene.v().setSootClassPath(classpath);
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
@@ -609,7 +615,11 @@ public class Compiler {
 	/** used to generate labels in methods, see {@link #translateStatement(StringBuffer, Stmt, SootMethod) **/
 	static int labelNum = 0;
 	static Map<Stmt, String> labels = new HashMap<Stmt, String>();
+	static int lastEmittedSourceLine = 0;
 	private static void generateMethodImplementation(StringBuffer buffer, SootMethod method) {
+		labelNum = 0;
+		lastEmittedSourceLine = 0;
+		labels.clear();
 		
 		if(!method.isConcrete()) {
 			if(method.isNative()) {
@@ -617,8 +627,6 @@ public class Compiler {
 			}
 			return;
 		} else {		
-			labelNum = 0;
-			labels.clear();
 			SootClass clazz = method.getDeclaringClass();
 			String methodSig = "";
 			
@@ -645,8 +653,6 @@ public class Compiler {
 	}
 	
 	private static void generateNativeMethodImplementation(StringBuffer buffer, SootMethod method) {
-		labelNum = 0;
-		labels.clear();
 		SootClass clazz = method.getDeclaringClass();
 		String methodSig = "";
 		
@@ -729,13 +735,34 @@ public class Compiler {
 			labels.put(stmt, label);
 		}
 	}
+	private static int getLineNumber(Stmt stmt) {
+		for(Tag tag: stmt.getTags()) {
+			if(tag instanceof LineNumberTag) {
+				return ((LineNumberTag) tag).getLineNumber();
+			}
+		}
+		return -1;
+	}
 	
 	public static void translateStatement(StringBuffer buffer, Stmt stmt, SootMethod method) {
+		// emit java source
+		int lineNumber = getLineNumber(stmt);
+		if(lastEmittedSourceLine != lineNumber) {
+			String line = provider.getLine(method.getDeclaringClass().getName(), lineNumber - 1);
+			if(line != null) {
+				wl(buffer, "// " + line);
+			}
+			lastEmittedSourceLine = lineNumber;
+		}
+		
+		// emit label if any
 		if(labels.containsKey(stmt)) {
 			pop();
 			wl(buffer, labels.get(stmt) + ":");
 			push();
 		}
+		
+		// translate statements and emit as C++
 		if(stmt instanceof BreakpointStmt) {
 			BreakpointStmt s = (BreakpointStmt)stmt;
 			throw new UnsupportedOperationException();
