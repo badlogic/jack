@@ -192,6 +192,7 @@ public class Compiler {
 		wl(buffer, "");
 		wl(buffer, "// methods");
 		List<SootMethod> emittedMethods = new ArrayList<SootMethod>();
+		boolean hasClinit = false;
 		// add methods
 		for(SootMethod method: clazz.getMethods()) {
 			// FIXME PRIO! aoh god, i kill bridge methods...
@@ -203,6 +204,14 @@ public class Compiler {
 			}
 			generateMethod(buffer, method);
 			emittedMethods.add(method);
+			if(method.getName().equals("<clinit>")) {
+				hasClinit = true;
+			}
+		}
+		
+		// if we don't have a <clinit> declaration, create one!
+		if(!hasClinit) {
+			wl(buffer, "static void m_clinit();");
 		}
 		
 		// if this is an abstract class that implements interfaces, gather all methods
@@ -236,6 +245,11 @@ public class Compiler {
 				}
 			}
 		}
+		
+		// add in a static field keeping track of whether clinit was called
+		// and another static field for the class.
+		wl(buffer, "static java_lang_Class* clazz;");
+		wl(buffer, "static bool clinit;");
 		
 		pop();
 		pop();
@@ -539,16 +553,39 @@ public class Compiler {
 		nextLiteralId = 0;
 		currClass = clazz;
 				
-		// generate methods, including clinit for interfaces and abstract classes etc.	
+		// generate methods, exclude clinit
+		SootMethod clinitMethod = null;
 		for(SootMethod method: clazz.getMethods()) {
 			if((method.getModifiers() & 0x40) != 0) {
 				if(!shouldEmitBridgeMethod(clazz, method)) {
 					continue;
 				}
 			}
-			generateMethodImplementation(buffer, method);
+			
+			// if this is the clinit method, we fake
+			// emission of the method. We need to do
+			// this to gather all string literals.
+			// hackish but easier.
+			if(method.getName().equals("<clinit>")) {
+				clinitMethod = method;
+				generateMethodImplementation(new StringBuffer(), method);
+			} else {
+				generateMethodImplementation(buffer, method);
+			}
 			wl(buffer, "");
 		}
+		
+		// generate the <clinit> method. This includes
+		// defining the string literals and java.lang.Class as well
+		// as any actual clinit code for that class. We need to do
+		// this last so we have all our string literals in place.
+		// Note that this will gather all string literals in the
+		// <clinit> method itself
+		wl(buffer, "void " + nor(clazz) + "::m_clinit() {");
+		push();
+		wrapClinit(buffer, clazz, clinitMethod);
+		pop();
+		wl(buffer, "}");
 		
 		// generate header after the fact, including string literals and
 		// static fields. Need to do this as string literals are gathered
@@ -580,9 +617,14 @@ public class Compiler {
 					wl(headerBuffer, cType + " " + fullName + "::" + nor(field) + " = " + constantValue + ";");
 			}
 		}
+		
+		// generate the clinit and clazz static fields
+		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");
+		wl(headerBuffer, "bool " + fullName + "::clinit = 0;");
 		wl(headerBuffer, "");
 		
-		// output string literals
+		// output string literal array and java.lang.String delcarations.
+		// literal arrays are actually defined via j_short[].
 		for(String literal: literals.keySet()) {
 			String id = literals.get(literal);
 			String literalDef = "";
@@ -605,11 +647,26 @@ public class Compiler {
 		return headerBuffer.toString() + buffer.toString();
 	}
 	
-	public static void generateStringLiterals(StringBuffer buffer, SootClass clazz) {
-		for(SootMethod method: clazz.getMethods()) {
-			if(!method.isConcrete()) continue;
-			method.retrieveActiveBody();			
-		}	
+	private static void wrapClinit(StringBuffer buffer, SootClass clazz, SootMethod method) {
+		// FIXME Clinit
+		push();
+		wl(buffer, "// would enter monitor for this class' clinit method");
+		wl(buffer, "{");
+		push();
+		// FIXME Clinit
+		wl(buffer, "// would check if clinit has already been called and bail out");
+		generateStringLiteralsAndClass(buffer, clazz);
+		if(method != null) {
+			generateMethodBody(buffer, method);
+		}
+		pop();
+		wl(buffer, "}");
+		pop();
+	}
+	
+	private static void generateStringLiteralsAndClass(StringBuffer buffer, SootClass clazz) {
+		// FIXME Clinit
+		wl(buffer, "// would define string literals and java_lang_Class* of " + nor(clazz));
 	}
 	
 	/** used to generate labels in methods, see {@link #translateStatement(StringBuffer, Stmt, SootMethod) **/
