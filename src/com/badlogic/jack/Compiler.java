@@ -669,7 +669,6 @@ public class Compiler {
 	}
 	
 	private static void wrapClinit(StringBuffer buffer, SootClass clazz, SootMethod method) {
-		// FIXME Clinit
 		push();
 		wl(buffer, "// would enter monitor for this class' clinit method");
 		wl(buffer, "{");
@@ -794,6 +793,8 @@ public class Compiler {
 		methodSig += " {";
 		wl(buffer, methodSig);
 		push();
+		// FIXME JNI
+		
 		if(method.getReturnType() instanceof VoidType) {
 			wl(buffer, "return;");
 		} else {
