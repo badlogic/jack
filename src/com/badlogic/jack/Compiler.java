@@ -271,7 +271,6 @@ public class Compiler {
 		// add in a static field keeping track of whether clinit was called
 		// and another static field for the class.
 		wl(buffer, "static java_lang_Class* clazz;");
-		wl(buffer, "static bool clinit;");
 		
 		pop();
 		pop();
@@ -417,8 +416,9 @@ public class Compiler {
 			wl(buffer, "#include \"classes/" + nor(itf) + ".h\"");
 		}
 		
-		// forward declare array template
+		// forward declare array template and class
 		wl(buffer, "template <class T> class Array;");
+		wl(buffer, "class java_lang_Class;");
 		
 		Set<String> forwardedClasses = new HashSet<String>();
 		
@@ -640,9 +640,8 @@ public class Compiler {
 			}
 		}
 		
-		// generate the clinit and clazz static fields
-		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");
-		wl(headerBuffer, "bool " + fullName + "::clinit = 0;");
+		// generate the clazz static fields
+		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");		
 		wl(headerBuffer, "");
 		
 		// output string literal array and java.lang.String delcarations.
@@ -675,9 +674,26 @@ public class Compiler {
 		wl(buffer, "// would enter monitor for this class' clinit method");
 		wl(buffer, "{");
 		push();
-		// FIXME Clinit
-		wl(buffer, "// would check if clinit has already been called and bail out");
-		generateStringLiteralsAndClass(buffer, clazz);
+		
+		// check if clinit was already called and bail out in that case
+		wl(buffer, "if(" + nor(clazz) + "::clazz) return;");
+		
+		// generate java.lang.String instances for literals
+		for(String literal: literals.keySet()) {
+			String id = literals.get(literal);
+			wl(buffer, id + " = new java_lang_String();");
+			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + "));");
+		}
+		
+		// set this class' clazz field to != 0 so subsequent invocations will bail out early
+		// FIXME reflection
+		wl(buffer, nor(clazz) + "::clazz = (java_lang_Class*)0x1;");
+		
+		// emit calls to all classes and interfaces' clinit this class references
+		for(SootClass dependency: getDependencies(clazz)) {
+			wl(buffer, nor(dependency) + "::m_clinit();");
+		}		
+					
 		if(method != null) {
 			generateMethodBody(buffer, method);
 		}
@@ -685,10 +701,37 @@ public class Compiler {
 		wl(buffer, "}");
 		pop();
 	}
-	
-	private static void generateStringLiteralsAndClass(StringBuffer buffer, SootClass clazz) {
-		// FIXME Clinit
-		wl(buffer, "// would define string literals and java_lang_Class* of " + nor(clazz));
+		
+	private static Set<SootClass> getDependencies(SootClass clazz) {
+		Set<SootClass> dependencies = new HashSet<SootClass>();
+		if(clazz.hasSuperclass()) dependencies.add(clazz.getSuperclass());
+		for(SootClass itf: clazz.getInterfaces()) {
+			dependencies.add(itf);
+		}
+		for(SootField field: clazz.getFields()) {
+			if(field.getType() instanceof RefType) {
+				RefType type = (RefType)field.getType();
+				dependencies.add(type.getSootClass());
+			}
+		}
+		for(SootMethod method: clazz.getMethods()) {
+			if(method.getReturnType() instanceof RefType) {
+				dependencies.add(((RefType)method.getReturnType()).getSootClass());
+			}
+			for(Object type: method.getParameterTypes()) {
+				if(type instanceof RefType) {
+					dependencies.add(((RefType)type).getSootClass());
+				}
+			}
+			if(method.hasActiveBody()) {
+				for(Local local: method.getActiveBody().getLocals()) {
+					if(local.getType() instanceof RefType) {
+						dependencies.add(((RefType)local.getType()).getSootClass());
+					}
+				}
+			}
+		}
+		return dependencies;
 	}
 	
 	/** used to generate labels in methods, see {@link #translateStatement(StringBuffer, Stmt, SootMethod) **/
