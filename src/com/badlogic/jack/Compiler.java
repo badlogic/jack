@@ -136,21 +136,44 @@ public class Compiler {
 		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
 		
+		// generate the classes
+		for(SootClass c: Scene.v().getClasses()) {
+			generateClass(outputDir, c);					
+		}
+		
+		// generate classes.h and classes.cpp containing
+		// <clinit> calls and other startup stuff.
+		generateClassesStartup(outputDir);
+	}
+	
+	private static void generateClassesStartup(String outputDir) {
 		StringBuffer buffer = new StringBuffer();
 		wl(buffer, "#ifndef jack_all_classes");
-		wl(buffer, "#define jack_all_classes");				
+		wl(buffer, "#define jack_all_classes");
 		
 		for(SootClass c: Scene.v().getClasses()) {
-			generateClass(outputDir, c);		
 			wl(buffer, "#include \"classes/" + nor(c) + ".h\"");
 		}
 		
 		// add array.h for arrays
 		wl(buffer, "#include \"vm/array.h\"");
+		wl(buffer, "void jack_init();");
 		wl(buffer, "#endif");
 		new FileDescriptor(outputDir + "/classes.h").writeString(buffer.toString(), false);
+		
+		buffer = new StringBuffer();
+		wl(buffer, "#include \"classes/classes.h\"");
+		wl(buffer, "");
+		wl(buffer, "void jack_init() {");
+		push();
+		for(SootClass c: Scene.v().getClasses()) {
+			wl(buffer, nor(c) + "::m_clinit();");
+		}
+		pop();
+		wl(buffer, "}");
+		new FileDescriptor(outputDir + "/classes.cpp").writeString(buffer.toString(), false);
 	}
-	
+
 	public static void generateClass(String outputDir, SootClass clazz) {
 		System.out.println("translating " + clazz.getName());
 		String header = generateHeader(clazz);
@@ -195,7 +218,6 @@ public class Compiler {
 		boolean hasClinit = false;
 		// add methods
 		for(SootMethod method: clazz.getMethods()) {
-			// FIXME PRIO! aoh god, i kill bridge methods...
 			if((method.getModifiers() & 0x40) != 0) {
 				if(!shouldEmitBridgeMethod(clazz, method)) {
 					System.out.println("skipping method " + method + ", bridge method");
@@ -426,7 +448,7 @@ public class Compiler {
 		
 		// output the forward decls.
 		for(String forwardedClass: forwardedClasses) {
-			if(forwardedClass == null) continue; // FIXME ...
+			if(forwardedClass == null) continue;
 			if(!forwardedClass.equals(nor(clazz))) {
 				wl(buffer, "class " + forwardedClass + ";");
 			}
@@ -635,7 +657,7 @@ public class Compiler {
 			} else {
 				for(int i = 0; i < literal.length(); i++) {
 					if(i > 0) literalDef += ", ";
-					literalDef += Short.toString((short)literal.charAt(i)); // FIXME i'm not good with type conversions...
+					literalDef += Short.toString((short)literal.charAt(i)); // FIXME type conversion/promotion
 				}
 			}
 			literalDef += "};\n";
@@ -852,7 +874,7 @@ public class Compiler {
 					Value arraySize = (Value)size;
 					sizes.add(translateValue(arraySize));
 				}
-				// FIXME use garbage collector!
+				// FIXME GC
 				wl(buffer, generateMultiArray(target, elementType, sizes));
 			} 
 			// null type need special treatment too, can't assign void* to class*
@@ -898,11 +920,11 @@ public class Compiler {
 			wl(buffer, "}");		
 		} else if(stmt instanceof EnterMonitorStmt) {
 			EnterMonitorStmt s = (EnterMonitorStmt)stmt;
-			// FIXME LOWPRIO
+			// FIXME threading
 			wl(buffer, "// enter monitor");
 		} else if(stmt instanceof ExitMonitorStmt) {
 			ExitMonitorStmt s = (ExitMonitorStmt)stmt;
-			// FIXME LOWPRIO
+			// FIXME threading
 			wl(buffer, "// exit monitor");			
 		} else if(stmt instanceof NopStmt) {
 			// nothing do to here
@@ -927,7 +949,7 @@ public class Compiler {
 			wl(buffer, "}");
 		} else if(stmt instanceof ThrowStmt) {
 			ThrowStmt s = (ThrowStmt)stmt;
-			// FIXME LOWPRIO!
+			// FIXME exceptions
 			wl(buffer, "throw \"exception\";");
 		} else {
 			throw new RuntimeException("Unkown statement " + stmt);
@@ -962,7 +984,7 @@ public class Compiler {
 		} else if(val instanceof IdentityRef) {
 			IdentityRef v = (IdentityRef)val;
 			if(v instanceof ThisRef) return "this";
-			if(v instanceof CaughtExceptionRef) return "(0)"; // FIXME PRIO!
+			if(v instanceof CaughtExceptionRef) return "(0)"; // FIXME exceptions
 			else return "param" + ((ParameterRef)v).getIndex();
 		} else throw new RuntimeException("Unknown Ref Value " + val);
 	}
@@ -975,9 +997,8 @@ public class Compiler {
 	private static String translateImmediate(Immediate val) {
 		if(val instanceof ClassConstant) {
 			ClassConstant v = (ClassConstant)val;
-			// FIXME PRIO PRIO PRIO!
+			// FIXME reflection
 			return "0"; //"getClass(" + v.value + ")";
-//			throw new UnsupportedOperationException();
 		} else if(val instanceof MetaConstant) {
 			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
@@ -1012,24 +1033,24 @@ public class Compiler {
 			AndExpr v = (AndExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			return l + " & " + r; // FIXME PRIO fishy, what about logical or (should be the same in C++, no need for precendence)?			
+			return l + " & " + r; // FIXME operator			
 		} else if(val instanceof CmpExpr) {
 			CmpExpr v = (CmpExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			// FIXME operator
 			return "(" + l + " > " + r + ") - (" + l + " < " + r + ")";
 		} else if(val instanceof CmplExpr) {
 			CmplExpr v = (CmplExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			// FIXME operator
 			return String.format("(%s != %s || %s != %s) ? -1 : (%s > %s) - (%s < %s)", l, l, r, r, l, r, l, r);
 		} else if(val instanceof CmpgExpr) {
 			CmpgExpr v = (CmpgExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			// FIXME PRIO! fishy fishy fishy from http://jcvm.cvs.sourceforge.net/viewvc/jcvm/jcvm/include/jc_defs.h?view=markup
+			// FIXME operator
 			return String.format("(%s != %s || %s != %s) ? 1 : (%s > %s) - (%s < %s)", l, l, r, r, l, r, l, r);
 		} else if(val instanceof EqExpr) {
 			EqExpr v = (EqExpr)val;
@@ -1075,7 +1096,7 @@ public class Compiler {
 			OrExpr v = (OrExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			return l + " | " + r; // FIXME PRIO fishy, what about logical or (should be the same in C++, no need for precendence)?			
+			return l + " | " + r; // FIXME operator			
 		} else if(val instanceof RemExpr) {
 			RemExpr v = (RemExpr)val;
 			String l = translateValue(v.getOp1());
@@ -1106,14 +1127,14 @@ public class Compiler {
 			UshrExpr v = (UshrExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			// FIXME this should work in C++, unsigned types will produce unsigned right shift
-			// (no 1-padding in the top most bits.
+			// FIXME operator
+			// this should work in C++, unsigned types will produce unsigned right shift (no 1-padding in the top most bits.)
 			return "((" + toUnsignedCType(v.getOp1().getType()) + ")" + l + ") >> " + r;
 		} else if(val instanceof XorExpr) {
 			XorExpr v = (XorExpr)val;
 			String l = translateValue(v.getOp1());
 			String r = translateValue(v.getOp2());
-			return l + " ^ " + r; // FIXME PRIO! fishy
+			return l + " ^ " + r; // FIXME operator
 		} else if(val instanceof CastExpr) {
 			CastExpr v = (CastExpr)val;
 			String type = toCType(v.getCastType());
@@ -1127,7 +1148,7 @@ public class Compiler {
 			InstanceOfExpr v = (InstanceOfExpr)val;
 			String type = translateValue(v.getOp());
 			String checkType = toCType(v.getCheckType());
-			// FIXME PRIO! this is unlikely to actually work, test with interfaces etc.
+			// FIXME reflection
 			return "(dynamic_cast<const " + checkType + ">(" + type + ") != 0)";					
 		} else if(val instanceof DynamicInvokeExpr) {
 			DynamicInvokeExpr v = (DynamicInvokeExpr)val;
@@ -1172,11 +1193,11 @@ public class Compiler {
 			NewArrayExpr v = (NewArrayExpr)val;
 			String type = toCType(v.getBaseType());
 			String size = translateValue(v.getSize());
-			// FIXME use garbage collector!
+			// FIXME GC
 			return "new Array<" + type + ">(" + size + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
-			// FIXME use garbage collector!
+			// FIXME GC
 			return "new " + nor(v.getType()) + "()";
 		} else if(val instanceof NewMultiArrayExpr) {
 			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");

@@ -134,7 +134,7 @@ public class BuildExecutor {
 			});
 			t.setDaemon(true);
 			t.start();
-			// FIXME this will hang if Ant detects an error while executing GCC in a process. Why?
+			 
 			process.waitFor();
 		} catch (Exception e) {
 			e.printStackTrace();

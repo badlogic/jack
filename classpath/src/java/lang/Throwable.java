@@ -25,7 +25,7 @@ public class Throwable {
 	}
 	
 	public Throwable fillInStackTrace() {
-		// FIXME
+		// FIXME exceptions
 		return this;
 	}
 	
@@ -34,7 +34,7 @@ public class Throwable {
 	}
 	
 	public String getLocalizedMessage() {
-		// FIXME
+		// FIXME exceptions
 		return getMessage();
 	}
 	
@@ -43,20 +43,20 @@ public class Throwable {
 	}
 	
 	public StackTraceElement[] getStackTraces() {
-		// FIXME
+		// FIXME exceptions
 		return stackTrace;
 	}
 	
 	public void printStackTrace() {
-		// FIXME
+		// FIXME exceptions
 	}
 	
 	public void printStackTrace(PrintStream s) {
-		// FIXME
+		// FIXME exceptions
 	}
 	
 	public void printStackTrace(PrintWriter s) {
-		// FIXME
+		// FIXME exceptions
 	}
 	
 	public void setStackTrace(StackTraceElement[] stackTrace) {
@@ -64,7 +64,7 @@ public class Throwable {
 	}
 	
 	public String toString() {
-		// FIXME
+		// FIXME exceptions
 		return super.toString();
 	}
 }
