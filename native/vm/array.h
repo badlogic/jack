@@ -2,7 +2,6 @@
 #define vm_vmarray_h
 
 #include "classes/java_lang_Object.h"
-#include <string.h>
 
 template <class T>
 class Array: public java_lang_Object {
@@ -10,7 +9,7 @@ public:
 	Array(int size) {		
 		this->length = size;
 		if(size > 0) {
-			this->elements = (T*)GC_MALLOC(sizeof(T) * size);			
+			this->elements = new T[size];			
 		} else {
 			this->elements = 0;
 		}
