@@ -131,8 +131,6 @@ public class Compiler {
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
-//		generateClass(outputDir, Scene.v().loadClassAndSupport("java.util.HashMap"));
-		
 		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
 		
@@ -350,6 +348,7 @@ public class Compiler {
 			if(clazz.isInterface()) {
 				classHeader += ": public virtual java_lang_Object";
 			}
+
 			Iterator<SootClass> iter = clazz.getInterfaces().iterator();
 			int addedInterfaces = 0;
 			for(int i = 0; i < clazz.getInterfaceCount(); i++) {
@@ -369,8 +368,16 @@ public class Compiler {
 			}
 			classHeader += " {";
 			wl(buffer, classHeader);
-		} else {		
-			wl(buffer, "class " + fullName + " {");
+		} else {
+			// include the GC headers in java_lang_Object.h
+			wl(buffer, "#define GC_THREADS");
+			wl(buffer, "#include <gc.h>");
+			wl(buffer, "#include <gc_cpp.h>");
+			wl(buffer, "");
+			
+			// let java.lang.Object derrive from gc so
+			// all interfaces and objects become collectables.
+			wl(buffer, "class " + fullName + ": public gc {");
 		}
 	}
 	

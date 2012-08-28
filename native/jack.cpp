@@ -2,12 +2,28 @@
 #include <stdio.h>
 #include <string>
 #include <math.h>
+#define GC_THREADS
 #include <gc.h>
+#include <gc_cpp.h>
 
 int main() {	
-	jack_init();
-	java_lang_Object* obj = new java_lang_Object();
+	GC_INIT();
+	jack_init();		
 
-	GC_init();
-	GC_gcollect();
+	jack_ArrayTest* at = 0;
+
+	for(int i = 0; i < 100000000; i++) {
+		java_lang_Object* obj = new java_lang_Object();
+		obj->m_init();
+
+		try {
+			at = new jack_ArrayTest();
+			throw "oh noes";
+		} catch(char* e) {
+		}
+
+		if(i % 10000 == 0) {
+			printf("heap size %d\n", GC_get_heap_size());
+		}
+	}
 }
