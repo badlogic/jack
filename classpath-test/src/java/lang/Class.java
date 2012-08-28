@@ -3,32 +3,32 @@ package java.lang;
 
 public class Class<T> {
 	public static Class forCanonicalName(String name) {
-		// FIXME PRIO! take from Avian
+		// FIXME reflection
 		return null;
 	}
 
 	public String getName() {
-		// FIXME PRIO!
+		// FIXME reflection
 		return null;
 	}
 
 	public Class<?> getComponentType() {
-		// FIXME PRIO!
+		// FIXME reflection
 		return null;
 	}
 
 	public boolean isInstance(Object o) {
-		// FIXME PRIO!
+		// FIXME reflection
 		return false;
 	}
 	
 	public Class getSuperclass() {
-		// FIXME PRIO!
+		// FIXME reflection
 		return null;
 	}
 	
 	public T[] getEnumConstants() {
-		// FIXME PRIO!
+		// FIXME reflection
 		return null;
 	}
 }
