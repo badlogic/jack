@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\native\jack.cpp" />
+    <ClCompile Include="..\native\classes\classes.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_ArrayTest.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_AbstractMethodError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Annotation.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_ElementType.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Retention.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_RetentionPolicy.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Target.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ArithmeticException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ArrayIndexOutOfBoundsException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ArrayStoreException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Boolean.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Class.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ClassCastException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ClassCircularityError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ClassFormatError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Comparable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Enum.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Error.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Exception.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IllegalAccessError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IllegalMonitorStateException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IncompatibleClassChangeError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IndexOutOfBoundsException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_InstantiationError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_InternalError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_LinkageError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NegativeArraySizeException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NoClassDefFoundError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NoSuchFieldError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NoSuchMethodError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NullPointerException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Object.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_OutOfMemoryError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_RuntimeException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_StackOverflowError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_String.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_System.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ThreadDeath.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Throwable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_UnknownError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_UnsatisfiedLinkError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_VirtualMachineError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\vm\garbagecollection.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\native\vm\array.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\types.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\classes.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_ArrayTest.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_AbstractMethodError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Annotation.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_ElementType.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Retention.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_RetentionPolicy.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Target.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ArithmeticException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ArrayIndexOutOfBoundsException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ArrayStoreException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Boolean.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Class.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ClassCastException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ClassCircularityError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ClassFormatError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Comparable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Enum.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Error.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Exception.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IllegalAccessError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IllegalMonitorStateException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IncompatibleClassChangeError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IndexOutOfBoundsException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_InstantiationError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_InternalError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_LinkageError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NegativeArraySizeException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NoClassDefFoundError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NoSuchFieldError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NoSuchMethodError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NullPointerException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Object.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_OutOfMemoryError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_RuntimeException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_StackOverflowError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_String.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_System.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ThreadDeath.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Throwable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_UnknownError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_UnsatisfiedLinkError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_VerifyError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_VirtualMachineError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\garbagecollection.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="vm">
+      <UniqueIdentifier>{9f074ac1-44e4-4cd8-815f-a0ca62bece98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="classes">
+      <UniqueIdentifier>{2e89081b-8280-497e-a7e4-efaaa9cb526a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

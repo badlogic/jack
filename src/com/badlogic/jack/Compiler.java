@@ -189,6 +189,12 @@ public class Compiler {
 		wl(buffer, "#define " + fullName + "_h");
 		wl(buffer, "");
 		
+		// include the GC headers
+		wl(buffer, "#define GC_THREADS");
+//		wl(buffer, "#include <gc.h>");
+		wl(buffer, "#include <gc_cpp.h>");
+		wl(buffer, "");
+		
 		// include common headers
 		wl(buffer, "#include \"vm/types.h\"");
 		wl(buffer, "#include \"classes/java_lang_Object.h\"");
@@ -368,13 +374,7 @@ public class Compiler {
 			}
 			classHeader += " {";
 			wl(buffer, classHeader);
-		} else {
-			// include the GC headers in java_lang_Object.h
-			wl(buffer, "#define GC_THREADS");
-			wl(buffer, "#include <gc.h>");
-			wl(buffer, "#include <gc_cpp.h>");
-			wl(buffer, "");
-			
+		} else {			
 			// let java.lang.Object derrive from gc so
 			// all interfaces and objects become collectables.
 			wl(buffer, "class " + fullName + ": public gc {");

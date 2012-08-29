@@ -56,6 +56,7 @@
     <ClInclude Include="..\native\classes\java_lang_VerifyError.h" />
     <ClInclude Include="..\native\classes\java_lang_VirtualMachineError.h" />
     <ClInclude Include="..\native\vm\array.h" />
+    <ClInclude Include="..\native\vm\garbagecollection.h" />
     <ClInclude Include="..\native\vm\types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +105,7 @@
     <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp" />
     <ClCompile Include="..\native\classes\java_lang_VirtualMachineError.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
+    <ClCompile Include="..\native\vm\garbagecollection.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AC967C16-FEC9-432A-BE58-AB19A8106846}</ProjectGuid>
@@ -150,7 +152,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);winmm.lib;gcmt-lib.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);winmm.lib;gc.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\workspaces\jack\jack\libs\gc\windows32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TurnOffAssemblyGeneration>false</TurnOffAssemblyGeneration>
     </Link>

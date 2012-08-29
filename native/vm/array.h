@@ -2,6 +2,7 @@
 #define vm_vmarray_h
 
 #include "classes/java_lang_Object.h"
+#include "vm/garbagecollection.h"
 
 template <class T>
 class Array: public java_lang_Object {
@@ -9,7 +10,7 @@ public:
 	Array(int size) {		
 		this->length = size;
 		if(size > 0) {
-			this->elements = new T[size];			
+			this->elements = (T*)gc_malloc(size);
 		} else {
 			this->elements = 0;
 		}
