@@ -14,12 +14,14 @@ int main() {
 
 	jack_ArrayTest* at = 0;
 
-	for(int i = 0; i < 200000; i++) {
-		java_lang_Object* obj = new (GC) java_lang_Object();
+	jack_Primes* primes = new jack_Primes();
+
+	for(int i = 0; i < 100000; i++) {
+		java_lang_Object* obj = new java_lang_Object();
 		obj->m_init();
 		
-		// at = new (GC) jack_ArrayTest();
-		// at->m_init();
+		at = new jack_ArrayTest();
+		at->m_init();
 		
 		if(i % 10000 == 0) {
 			printf("heap size %d\n", jack_gc_heapSize());
