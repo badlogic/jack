@@ -187,13 +187,7 @@ public class Compiler {
 		// include guards
 		wl(buffer, "#ifndef " + fullName + "_h");
 		wl(buffer, "#define " + fullName + "_h");
-		wl(buffer, "");
-		
-		// include the GC headers
-		wl(buffer, "#define GC_THREADS");
-//		wl(buffer, "#include <gc.h>");
-		wl(buffer, "#include <gc_cpp.h>");
-		wl(buffer, "");
+		wl(buffer, "");			
 		
 		// include common headers
 		wl(buffer, "#include \"vm/types.h\"");
@@ -625,6 +619,9 @@ public class Compiler {
 		wl(headerBuffer, "#include <math.h>"); 
 		wl(headerBuffer, "#include <limits>");
 		wl(headerBuffer, "");
+		wl(headerBuffer, "#define GC_THREADS"); 
+		wl(headerBuffer, "#include <gc_cpp.h>");
+		wl(headerBuffer, "");
 		
 		// generate static fields
 		for(SootField field: clazz.getFields()) {
@@ -687,8 +684,8 @@ public class Compiler {
 		// generate java.lang.String instances for literals
 		for(String literal: literals.keySet()) {
 			String id = literals.get(literal);
-			wl(buffer, id + " = new java_lang_String();");
-			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + "));");
+			wl(buffer, id + " = new (GC) java_lang_String();");
+			wl(buffer, id + "->m_init(new (GC) Array<j_char>(" + id + "_array, " + literal.length() + "));");
 		}
 		
 		// set this class' clazz field to != 0 so subsequent invocations will bail out early
@@ -1245,11 +1242,11 @@ public class Compiler {
 			String type = toCType(v.getBaseType());
 			String size = translateValue(v.getSize());
 			// FIXME GC
-			return "new Array<" + type + ">(" + size + ")";
+			return "new (GC) Array<" + type + ">(" + size + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME GC
-			return "new " + nor(v.getType()) + "()";
+			return "new (GC) " + nor(v.getType()) + "()";
 		} else if(val instanceof NewMultiArrayExpr) {
 			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");
 		} else if(val instanceof LengthExpr) {
@@ -1274,7 +1271,7 @@ public class Compiler {
 	}
 	
 	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
-		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
+		String newMultiArray = target + " = new (GC) " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
 		String counter = target + "_c0";
 		for(int i = 0; i < sizes.size() - 1; i++) {
 			newMultiArray += i() + "for(int " + counter + " = 0; " + counter + " < " + sizes.get(i) + "; " + counter + "++) {\n";
@@ -1291,7 +1288,7 @@ public class Compiler {
 				else
 					newMultiArray += "[" + target + "_c" + j + "]";
 			}
-			newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ");\n";
+			newMultiArray += " = new (GC) " + subArray + "(" + sizes.get(i+1) + ");\n";
 			counter = target + "_c" + (i+1);
 		}
 		for(int i = 0; i < sizes.size() - 1; i++) {
