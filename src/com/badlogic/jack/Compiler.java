@@ -371,7 +371,7 @@ public class Compiler {
 		} else {			
 			// let java.lang.Object derrive from gc so
 			// all interfaces and objects become collectables.
-			wl(buffer, "class " + fullName + ": public gc {");
+			wl(buffer, "class " + fullName + " {");
 		}
 	}
 	

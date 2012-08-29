@@ -1,4 +1,5 @@
 ﻿#define GC_THREADS
+#define GC_NOT_DLL
 #include <gc_cpp.h>
 
 #include "classes/classes.h"
@@ -13,7 +14,7 @@ int main() {
 
 	jack_ArrayTest* at = 0;
 
-	for(int i = 0; i < 100000000; i++) {
+	for(int i = 0; i < 200000; i++) {
 		java_lang_Object* obj = new (GC) java_lang_Object();
 		obj->m_init();
 		

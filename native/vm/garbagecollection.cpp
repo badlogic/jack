@@ -1,4 +1,5 @@
 #define GC_THREADS
+#define GC_NOT_DLL
 #include <gc_cpp.h>
 #include "vm/garbagecollection.h"
 
