@@ -1,6 +1,8 @@
+.DS_STORE
 bin/
 classpath/bin/
 libs/windows32/
 vs10/
 native/classes/
 native/target/
+xcode/build

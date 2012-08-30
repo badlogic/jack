@@ -1,0 +1,307 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		76D1766915EEDC1C00677583 /* jack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1766715EEDC1C00677583 /* jack.cpp */; };
+		76D1768815EEE08A00677583 /* classes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767115EEE08A00677583 /* classes.cpp */; };
+		76D1768915EEE08A00677583 /* jack_Arithmetic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767315EEE08A00677583 /* jack_Arithmetic.cpp */; };
+		76D1768A15EEE08A00677583 /* jack_Arrays.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767515EEE08A00677583 /* jack_Arrays.cpp */; };
+		76D1768B15EEE08A00677583 /* jack_ArrayTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767715EEE08A00677583 /* jack_ArrayTest.cpp */; };
+		76D1768C15EEE08A00677583 /* jack_Main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767915EEE08A00677583 /* jack_Main.cpp */; };
+		76D1768D15EEE08A00677583 /* jack_Primes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767B15EEE08A00677583 /* jack_Primes.cpp */; };
+		76D1768E15EEE08A00677583 /* jack_Statics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767D15EEE08A00677583 /* jack_Statics.cpp */; };
+		76D1768F15EEE08A00677583 /* java_lang_Comparable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1767F15EEE08A00677583 /* java_lang_Comparable.cpp */; };
+		76D1769015EEE08A00677583 /* java_lang_Object.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1768115EEE08A00677583 /* java_lang_Object.cpp */; };
+		76D1769115EEE08A00677583 /* garbagecollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 76D1768515EEE08A00677583 /* garbagecollection.cpp */; };
+		76D1769315EEE1C000677583 /* libgc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 76D1769215EEE1C000677583 /* libgc.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		76D1765815EEDB6A00677583 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		76D1765A15EEDB6A00677583 /* jack */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = jack; sourceTree = BUILT_PRODUCTS_DIR; };
+		76D1766715EEDC1C00677583 /* jack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = jack.cpp; path = ../../native/jack.cpp; sourceTree = "<group>"; };
+		76D1767115EEE08A00677583 /* classes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = classes.cpp; sourceTree = "<group>"; };
+		76D1767215EEE08A00677583 /* classes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = classes.h; sourceTree = "<group>"; };
+		76D1767315EEE08A00677583 /* jack_Arithmetic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_Arithmetic.cpp; sourceTree = "<group>"; };
+		76D1767415EEE08A00677583 /* jack_Arithmetic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_Arithmetic.h; sourceTree = "<group>"; };
+		76D1767515EEE08A00677583 /* jack_Arrays.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_Arrays.cpp; sourceTree = "<group>"; };
+		76D1767615EEE08A00677583 /* jack_Arrays.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_Arrays.h; sourceTree = "<group>"; };
+		76D1767715EEE08A00677583 /* jack_ArrayTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_ArrayTest.cpp; sourceTree = "<group>"; };
+		76D1767815EEE08A00677583 /* jack_ArrayTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_ArrayTest.h; sourceTree = "<group>"; };
+		76D1767915EEE08A00677583 /* jack_Main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_Main.cpp; sourceTree = "<group>"; };
+		76D1767A15EEE08A00677583 /* jack_Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_Main.h; sourceTree = "<group>"; };
+		76D1767B15EEE08A00677583 /* jack_Primes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_Primes.cpp; sourceTree = "<group>"; };
+		76D1767C15EEE08A00677583 /* jack_Primes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_Primes.h; sourceTree = "<group>"; };
+		76D1767D15EEE08A00677583 /* jack_Statics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jack_Statics.cpp; sourceTree = "<group>"; };
+		76D1767E15EEE08A00677583 /* jack_Statics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jack_Statics.h; sourceTree = "<group>"; };
+		76D1767F15EEE08A00677583 /* java_lang_Comparable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = java_lang_Comparable.cpp; sourceTree = "<group>"; };
+		76D1768015EEE08A00677583 /* java_lang_Comparable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Comparable.h; sourceTree = "<group>"; };
+		76D1768115EEE08A00677583 /* java_lang_Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = java_lang_Object.cpp; sourceTree = "<group>"; };
+		76D1768215EEE08A00677583 /* java_lang_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Object.h; sourceTree = "<group>"; };
+		76D1768415EEE08A00677583 /* array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = array.h; sourceTree = "<group>"; };
+		76D1768515EEE08A00677583 /* garbagecollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = garbagecollection.cpp; sourceTree = "<group>"; };
+		76D1768615EEE08A00677583 /* garbagecollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = garbagecollection.h; sourceTree = "<group>"; };
+		76D1768715EEE08A00677583 /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		76D1769215EEE1C000677583 /* libgc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgc.a; path = ../libs/gc/macosx64/libgc.a; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		76D1765715EEDB6A00677583 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76D1769315EEE1C000677583 /* libgc.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		76D1764F15EEDB6A00677583 = {
+			isa = PBXGroup;
+			children = (
+				76D1769215EEE1C000677583 /* libgc.a */,
+				76D1765D15EEDB6A00677583 /* jack */,
+				76D1765B15EEDB6A00677583 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		76D1765B15EEDB6A00677583 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				76D1765A15EEDB6A00677583 /* jack */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		76D1765D15EEDB6A00677583 /* jack */ = {
+			isa = PBXGroup;
+			children = (
+				76D1767015EEE08A00677583 /* classes */,
+				76D1768315EEE08A00677583 /* vm */,
+				76D1766715EEDC1C00677583 /* jack.cpp */,
+			);
+			path = jack;
+			sourceTree = "<group>";
+		};
+		76D1767015EEE08A00677583 /* classes */ = {
+			isa = PBXGroup;
+			children = (
+				76D1767115EEE08A00677583 /* classes.cpp */,
+				76D1767215EEE08A00677583 /* classes.h */,
+				76D1767315EEE08A00677583 /* jack_Arithmetic.cpp */,
+				76D1767415EEE08A00677583 /* jack_Arithmetic.h */,
+				76D1767515EEE08A00677583 /* jack_Arrays.cpp */,
+				76D1767615EEE08A00677583 /* jack_Arrays.h */,
+				76D1767715EEE08A00677583 /* jack_ArrayTest.cpp */,
+				76D1767815EEE08A00677583 /* jack_ArrayTest.h */,
+				76D1767915EEE08A00677583 /* jack_Main.cpp */,
+				76D1767A15EEE08A00677583 /* jack_Main.h */,
+				76D1767B15EEE08A00677583 /* jack_Primes.cpp */,
+				76D1767C15EEE08A00677583 /* jack_Primes.h */,
+				76D1767D15EEE08A00677583 /* jack_Statics.cpp */,
+				76D1767E15EEE08A00677583 /* jack_Statics.h */,
+				76D1767F15EEE08A00677583 /* java_lang_Comparable.cpp */,
+				76D1768015EEE08A00677583 /* java_lang_Comparable.h */,
+				76D1768115EEE08A00677583 /* java_lang_Object.cpp */,
+				76D1768215EEE08A00677583 /* java_lang_Object.h */,
+			);
+			name = classes;
+			path = ../../native/classes;
+			sourceTree = "<group>";
+		};
+		76D1768315EEE08A00677583 /* vm */ = {
+			isa = PBXGroup;
+			children = (
+				76D1768415EEE08A00677583 /* array.h */,
+				76D1768515EEE08A00677583 /* garbagecollection.cpp */,
+				76D1768615EEE08A00677583 /* garbagecollection.h */,
+				76D1768715EEE08A00677583 /* types.h */,
+			);
+			name = vm;
+			path = ../../native/vm;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		76D1765915EEDB6A00677583 /* jack */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 76D1766415EEDB6A00677583 /* Build configuration list for PBXNativeTarget "jack" */;
+			buildPhases = (
+				76D1765615EEDB6A00677583 /* Sources */,
+				76D1765715EEDB6A00677583 /* Frameworks */,
+				76D1765815EEDB6A00677583 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = jack;
+			productName = jack;
+			productReference = 76D1765A15EEDB6A00677583 /* jack */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		76D1765115EEDB6A00677583 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 76D1765415EEDB6A00677583 /* Build configuration list for PBXProject "jack" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 76D1764F15EEDB6A00677583;
+			productRefGroup = 76D1765B15EEDB6A00677583 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				76D1765915EEDB6A00677583 /* jack */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		76D1765615EEDB6A00677583 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76D1766915EEDC1C00677583 /* jack.cpp in Sources */,
+				76D1768815EEE08A00677583 /* classes.cpp in Sources */,
+				76D1768915EEE08A00677583 /* jack_Arithmetic.cpp in Sources */,
+				76D1768A15EEE08A00677583 /* jack_Arrays.cpp in Sources */,
+				76D1768B15EEE08A00677583 /* jack_ArrayTest.cpp in Sources */,
+				76D1768C15EEE08A00677583 /* jack_Main.cpp in Sources */,
+				76D1768D15EEE08A00677583 /* jack_Primes.cpp in Sources */,
+				76D1768E15EEE08A00677583 /* jack_Statics.cpp in Sources */,
+				76D1768F15EEE08A00677583 /* java_lang_Comparable.cpp in Sources */,
+				76D1769015EEE08A00677583 /* java_lang_Object.cpp in Sources */,
+				76D1769115EEE08A00677583 /* garbagecollection.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		76D1766215EEDB6A00677583 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		76D1766315EEDB6A00677583 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		76D1766515EEDB6A00677583 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					../native,
+					../libs/gc/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../libs/gc/macosx64,
+					"\"$(SRCROOT)/../libs/gc/macosx64\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		76D1766615EEDB6A00677583 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = (
+					../native,
+					../libs/gc/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					../libs/gc/macosx64,
+					"\"$(SRCROOT)/../libs/gc/macosx64\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		76D1765415EEDB6A00677583 /* Build configuration list for PBXProject "jack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76D1766215EEDB6A00677583 /* Debug */,
+				76D1766315EEDB6A00677583 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		76D1766415EEDB6A00677583 /* Build configuration list for PBXNativeTarget "jack" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76D1766515EEDB6A00677583 /* Debug */,
+				76D1766615EEDB6A00677583 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 76D1765115EEDB6A00677583 /* Project object */;
+}

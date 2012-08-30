@@ -15,6 +15,4 @@ typedef unsigned short j_ushort;
 typedef unsigned int j_uint;
 typedef unsigned long long j_ulong;
 
-#include "vm/array.h"
-
 #endif

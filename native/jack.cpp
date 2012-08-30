@@ -8,15 +8,17 @@
 #include <math.h>
 #include "vm/garbagecollection.h"
 
+template <class T>
+class Test: public java_lang_Object {
+};
+
 int main() {
 	jack_gc_init();
 	jack_init();		
 
 	jack_ArrayTest* at = 0;
 
-	jack_Primes* primes = new jack_Primes();
-
-	for(int i = 0; i < 100000; i++) {
+	for(int i = 0; i < 10000000; i++) {
 		java_lang_Object* obj = new java_lang_Object();
 		obj->m_init();
 		
