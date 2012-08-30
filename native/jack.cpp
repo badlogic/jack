@@ -8,6 +8,7 @@
 #include <math.h>
 #include "vm/time.h"
 #include "vm/garbagecollection.h"
+#include "vm/exception.h"
 
 int main() {
 	jack_gc_init();
