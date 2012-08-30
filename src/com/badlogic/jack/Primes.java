@@ -53,7 +53,7 @@ public class Primes {
 		Primes primes = new Primes();
 		long start = System.nanoTime();
 		long sum = 0;
-		for(int i = 0; i < 10000; i++) {
+		for(int i = 0; i < 50000; i++) {
 			sum += primes.next();
 			if(i % 1000 == 0) System.out.println(i + ": " + (System.nanoTime() - start) / 1000000000.0f + ", " + sum);
 		}

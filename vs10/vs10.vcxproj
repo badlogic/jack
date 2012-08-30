@@ -15,13 +15,43 @@
     <ClInclude Include="..\native\classes\jack_Arithmetic.h" />
     <ClInclude Include="..\native\classes\jack_Arrays.h" />
     <ClInclude Include="..\native\classes\jack_ArrayTest.h" />
+    <ClInclude Include="..\native\classes\jack_Exceptions.h" />
     <ClInclude Include="..\native\classes\jack_Main.h" />
     <ClInclude Include="..\native\classes\jack_Primes.h" />
     <ClInclude Include="..\native\classes\jack_Statics.h" />
-    <ClInclude Include="..\native\classes\java_lang_Comparable.h" />
+    <ClInclude Include="..\native\classes\java_lang_AbstractMethodError.h" />
+    <ClInclude Include="..\native\classes\java_lang_ArithmeticException.h" />
+    <ClInclude Include="..\native\classes\java_lang_ArrayIndexOutOfBoundsException.h" />
+    <ClInclude Include="..\native\classes\java_lang_ArrayStoreException.h" />
+    <ClInclude Include="..\native\classes\java_lang_ClassCastException.h" />
+    <ClInclude Include="..\native\classes\java_lang_ClassCircularityError.h" />
+    <ClInclude Include="..\native\classes\java_lang_ClassFormatError.h" />
+    <ClInclude Include="..\native\classes\java_lang_Error.h" />
+    <ClInclude Include="..\native\classes\java_lang_Exception.h" />
+    <ClInclude Include="..\native\classes\java_lang_IllegalAccessError.h" />
+    <ClInclude Include="..\native\classes\java_lang_IllegalMonitorStateException.h" />
+    <ClInclude Include="..\native\classes\java_lang_IncompatibleClassChangeError.h" />
+    <ClInclude Include="..\native\classes\java_lang_IndexOutOfBoundsException.h" />
+    <ClInclude Include="..\native\classes\java_lang_InstantiationError.h" />
+    <ClInclude Include="..\native\classes\java_lang_InternalError.h" />
+    <ClInclude Include="..\native\classes\java_lang_LinkageError.h" />
+    <ClInclude Include="..\native\classes\java_lang_NegativeArraySizeException.h" />
+    <ClInclude Include="..\native\classes\java_lang_NoClassDefFoundError.h" />
+    <ClInclude Include="..\native\classes\java_lang_NoSuchFieldError.h" />
+    <ClInclude Include="..\native\classes\java_lang_NoSuchMethodError.h" />
+    <ClInclude Include="..\native\classes\java_lang_NullPointerException.h" />
     <ClInclude Include="..\native\classes\java_lang_Object.h" />
+    <ClInclude Include="..\native\classes\java_lang_OutOfMemoryError.h" />
+    <ClInclude Include="..\native\classes\java_lang_RuntimeException.h" />
+    <ClInclude Include="..\native\classes\java_lang_StackOverflowError.h" />
+    <ClInclude Include="..\native\classes\java_lang_ThreadDeath.h" />
+    <ClInclude Include="..\native\classes\java_lang_Throwable.h" />
+    <ClInclude Include="..\native\classes\java_lang_UnknownError.h" />
+    <ClInclude Include="..\native\classes\java_lang_UnsatisfiedLinkError.h" />
+    <ClInclude Include="..\native\classes\java_lang_VerifyError.h" />
     <ClInclude Include="..\native\vm\array.h" />
     <ClInclude Include="..\native\vm\garbagecollection.h" />
+    <ClInclude Include="..\native\vm\time.h" />
     <ClInclude Include="..\native\vm\types.h" />
   </ItemGroup>
   <ItemGroup>
@@ -29,13 +59,50 @@
     <ClCompile Include="..\native\classes\jack_Arithmetic.cpp" />
     <ClCompile Include="..\native\classes\jack_Arrays.cpp" />
     <ClCompile Include="..\native\classes\jack_ArrayTest.cpp" />
+    <ClCompile Include="..\native\classes\jack_Exceptions.cpp" />
     <ClCompile Include="..\native\classes\jack_Main.cpp" />
     <ClCompile Include="..\native\classes\jack_Primes.cpp" />
     <ClCompile Include="..\native\classes\jack_Statics.cpp" />
-    <ClCompile Include="..\native\classes\java_lang_Comparable.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_AbstractMethodError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ArithmeticException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ArrayIndexOutOfBoundsException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ArrayStoreException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ClassCastException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ClassCircularityError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ClassFormatError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_Error.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_Exception.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_IllegalAccessError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_IllegalMonitorStateException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_IncompatibleClassChangeError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_IndexOutOfBoundsException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_InstantiationError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_InternalError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_LinkageError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_NegativeArraySizeException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_NoClassDefFoundError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_NoSuchFieldError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_NoSuchMethodError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_NullPointerException.cpp" />
     <ClCompile Include="..\native\classes\java_lang_Object.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_OutOfMemoryError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_RuntimeException.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_StackOverflowError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_ThreadDeath.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_Throwable.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_UnknownError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_UnsatisfiedLinkError.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
     <ClCompile Include="..\native\vm\garbagecollection.cpp" />
+    <ClCompile Include="..\native\vm\time.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{AC967C16-FEC9-432A-BE58-AB19A8106846}</ProjectGuid>
@@ -78,6 +145,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\libs\gc\include;$(ProjectDir)..\native;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,12 +160,13 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(ProjectDir)..\native;$(ProjectDir)..\libs\gc\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
