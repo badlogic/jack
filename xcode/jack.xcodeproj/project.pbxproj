@@ -54,7 +54,7 @@
 		76D176A915EEE66600677583 /* java_lang_Comparable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Comparable.h; sourceTree = "<group>"; };
 		76D176AA15EEE66600677583 /* java_lang_Object.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = java_lang_Object.cpp; sourceTree = "<group>"; };
 		76D176AB15EEE66600677583 /* java_lang_Object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = java_lang_Object.h; sourceTree = "<group>"; };
-		76D176AC15EEE66600677583 /* jack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = jack.cpp; path = ../../native/jack.cpp; sourceTree = "<group>"; };
+		76D176AC15EEE66600677583 /* jack.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = jack.cpp; path = ../native/jack.cpp; sourceTree = "<group>"; };
 		76D176AE15EEE66600677583 /* array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = array.h; sourceTree = "<group>"; };
 		76D176AF15EEE66600677583 /* garbagecollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = garbagecollection.cpp; sourceTree = "<group>"; };
 		76D176B015EEE66600677583 /* garbagecollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = garbagecollection.h; sourceTree = "<group>"; };
@@ -77,7 +77,9 @@
 			isa = PBXGroup;
 			children = (
 				76D1769215EEE1C000677583 /* libgc.a */,
-				76D1765D15EEDB6A00677583 /* jack */,
+				76D176AC15EEE66600677583 /* jack.cpp */,
+				76D176AD15EEE66600677583 /* vm */,
+				76D1769915EEE66600677583 /* classes */,
 				76D1765B15EEDB6A00677583 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -88,16 +90,6 @@
 				76D1765A15EEDB6A00677583 /* jack */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		76D1765D15EEDB6A00677583 /* jack */ = {
-			isa = PBXGroup;
-			children = (
-				76D1769915EEE66600677583 /* classes */,
-				76D176AC15EEE66600677583 /* jack.cpp */,
-				76D176AD15EEE66600677583 /* vm */,
-			);
-			path = jack;
 			sourceTree = "<group>";
 		};
 		76D1769915EEE66600677583 /* classes */ = {
@@ -123,7 +115,7 @@
 				76D176AB15EEE66600677583 /* java_lang_Object.h */,
 			);
 			name = classes;
-			path = ../../native/classes;
+			path = ../native/classes;
 			sourceTree = "<group>";
 		};
 		76D176AD15EEE66600677583 /* vm */ = {
@@ -135,7 +127,7 @@
 				76D176B115EEE66600677583 /* types.h */,
 			);
 			name = vm;
-			path = ../../native/vm;
+			path = ../native/vm;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
