@@ -1,4 +1,5 @@
 #include "exception.h"
+#include <string.h>
 
 /* A default panic handler for the library */
 static void default_panic(exception_reason reason) {
@@ -297,7 +298,7 @@ exception_handler* exception_add_handler(register exception_state status, regist
     if(function) {
       memcpy(handler->function, function, function_size);
     } else {
-      *handler->function = (char)0;
+      handler->function = 0;
     };
     if(handler->stack) {
       memcpy(handler->stack, &function_size, handler->stack_size);

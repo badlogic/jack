@@ -11,6 +11,15 @@
 #include "vm/exception.h"
 
 int main() {
+	e_try {
+		e_throw(2);
+	} e_catch(2) {
+		printf("caught\n");
+	} e_finally {
+		printf("finally\n");
+	}
+
+
 	jack_gc_init();
 	jack_init();	
 
