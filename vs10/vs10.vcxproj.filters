@@ -158,9 +158,6 @@
     <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\vm\exception.cpp">
-      <Filter>vm</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\native\vm\array.h">
@@ -324,9 +321,6 @@
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_VerifyError.h">
       <Filter>classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\vm\exception.h">
-      <Filter>vm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

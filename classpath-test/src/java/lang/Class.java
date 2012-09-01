@@ -16,6 +16,14 @@ import java.lang.reflect.Method;
 
 // FIXME reflection
 public final class Class<T> {
+	String name;
+	Class superClass;
+	Class[] interfaces;
+	boolean isPrimitive = false;
+	boolean isInterface = false;
+	boolean isArray = false;
+	Class componentType;
+	
 	public String toString() {
 		return getName();
 	}

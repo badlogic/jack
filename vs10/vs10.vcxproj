@@ -62,7 +62,6 @@
     <ClInclude Include="..\native\classes\java_lang_UnsupportedOperationException.h" />
     <ClInclude Include="..\native\classes\java_lang_VerifyError.h" />
     <ClInclude Include="..\native\vm\array.h" />
-    <ClInclude Include="..\native\vm\exception.h" />
     <ClInclude Include="..\native\vm\garbagecollection.h" />
     <ClInclude Include="..\native\vm\time.h" />
     <ClInclude Include="..\native\vm\types.h" />
@@ -119,7 +118,6 @@
     <ClCompile Include="..\native\classes\java_lang_UnsupportedOperationException.cpp" />
     <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
-    <ClCompile Include="..\native\vm\exception.cpp" />
     <ClCompile Include="..\native\vm\garbagecollection.cpp" />
     <ClCompile Include="..\native\vm\time.cpp" />
   </ItemGroup>

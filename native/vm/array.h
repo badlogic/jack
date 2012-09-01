@@ -10,7 +10,7 @@ public:
 	Array(int size) {		
 		this->length = size;
 		if(size > 0) {
-			this->elements = (T*)jack_gc_malloc(sizeof(T) * size);
+			this->elements = (T*)jack_gc_malloc_atomic(sizeof(T) * size);
 		} else {
 			this->elements = 0;
 		}

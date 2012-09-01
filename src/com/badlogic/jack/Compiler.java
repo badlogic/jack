@@ -145,6 +145,7 @@ public class Compiler {
 	}
 	
 	private static void generateClassesStartup(String outputDir) {
+		// generate classes.h
 		StringBuffer buffer = new StringBuffer();
 		wl(buffer, "#ifndef jack_all_classes");
 		wl(buffer, "#define jack_all_classes");
@@ -159,17 +160,33 @@ public class Compiler {
 		wl(buffer, "#endif");
 		new FileDescriptor(outputDir + "/classes.h").writeString(buffer.toString(), false);
 		
+		// generate classes.cpp
 		buffer = new StringBuffer();
 		wl(buffer, "#include \"classes/classes.h\"");
 		wl(buffer, "");
 		wl(buffer, "void jack_init() {");
 		push();
+		
+		// generate all the reflection info
+		generateReflectionData(buffer);
+		
+		// call all m_clinit methods, this should cascade
+		// FIXME clinit (propagation correct?)
 		for(SootClass c: Scene.v().getClasses()) {
 			wl(buffer, nor(c) + "::m_clinit();");
 		}
 		pop();
 		wl(buffer, "}");
 		new FileDescriptor(outputDir + "/classes.cpp").writeString(buffer.toString(), false);
+	}
+	
+	public static void generateReflectionData(StringBuffer buffer) {
+		// initialize the java_lang_Class* for each class/interface
+		for(SootClass c: Scene.v().getClasses()) {
+			wl(buffer, nor(c) + "::clazz = new java_lang_Class();");
+			wl(buffer, nor(c) + "::clazz->m_init();");
+		}
+		wl(buffer, "");	
 	}
 
 	public static void generateClass(String outputDir, SootClass clazz) {
@@ -269,6 +286,7 @@ public class Compiler {
 		// add in a static field keeping track of whether clinit was called
 		// and another static field for the class.
 		wl(buffer, "static java_lang_Class* clazz;");
+		wl(buffer, "static bool clinit;");
 		
 		pop();
 		pop();
@@ -649,7 +667,8 @@ public class Compiler {
 		}
 		
 		// generate the clazz static fields
-		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");		
+		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");
+		wl(headerBuffer, "bool " + fullName + "::clinit = 0;");
 		wl(headerBuffer, "");
 		
 		// output string literal array and java.lang.String delcarations.
@@ -683,7 +702,10 @@ public class Compiler {
 		push();
 		
 		// check if clinit was already called and bail out in that case
-		wl(buffer, "if(" + nor(clazz) + "::clazz) return;");
+		wl(buffer, "if(" + nor(clazz) + "::clinit) return;");
+		
+		// set the clinit flag of this class as a guard
+		wl(buffer, nor(clazz) + "::clinit = true;");
 		
 		// generate java.lang.String instances for literals
 		for(String literal: literals.keySet()) {
@@ -691,10 +713,6 @@ public class Compiler {
 			wl(buffer, id + " = new java_lang_String();");
 			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + "));");
 		}
-		
-		// set this class' clazz field to != 0 so subsequent invocations will bail out early
-		// FIXME reflection
-		wl(buffer, nor(clazz) + "::clazz = (java_lang_Class*)0x1;");
 		
 		// emit calls to all classes and interfaces' clinit this class references
 		for(SootClass dependency: getDependencies(clazz)) {
