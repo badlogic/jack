@@ -63,8 +63,8 @@ int main() {
 	//printf("%lld, %f\n", sum, (getCurrentTimeMillis() - start) / 1000.f);	
 
 	for(int i = 0; i < 10000000; i++) {		
-		//jack_ArrayTest* at = new jack_ArrayTest();
-		//at->m_init();
+		jack_ArrayTest* at = new jack_ArrayTest();
+		at->m_init();
 		
 		A* a = new A();
 
