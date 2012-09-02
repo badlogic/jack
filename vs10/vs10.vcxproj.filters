@@ -23,6 +23,27 @@
     <ClCompile Include="..\native\classes\jack_Exceptions.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$A.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$B.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$C.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IA.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IB.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IC.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\jack_Main.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -185,6 +206,27 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Exceptions.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$A.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$B.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$C.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IA.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IB.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IC.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Main.h">

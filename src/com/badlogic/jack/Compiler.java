@@ -1,5 +1,7 @@
 package com.badlogic.jack;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -109,6 +111,7 @@ import soot.tagkit.Tag;
 import com.badlogic.jack.build.FileDescriptor;
 
 public class Compiler {
+	static boolean INCREMENTAL = true;
 	static int ident;
 	static JavaSourceProvider provider;
 	
@@ -131,17 +134,41 @@ public class Compiler {
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
-		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
+		
+		Set<String> generatedFiles = new HashSet<String>();
 		
 		// generate the classes
 		for(SootClass c: Scene.v().getClasses()) {
-			generateClass(outputDir, c);					
+			if(shouldRecompile(classpath, outputDir, c)) {
+				generateClass(outputDir, c);
+			} else {
+				System.out.println(c.getName() + " is up to date");
+			}
+			generatedFiles.add(nor(c) + ".h");
+			generatedFiles.add(nor(c) + ".cpp");
+		}
+		
+		// delete all files that aren't in the classpath
+		for(String f: new File(outputDir).list(new FilenameFilter() {
+			@Override
+			public boolean accept(File arg0, String name) {
+				return name.endsWith(".h") || name.endsWith(".cpp");
+			}
+		})) {
+			if(!generatedFiles.contains(f)) new File(outputDir + f).delete();
 		}
 		
 		// generate classes.h and classes.cpp containing
 		// <clinit> calls and other startup stuff.
 		generateClassesStartup(outputDir);
+	}
+	
+	private static boolean shouldRecompile(String classpath, String outputDir, SootClass clazz) {
+		if(!INCREMENTAL) return true;
+		String classFile = classpath + clazz.getName().replace(".", "/") + ".class";
+		String headerFile = outputDir + nor(clazz) + ".h";
+		return new File(classFile).lastModified() > new File(headerFile).lastModified(); 
 	}
 	
 	private static void generateClassesStartup(String outputDir) {
@@ -183,8 +210,30 @@ public class Compiler {
 	public static void generateReflectionData(StringBuffer buffer) {
 		// initialize the java_lang_Class* for each class/interface
 		for(SootClass c: Scene.v().getClasses()) {
-			wl(buffer, nor(c) + "::clazz = new java_lang_Class();");
-			wl(buffer, nor(c) + "::clazz->m_init();");
+			String var = nor(c) + "::clazz";
+			wl(buffer, var + "= new java_lang_Class();");
+		}
+		wl(buffer, "");
+		
+		// fill out their reflection data
+		for(SootClass c: Scene.v().getClasses()) {
+			String var = nor(c) + "::clazz";
+			wl(buffer, var + "->m_init();");
+			// FIXME reflection
+//			wl(buffer, var + "->f_isPrimitive = " + )
+//			wl(buffer, var + "->f_isArray = " + );
+			if(c.hasSuperclass()) {
+				wl(buffer, var + "->f_superClass = " + nor(c.getSuperclass()) + "::clazz;");
+			}
+			
+			// create array for interfaces
+			wl(buffer, var + "->f_interfaces = new Array<java_lang_Class*>(" + c.getInterfaceCount() + ", false);");
+			int i = 0;
+			for(SootClass itf: c.getInterfaces()) {
+				wl(buffer, "(*" + var + "->f_interfaces)[" + i + "] = " + nor(itf) + "::clazz;");
+				i++;
+			}
+			wl(buffer, "");
 		}
 		wl(buffer, "");	
 	}
@@ -227,11 +276,11 @@ public class Compiler {
 			generateField(buffer, field);
 		}
 
+		// add methods
 		wl(buffer, "");
 		wl(buffer, "// methods");
 		List<SootMethod> emittedMethods = new ArrayList<SootMethod>();
 		boolean hasClinit = false;
-		// add methods
 		for(SootMethod method: clazz.getMethods()) {
 			if((method.getModifiers() & 0x40) != 0) {
 				if(!shouldEmitBridgeMethod(clazz, method)) {
@@ -239,12 +288,19 @@ public class Compiler {
 					continue;
 				}
 			}
-			generateMethod(buffer, method);
 			emittedMethods.add(method);
+			// we implement getClass() ourselves, below.
+			if(method.getName().equals("getClass")) {
+				continue;
+			}
+			generateMethod(buffer, method);
 			if(method.getName().equals("<clinit>")) {
 				hasClinit = true;
 			}
 		}
+		
+		// getClass() implementation
+		wl(buffer, "virtual java_lang_Class* m_getClass() { return " + nor(clazz) + "::clazz; }");
 		
 		// if we don't have a <clinit> declaration, create one!
 		if(!hasClinit) {
@@ -611,6 +667,10 @@ public class Compiler {
 				}
 			}
 			
+			// if this is getClass() continue, we already implemented that
+			// in the header
+			if(method.getName().equals("getClass")) continue;
+			
 			// if this is the clinit method, we fake
 			// emission of the method. We need to do
 			// this to gather all string literals.
@@ -640,14 +700,18 @@ public class Compiler {
 		// static fields. Need to do this as string literals are gathered
 		// during method generation.		
 		String fullName = nor(clazz);		
-		StringBuffer headerBuffer = new StringBuffer();		
-		wl(headerBuffer, "#include \"classes/classes.h\"");
+		StringBuffer headerBuffer = new StringBuffer();
+		// standard includes
 		wl(headerBuffer, "#include <math.h>"); 
 		wl(headerBuffer, "#include <limits>");
-		wl(headerBuffer, "");
-		wl(headerBuffer, "#define GC_THREADS");
-		wl(headerBuffer, "#define GC_NOT_DLL");
-		wl(headerBuffer, "#include <gc_cpp.h>");
+		wl(headerBuffer, "#include \"vm/Array.h\"");
+		// include the header for this class
+		wl(headerBuffer, "#include \"classes/" + fullName + ".h\"");
+		// include only the dependencies of this class ala import :)
+		Set<SootClass> dependencies = getDependencies(clazz);
+		for(SootClass dependency: dependencies) {
+			wl(headerBuffer, "#include \"classes/" + nor(dependency) + ".h\"");			
+		}
 		wl(headerBuffer, "");
 		
 		// generate static fields
@@ -1073,8 +1137,7 @@ public class Compiler {
 	private static String translateImmediate(Immediate val) {
 		if(val instanceof ClassConstant) {
 			ClassConstant v = (ClassConstant)val;
-			// FIXME reflection
-			return "0"; //"getClass(" + v.value + ")";
+			return v.getValue().replace('/', '_') + "::clazz";
 		} else if(val instanceof MetaConstant) {
 			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
@@ -1223,9 +1286,9 @@ public class Compiler {
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
 			String type = translateValue(v.getOp());
-			String checkType = toCType(v.getCheckType());
+			String checkType = v.getCheckType().toString().replace('.', '_');
 			// FIXME reflection
-			return "(dynamic_cast<const " + checkType + ">(" + type + ") != 0)";					
+			return checkType + "::clazz->m_isInstance(" + type + ")";					
 		} else if(val instanceof DynamicInvokeExpr) {
 			DynamicInvokeExpr v = (DynamicInvokeExpr)val;
 			throw new UnsupportedOperationException();
