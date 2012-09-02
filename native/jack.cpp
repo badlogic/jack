@@ -69,7 +69,7 @@ int main() {
 		A* a = new A();
 
 		if(i % 10000 == 0) {
-			printf("heap size %d\n", jack_gc_heapSize());
+			printf("%d heap size %d\n", i, jack_gc_heapSize());
 		}
 	}
 }

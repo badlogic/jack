@@ -575,6 +575,11 @@ public class Compiler {
 		}
 	}
 	
+	private static boolean isPrimitiveType(Type type) {
+		return !(type instanceof RefType || type instanceof ArrayType ||
+				 type instanceof NullType || type instanceof VoidType);
+	}
+	
 	private static String toUnsignedCType(Type type) {
 		if(type instanceof PrimType) {	
 			if(type instanceof ByteType) return "j_ubyte";			
@@ -711,7 +716,7 @@ public class Compiler {
 		for(String literal: literals.keySet()) {
 			String id = literals.get(literal);
 			wl(buffer, id + " = new java_lang_String();");
-			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + "));");
+			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + ", true));");
 		}
 		
 		// emit calls to all classes and interfaces' clinit this class references
@@ -939,13 +944,14 @@ public class Compiler {
 				String target = translateValue(leftOp);
 				NewMultiArrayExpr v = (NewMultiArrayExpr)rightOp;
 				String elementType = toCType(v.getBaseType().baseType);
+				boolean isPrimitive = isPrimitiveType(v.getBaseType().baseType);
 				List<String> sizes = new ArrayList<String>();
 				for(Object size: v.getSizes()) {
 					Value arraySize = (Value)size;
 					sizes.add(translateValue(arraySize));
 				}
 				// FIXME GC
-				wl(buffer, generateMultiArray(target, elementType, sizes));
+				wl(buffer, generateMultiArray(target, elementType, isPrimitive, sizes));
 			} 
 			// null type need special treatment too, can't assign void* to class*
 			else if(rightOp.getType() instanceof NullType) {
@@ -1262,9 +1268,10 @@ public class Compiler {
 		} else if(val instanceof NewArrayExpr) {
 			NewArrayExpr v = (NewArrayExpr)val;
 			String type = toCType(v.getBaseType());
+			boolean isPrimitive = isPrimitiveType(v.getBaseType());
 			String size = translateValue(v.getSize());
 			// FIXME GC
-			return "new Array<" + type + ">(" + size + ")";
+			return "new Array<" + type + ">(" + size + ", " + isPrimitive + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME GC
@@ -1292,8 +1299,8 @@ public class Compiler {
 		return output;
 	}
 	
-	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
-		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
+	private static String generateMultiArray(String target, String elementType, boolean isPrimitive, List<String> sizes) {
+		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ", false);\n";
 		String counter = target + "_c0";
 		for(int i = 0; i < sizes.size() - 1; i++) {
 			newMultiArray += i() + "for(int " + counter + " = 0; " + counter + " < " + sizes.get(i) + "; " + counter + "++) {\n";
@@ -1310,7 +1317,11 @@ public class Compiler {
 				else
 					newMultiArray += "[" + target + "_c" + j + "]";
 			}
-			newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ");\n";
+			if(i == sizes.size() - 2) {
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", " + isPrimitive + ");\n";
+			} else {
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", false);\n";
+			}
 			counter = target + "_c" + (i+1);
 		}
 		for(int i = 0; i < sizes.size() - 1; i++) {
