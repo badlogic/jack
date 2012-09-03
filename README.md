@@ -31,7 +31,7 @@ Java class hierarchies are directly mapped to C++ class hierarchies.
 That way i don't have to implement my own vtable abstraction. Some 
 funkiness is involved to cope with bridge methods and covariant return 
 types, which usually turn up if you have a concrete generic class, e.g.
-List<String>#get(0). Covariance itself is supported by C++, however, 
+```List<String>#get(0)```. Covariance itself is supported by C++, however, 
 the covariant return type needs to be complete (fully defined). Forward
 declarations do not work, instead the full class declaration of a 
 covariant return type is included in the header the class that has the
@@ -40,12 +40,21 @@ some ill-conceived cases.
 
 The full Java class hierarchy is retained in the C++ class hierarchy.
 
+Fields and methods are added as is, with prefixes (f_ for fields, m_ 
+for methods).
+
+### Strings
+We use the String implementation by Avian, which includes UTF8
+handling. Strings are hence stored as 16-bit character sequences.
+String literals are constructed in a funky way, you don't want
+to know how...
+
 ### Class initialization
-The JVM usually calls MyClass#<clinit> the first time that class is 
+The JVM usually calls ```MyClass#<clinit>``` the first time that class is 
 referenced at runtime (see the Java language specs and JVM specs for 
 more info). In an ahead-of-time compiled environment this would be to
 expensive as tons of methods would have to be augmented with checks 
-whether <clinit> was already called.
+whether ```<clinit>``` was already called.
 
 Jack initializes all classes at start up, in an order that guarantees 
 that guarantees that all classes a class depends on are initialized 
@@ -55,10 +64,10 @@ before the class itself is initialized.
 All java primitive types are mapped to equivalent C++ types, see 
 vm/types.h (to be extended for more platforms, looking at you long 
 long). Reference types are always represented as pointers, e.g. a field
-of type java.lang.Object would translate to java_lang_Object*.
+of type ```java.lang.Object``` would translate to ```java_lang_Object*```.
 
 The array type is special and implemented in C++, subclassing
-java.lang.Object (see vm/array.h). Multidimensional arrays are just
+```java.lang.Object``` (see vm/array.h). Multidimensional arrays are just
 nested C++ Array instances. The transpiler will replace array access
 with calls to equivalent methods/operators of the C++ Array class.
 
