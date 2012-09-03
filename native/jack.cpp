@@ -36,7 +36,5 @@ int main() {
 	jack_gc_init();
 	jack_init();	
 
-	jack_InstanceOf* obj = new jack_InstanceOf();
-	obj->m_init();
-	obj->m_test();
+	testPrimes();
 }
