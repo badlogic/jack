@@ -1,4 +1,4 @@
-/* Copyright (c) 2010, Avian Contributors
+/* Copyright (c) 2008, Avian Contributors
 
    Permission to use, copy, modify, and/or distribute this software
    for any purpose with or without fee is hereby granted, provided
@@ -10,17 +10,12 @@
 
 package java.lang;
 
-/**
- * TODO : current Avian runtime doesn't check, need to be implemented.
- *
- */
-public class InstantiationError extends IncompatibleClassChangeError {
-
-  public InstantiationError(String message) {
+public class InstantiationException extends Exception {
+  public InstantiationException(String message) {
     super(message);
   }
 
-  public InstantiationError() {
+  public InstantiationException() {
+    super();
   }
-
 }

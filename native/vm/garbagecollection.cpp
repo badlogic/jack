@@ -15,3 +15,7 @@ void* jack_gc_malloc(int size) {
 	return GC_MALLOC(size);
 }
 
+void* jack_gc_malloc_atomic(int size) {
+	return GC_MALLOC_ATOMIC(size);
+}
+

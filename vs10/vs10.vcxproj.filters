@@ -5,6 +5,9 @@
     <ClCompile Include="..\native\vm\garbagecollection.cpp">
       <Filter>vm</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\vm\time.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\classes.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -18,6 +21,27 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\jack_Exceptions.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$A.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$B.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$C.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IA.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IB.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf$IC.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_InstanceOf.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\jack_Main.cpp">
@@ -41,6 +65,9 @@
     <ClCompile Include="..\native\classes\java_lang_ArrayStoreException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Class.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_ClassCastException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -50,6 +77,9 @@
     <ClCompile Include="..\native\classes\java_lang_ClassFormatError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ClassNotFoundException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_Error.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -57,6 +87,9 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_IllegalAccessError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IllegalAccessException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_IllegalMonitorStateException.cpp">
@@ -69,6 +102,9 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_InstantiationError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_InstantiationException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_InternalError.cpp">
@@ -86,7 +122,13 @@
     <ClCompile Include="..\native\classes\java_lang_NoSuchFieldError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NoSuchFieldException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_NoSuchMethodError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NoSuchMethodException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_NullPointerException.cpp">
@@ -98,10 +140,25 @@
     <ClCompile Include="..\native\classes\java_lang_OutOfMemoryError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_reflect_Constructor.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_reflect_Field.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_reflect_Method.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_RuntimeException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_SecurityException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_StackOverflowError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_String.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_ThreadDeath.cpp">
@@ -116,11 +173,11 @@
     <ClCompile Include="..\native\classes\java_lang_UnsatisfiedLinkError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp">
+    <ClCompile Include="..\native\classes\java_lang_UnsupportedOperationException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\vm\time.cpp">
-      <Filter>vm</Filter>
+    <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp">
+      <Filter>classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +188,9 @@
       <Filter>vm</Filter>
     </ClInclude>
     <ClInclude Include="..\native\vm\garbagecollection.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\time.h">
       <Filter>vm</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\classes.h">
@@ -146,6 +206,27 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Exceptions.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$A.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$B.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$C.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IA.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IB.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf$IC.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_InstanceOf.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Main.h">
@@ -169,6 +250,9 @@
     <ClInclude Include="..\native\classes\java_lang_ArrayStoreException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Class.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_ClassCastException.h">
       <Filter>classes</Filter>
     </ClInclude>
@@ -178,6 +262,9 @@
     <ClInclude Include="..\native\classes\java_lang_ClassFormatError.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ClassNotFoundException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_Error.h">
       <Filter>classes</Filter>
     </ClInclude>
@@ -185,6 +272,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_IllegalAccessError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IllegalAccessException.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_IllegalMonitorStateException.h">
@@ -197,6 +287,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_InstantiationError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_InstantiationException.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_InternalError.h">
@@ -214,7 +307,13 @@
     <ClInclude Include="..\native\classes\java_lang_NoSuchFieldError.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NoSuchFieldException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_NoSuchMethodError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NoSuchMethodException.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_NullPointerException.h">
@@ -226,10 +325,25 @@
     <ClInclude Include="..\native\classes\java_lang_OutOfMemoryError.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_reflect_Constructor.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_reflect_Field.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_reflect_Method.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_RuntimeException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_SecurityException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_StackOverflowError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_String.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_ThreadDeath.h">
@@ -244,11 +358,11 @@
     <ClInclude Include="..\native\classes\java_lang_UnsatisfiedLinkError.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\java_lang_VerifyError.h">
+    <ClInclude Include="..\native\classes\java_lang_UnsupportedOperationException.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\vm\time.h">
-      <Filter>vm</Filter>
+    <ClInclude Include="..\native\classes\java_lang_VerifyError.h">
+      <Filter>classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

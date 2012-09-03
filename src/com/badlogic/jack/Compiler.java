@@ -1,5 +1,7 @@
 package com.badlogic.jack;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -109,6 +111,7 @@ import soot.tagkit.Tag;
 import com.badlogic.jack.build.FileDescriptor;
 
 public class Compiler {
+	static boolean INCREMENTAL = true;
 	static int ident;
 	static JavaSourceProvider provider;
 	
@@ -131,12 +134,29 @@ public class Compiler {
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
-		new FileDescriptor(outputDir).deleteDirectory();
 		new FileDescriptor(outputDir).mkdirs();
+		
+		Set<String> generatedFiles = new HashSet<String>();
 		
 		// generate the classes
 		for(SootClass c: Scene.v().getClasses()) {
-			generateClass(outputDir, c);					
+			if(shouldRecompile(classpath, outputDir, c)) {
+				generateClass(outputDir, c);
+			} else {
+				System.out.println(c.getName() + " is up to date");
+			}
+			generatedFiles.add(nor(c) + ".h");
+			generatedFiles.add(nor(c) + ".cpp");
+		}
+		
+		// delete all files that aren't in the classpath
+		for(String f: new File(outputDir).list(new FilenameFilter() {
+			@Override
+			public boolean accept(File arg0, String name) {
+				return name.endsWith(".h") || name.endsWith(".cpp");
+			}
+		})) {
+			if(!generatedFiles.contains(f)) new File(outputDir + f).delete();
 		}
 		
 		// generate classes.h and classes.cpp containing
@@ -144,7 +164,15 @@ public class Compiler {
 		generateClassesStartup(outputDir);
 	}
 	
+	private static boolean shouldRecompile(String classpath, String outputDir, SootClass clazz) {
+		if(!INCREMENTAL) return true;
+		String classFile = classpath + clazz.getName().replace(".", "/") + ".class";
+		String headerFile = outputDir + nor(clazz) + ".h";
+		return new File(classFile).lastModified() > new File(headerFile).lastModified(); 
+	}
+	
 	private static void generateClassesStartup(String outputDir) {
+		// generate classes.h
 		StringBuffer buffer = new StringBuffer();
 		wl(buffer, "#ifndef jack_all_classes");
 		wl(buffer, "#define jack_all_classes");
@@ -159,17 +187,55 @@ public class Compiler {
 		wl(buffer, "#endif");
 		new FileDescriptor(outputDir + "/classes.h").writeString(buffer.toString(), false);
 		
+		// generate classes.cpp
 		buffer = new StringBuffer();
 		wl(buffer, "#include \"classes/classes.h\"");
 		wl(buffer, "");
 		wl(buffer, "void jack_init() {");
 		push();
+		
+		// generate all the reflection info
+		generateReflectionData(buffer);
+		
+		// call all m_clinit methods, this should cascade
+		// FIXME clinit (propagation correct?)
 		for(SootClass c: Scene.v().getClasses()) {
 			wl(buffer, nor(c) + "::m_clinit();");
 		}
 		pop();
 		wl(buffer, "}");
 		new FileDescriptor(outputDir + "/classes.cpp").writeString(buffer.toString(), false);
+	}
+	
+	public static void generateReflectionData(StringBuffer buffer) {
+		// initialize the java_lang_Class* for each class/interface
+		for(SootClass c: Scene.v().getClasses()) {
+			String var = nor(c) + "::clazz";
+			wl(buffer, var + "= new java_lang_Class();");
+		}
+		wl(buffer, "");
+		
+		// fill out their reflection data
+		for(SootClass c: Scene.v().getClasses()) {
+			String var = nor(c) + "::clazz";
+			wl(buffer, var + "->m_init();");
+			// FIXME reflection
+//			wl(buffer, var + "->f_isPrimitive = " + )
+//			wl(buffer, var + "->f_isArray = " + );
+			if(c.hasSuperclass()) {
+				wl(buffer, var + "->f_superClass = " + nor(c.getSuperclass()) + "::clazz;");
+			}
+			
+			// create array for interfaces
+			wl(buffer, var + "->f_interfaces = new Array<java_lang_Class*>(" + c.getInterfaceCount() + ", false);");
+			int i = 0;
+			for(SootClass itf: c.getInterfaces()) {
+				wl(buffer, "(*" + var + "->f_interfaces)[" + i + "] = " + nor(itf) + "::clazz;");
+				i++;
+			}
+			wl(buffer, "");
+		}
+		wl(buffer, "");	
 	}
 
 	public static void generateClass(String outputDir, SootClass clazz) {
@@ -210,11 +276,11 @@ public class Compiler {
 			generateField(buffer, field);
 		}
 
+		// add methods
 		wl(buffer, "");
 		wl(buffer, "// methods");
 		List<SootMethod> emittedMethods = new ArrayList<SootMethod>();
 		boolean hasClinit = false;
-		// add methods
 		for(SootMethod method: clazz.getMethods()) {
 			if((method.getModifiers() & 0x40) != 0) {
 				if(!shouldEmitBridgeMethod(clazz, method)) {
@@ -222,12 +288,19 @@ public class Compiler {
 					continue;
 				}
 			}
-			generateMethod(buffer, method);
 			emittedMethods.add(method);
+			// we implement getClass() ourselves, below.
+			if(method.getName().equals("getClass")) {
+				continue;
+			}
+			generateMethod(buffer, method);
 			if(method.getName().equals("<clinit>")) {
 				hasClinit = true;
 			}
 		}
+		
+		// getClass() implementation
+		wl(buffer, "virtual java_lang_Class* m_getClass() { return " + nor(clazz) + "::clazz; }");
 		
 		// if we don't have a <clinit> declaration, create one!
 		if(!hasClinit) {
@@ -269,6 +342,7 @@ public class Compiler {
 		// add in a static field keeping track of whether clinit was called
 		// and another static field for the class.
 		wl(buffer, "static java_lang_Class* clazz;");
+		wl(buffer, "static bool clinit;");
 		
 		pop();
 		pop();
@@ -557,6 +631,11 @@ public class Compiler {
 		}
 	}
 	
+	private static boolean isPrimitiveType(Type type) {
+		return !(type instanceof RefType || type instanceof ArrayType ||
+				 type instanceof NullType || type instanceof VoidType);
+	}
+	
 	private static String toUnsignedCType(Type type) {
 		if(type instanceof PrimType) {	
 			if(type instanceof ByteType) return "j_ubyte";			
@@ -588,6 +667,10 @@ public class Compiler {
 				}
 			}
 			
+			// if this is getClass() continue, we already implemented that
+			// in the header
+			if(method.getName().equals("getClass")) continue;
+			
 			// if this is the clinit method, we fake
 			// emission of the method. We need to do
 			// this to gather all string literals.
@@ -617,14 +700,18 @@ public class Compiler {
 		// static fields. Need to do this as string literals are gathered
 		// during method generation.		
 		String fullName = nor(clazz);		
-		StringBuffer headerBuffer = new StringBuffer();		
-		wl(headerBuffer, "#include \"classes/classes.h\"");
+		StringBuffer headerBuffer = new StringBuffer();
+		// standard includes
 		wl(headerBuffer, "#include <math.h>"); 
 		wl(headerBuffer, "#include <limits>");
-		wl(headerBuffer, "");
-		wl(headerBuffer, "#define GC_THREADS");
-		wl(headerBuffer, "#define GC_NOT_DLL");
-		wl(headerBuffer, "#include <gc_cpp.h>");
+		wl(headerBuffer, "#include \"vm/Array.h\"");
+		// include the header for this class
+		wl(headerBuffer, "#include \"classes/" + fullName + ".h\"");
+		// include only the dependencies of this class ala import :)
+		Set<SootClass> dependencies = getDependencies(clazz);
+		for(SootClass dependency: dependencies) {
+			wl(headerBuffer, "#include \"classes/" + nor(dependency) + ".h\"");			
+		}
 		wl(headerBuffer, "");
 		
 		// generate static fields
@@ -649,7 +736,8 @@ public class Compiler {
 		}
 		
 		// generate the clazz static fields
-		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");		
+		wl(headerBuffer, "java_lang_Class* " + fullName + "::clazz = 0;");
+		wl(headerBuffer, "bool " + fullName + "::clinit = 0;");
 		wl(headerBuffer, "");
 		
 		// output string literal array and java.lang.String delcarations.
@@ -683,18 +771,17 @@ public class Compiler {
 		push();
 		
 		// check if clinit was already called and bail out in that case
-		wl(buffer, "if(" + nor(clazz) + "::clazz) return;");
+		wl(buffer, "if(" + nor(clazz) + "::clinit) return;");
+		
+		// set the clinit flag of this class as a guard
+		wl(buffer, nor(clazz) + "::clinit = true;");
 		
 		// generate java.lang.String instances for literals
 		for(String literal: literals.keySet()) {
 			String id = literals.get(literal);
 			wl(buffer, id + " = new java_lang_String();");
-			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + "));");
+			wl(buffer, id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + ", true));");
 		}
-		
-		// set this class' clazz field to != 0 so subsequent invocations will bail out early
-		// FIXME reflection
-		wl(buffer, nor(clazz) + "::clazz = (java_lang_Class*)0x1;");
 		
 		// emit calls to all classes and interfaces' clinit this class references
 		for(SootClass dependency: getDependencies(clazz)) {
@@ -922,13 +1009,14 @@ public class Compiler {
 				String target = translateValue(leftOp);
 				NewMultiArrayExpr v = (NewMultiArrayExpr)rightOp;
 				String elementType = toCType(v.getBaseType().baseType);
+				boolean isPrimitive = isPrimitiveType(v.getBaseType().baseType);
 				List<String> sizes = new ArrayList<String>();
 				for(Object size: v.getSizes()) {
 					Value arraySize = (Value)size;
 					sizes.add(translateValue(arraySize));
 				}
 				// FIXME GC
-				wl(buffer, generateMultiArray(target, elementType, sizes));
+				wl(buffer, generateMultiArray(target, elementType, isPrimitive, sizes));
 			} 
 			// null type need special treatment too, can't assign void* to class*
 			else if(rightOp.getType() instanceof NullType) {
@@ -1050,8 +1138,7 @@ public class Compiler {
 	private static String translateImmediate(Immediate val) {
 		if(val instanceof ClassConstant) {
 			ClassConstant v = (ClassConstant)val;
-			// FIXME reflection
-			return "0"; //"getClass(" + v.value + ")";
+			return v.getValue().replace('/', '_') + "::clazz";
 		} else if(val instanceof MetaConstant) {
 			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
@@ -1200,9 +1287,9 @@ public class Compiler {
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
 			String type = translateValue(v.getOp());
-			String checkType = toCType(v.getCheckType());
+			String checkType = v.getCheckType().toString().replace('.', '_');
 			// FIXME reflection
-			return "(dynamic_cast<const " + checkType + ">(" + type + ") != 0)";					
+			return checkType + "::clazz->m_isInstance(" + type + ")";					
 		} else if(val instanceof DynamicInvokeExpr) {
 			DynamicInvokeExpr v = (DynamicInvokeExpr)val;
 			throw new UnsupportedOperationException();
@@ -1245,9 +1332,10 @@ public class Compiler {
 		} else if(val instanceof NewArrayExpr) {
 			NewArrayExpr v = (NewArrayExpr)val;
 			String type = toCType(v.getBaseType());
+			boolean isPrimitive = isPrimitiveType(v.getBaseType());
 			String size = translateValue(v.getSize());
 			// FIXME GC
-			return "new Array<" + type + ">(" + size + ")";
+			return "new Array<" + type + ">(" + size + ", " + isPrimitive + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME GC
@@ -1275,8 +1363,8 @@ public class Compiler {
 		return output;
 	}
 	
-	private static String generateMultiArray(String target, String elementType, List<String> sizes) {
-		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ");\n";
+	private static String generateMultiArray(String target, String elementType, boolean isPrimitive, List<String> sizes) {
+		String newMultiArray = target + " = new " + generateArraySig(elementType, sizes.size()) + "(" + sizes.get(0) + ", false);\n";
 		String counter = target + "_c0";
 		for(int i = 0; i < sizes.size() - 1; i++) {
 			newMultiArray += i() + "for(int " + counter + " = 0; " + counter + " < " + sizes.get(i) + "; " + counter + "++) {\n";
@@ -1293,7 +1381,11 @@ public class Compiler {
 				else
 					newMultiArray += "[" + target + "_c" + j + "]";
 			}
-			newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ");\n";
+			if(i == sizes.size() - 2) {
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", " + isPrimitive + ");\n";
+			} else {
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", false);\n";
+			}
 			counter = target + "_c" + (i+1);
 		}
 		for(int i = 0; i < sizes.size() - 1; i++) {

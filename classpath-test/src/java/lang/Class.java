@@ -16,6 +16,14 @@ import java.lang.reflect.Method;
 
 // FIXME reflection
 public final class Class<T> {
+	String name;
+	Class superClass;
+	Class[] interfaces;
+	boolean isPrimitive = false;
+	boolean isInterface = false;
+	boolean isArray = false;
+	Class componentType;
+	
 	public String toString() {
 		return getName();
 	}
@@ -32,8 +40,7 @@ public final class Class<T> {
 		throw new UnsupportedOperationException();
 	}
 
-	public T newInstance() throws IllegalAccessException,
-			InstantiationException {
+	public T newInstance() throws IllegalAccessException, InstantiationException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -46,7 +53,7 @@ public final class Class<T> {
 	}
 
 	public Class getComponentType() {
-		throw new UnsupportedOperationException();
+		return componentType;
 	}
 
 	public boolean isAssignableFrom(Class c) {
@@ -110,7 +117,7 @@ public final class Class<T> {
 	}
 
 	public Class[] getInterfaces() {
-		throw new UnsupportedOperationException();
+		return interfaces;
 	}
 
 	public T[] getEnumConstants() {
@@ -126,19 +133,26 @@ public final class Class<T> {
 	}
 
 	public Class getSuperclass() {
-		throw new UnsupportedOperationException();
+		return superClass;
 	}
 
 	public boolean isArray() {
-		throw new UnsupportedOperationException();
+		return isArray;
 	}
 
 	public boolean isInstance(Object o) {
-		throw new UnsupportedOperationException();
+		if(this == o.getClass()) return true;
+		if(superClass != null && superClass != Object.class) {
+			if(superClass.isInstance(o)) return true;
+		}
+		for(Class itf: interfaces) {
+			if(itf.isInstance(o)) return true;
+		}
+		return false;
 	}
 
 	public boolean isPrimitive() {
-		throw new UnsupportedOperationException();
+		return isPrimitive;
 	}
 	
 	public boolean desiredAssertionStatus() {

@@ -7,10 +7,14 @@
 template <class T>
 class Array: public java_lang_Object {
 public:
-	Array(int size) {		
+	Array(int size, bool isPrimitive) {		
 		this->length = size;
 		if(size > 0) {
-			this->elements = (T*)jack_gc_malloc(sizeof(T) * size);
+			if(isPrimitive) {
+				this->elements = (T*)jack_gc_malloc(sizeof(T) * size);
+			} else {
+				this->elements = (T*)jack_gc_malloc_atomic(sizeof(T) * size);
+			}
 		} else {
 			this->elements = 0;
 		}

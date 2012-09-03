@@ -9,10 +9,7 @@
 #include "vm/time.h"
 #include "vm/garbagecollection.h"
 
-int main() {
-	jack_gc_init();
-	jack_init();	
-
+void testPrimes() {
 	jack_Primes* primes = new jack_Primes();
 	primes->m_init();
 	j_long sum = 0;
@@ -22,13 +19,24 @@ int main() {
 		if(i % 1000 == 0) printf("%lld\n", sum);
 	}
 	printf("%lld, %f\n", sum, (getCurrentTimeMillis() - start) / 1000.f);	
+}
 
+void testAllocation() {
 	for(int i = 0; i < 10000000; i++) {		
 		jack_ArrayTest* at = new jack_ArrayTest();
 		at->m_init();
-		
+
 		if(i % 10000 == 0) {
-			printf("heap size %d\n", jack_gc_heapSize());
+			printf("%d heap size %d\n", i, jack_gc_heapSize());
 		}
 	}
+}
+
+int main() {
+	jack_gc_init();
+	jack_init();	
+
+	jack_InstanceOf* obj = new jack_InstanceOf();
+	obj->m_init();
+	obj->m_test();
 }
