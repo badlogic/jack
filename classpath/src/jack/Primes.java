@@ -21,33 +21,32 @@ public class Primes {
 	}
 
 	public int next() {
-		return 0;
-//		if (this.len == 0) {
-//			this.primes[this.len++] = 2;
-//			return 2;
-//		}
-//
-//		int last = this.primes[this.len - 1];
-//		int test = last;
-//
-//		outer: while (true) {
-//			test += 1;
-//
-//			for (int i = 0; i < this.len; i++)
-//				if (test % this.primes[i] == 0)
-//					continue outer;
-//
-//			if (this.primes.length == this.len) {
-//				int[] newArray = new int[this.primes.length*2];
-//				for(int i = 0; i < this.primes.length; i++) {
-//					newArray[i] = this.primes[i];
-//				}
-//				this.primes = newArray;
-//			}
-//
-//			this.primes[this.len++] = test;
-//			return test;
-//		}
+		if (this.len == 0) {
+			this.primes[this.len++] = 2;
+			return 2;
+		}
+
+		int last = this.primes[this.len - 1];
+		int test = last;
+
+		outer: while (true) {
+			test += 1;
+
+			for (int i = 0; i < this.len; i++)
+				if (test % this.primes[i] == 0)
+					continue outer;
+
+			if (this.primes.length == this.len) {
+				int[] newArray = new int[this.primes.length*2];
+				for(int i = 0; i < this.primes.length; i++) {
+					newArray[i] = this.primes[i];
+				}
+				this.primes = newArray;
+			}
+
+			this.primes[this.len++] = test;
+			return test;
+		}
 	}
 	
 //	public static void main(String[] args) {

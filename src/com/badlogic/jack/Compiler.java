@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import soot.ArrayType;
+import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -33,6 +34,7 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
+import soot.ValueBox;
 import soot.VoidType;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
@@ -62,6 +64,7 @@ import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
 import soot.jimple.LeExpr;
@@ -111,7 +114,7 @@ import soot.tagkit.Tag;
 import com.badlogic.jack.build.FileDescriptor;
 
 public class Compiler {
-	static boolean INCREMENTAL = true;
+	static boolean INCREMENTAL = false;
 	static int ident;
 	static JavaSourceProvider provider;
 	
@@ -510,10 +513,8 @@ public class Compiler {
 		for(SootMethod method: clazz.getMethods()) {
 			for(Object type: method.getParameterTypes()) {
 				forwardedClasses.add(forwardDeclareType(buffer, (Type)type));
-			}
-			if(method.getReturnType() instanceof RefType) {
-				forwardedClasses.add(forwardDeclareType(buffer, method.getReturnType()));
-			}
+			}			
+			forwardedClasses.add(forwardDeclareType(buffer, method.getReturnType()));					
 		}
 		
 		// remove super class and interfaces from forward decls
@@ -705,6 +706,7 @@ public class Compiler {
 		wl(headerBuffer, "#include <math.h>"); 
 		wl(headerBuffer, "#include <limits>");
 		wl(headerBuffer, "#include \"vm/Array.h\"");
+		wl(headerBuffer, "#include \"classes/java_lang_Class.h\"");
 		// include the header for this class
 		wl(headerBuffer, "#include \"classes/" + fullName + ".h\"");
 		// include only the dependencies of this class ala import :)
@@ -800,6 +802,7 @@ public class Compiler {
 	private static Set<SootClass> getDependencies(SootClass clazz) {
 		Set<SootClass> dependencies = new HashSet<SootClass>();
 		if(clazz.hasSuperclass()) dependencies.add(clazz.getSuperclass());
+		if(clazz.hasOuterClass()) dependencies.add(clazz.getOuterClass());
 		for(SootClass itf: clazz.getInterfaces()) {
 			dependencies.add(itf);
 		}
@@ -819,9 +822,24 @@ public class Compiler {
 				}
 			}
 			if(method.hasActiveBody()) {
-				for(Local local: method.getActiveBody().getLocals()) {
-					if(local.getType() instanceof RefType) {
-						dependencies.add(((RefType)local.getType()).getSootClass());
+				Body body = method.getActiveBody();								
+				for(ValueBox box: body.getUseAndDefBoxes()) {
+					if(box.getValue().getType() instanceof RefType) {
+						dependencies.add(((RefType)box.getValue().getType()).getSootClass());
+					}
+				}
+				for(Unit unit: body.getUnits()) {
+					Stmt stmt = (Stmt)unit;
+					if(stmt instanceof InvokeStmt) {						
+						InvokeStmt invStmt = (InvokeStmt)stmt;						
+						dependencies.add(((InvokeStmt)stmt).getInvokeExpr().getMethod().getDeclaringClass());
+					}
+					if(stmt instanceof AssignStmt) {
+						AssignStmt assStmt = (AssignStmt)stmt;
+						Value val = assStmt.getRightOp();
+						if(val instanceof InvokeExpr) {
+							dependencies.add(((InvokeExpr)val).getMethod().getDeclaringClass());							
+						}
 					}
 				}
 			}

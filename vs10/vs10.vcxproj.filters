@@ -8,6 +8,30 @@
     <ClCompile Include="..\native\vm\time.cpp">
       <Filter>vm</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\avian_Cell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_Iso88591.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_PersistentSet$1.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_PersistentSet$Iterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_PersistentSet$Node.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_PersistentSet$Path.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_PersistentSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\avian_Utf8.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\classes.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -53,7 +77,151 @@
     <ClCompile Include="..\native\classes\jack_Statics.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\jack_Strings.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_BufferedInputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_BufferedOutputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_BufferedReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_BufferedWriter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ByteArrayInputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ByteArrayOutputStream$Cell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ByteArrayOutputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_EOFException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_Externalizable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_File$Pair.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_File.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileDescriptor.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileInputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FilenameFilter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileNotFoundException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileOutputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FileWriter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_FilterOutputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_InputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_InputStreamReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_IOException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_LineNumberReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_NotSerializableException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ObjectInput.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ObjectOutput.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_ObjectStreamException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_OutputStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_OutputStreamWriter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_PrintStream$Static.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_PrintStream.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_PrintWriter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_PushbackReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_RandomAccessFile.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_Reader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_Serializable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_StreamCorruptedException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_StringReader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_StringWriter.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_UnsupportedEncodingException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_io_Writer.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_AbstractMethodError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Annotation.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_ElementType.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Retention.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_RetentionPolicy.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_Target.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Appendable.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_ArithmeticException.cpp">
@@ -63,6 +231,18 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_ArrayStoreException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Boolean.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Byte.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Character.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_CharSequence.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_Class.cpp">
@@ -80,10 +260,25 @@
     <ClCompile Include="..\native\classes\java_lang_ClassNotFoundException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Cloneable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Comparable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Double.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Enum.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_Error.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_Exception.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Float.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_IllegalAccessError.cpp">
@@ -92,7 +287,13 @@
     <ClCompile Include="..\native\classes\java_lang_IllegalAccessException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IllegalArgumentException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_IllegalMonitorStateException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_IllegalStateException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_IncompatibleClassChangeError.cpp">
@@ -107,10 +308,22 @@
     <ClCompile Include="..\native\classes\java_lang_InstantiationException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Integer.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_InternalError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Iterable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_LinkageError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Long.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Math.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_NegativeArraySizeException.cpp">
@@ -134,10 +347,37 @@
     <ClCompile Include="..\native\classes\java_lang_NullPointerException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Number.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_NumberFormatException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_Object.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_OutOfMemoryError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Override.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ref_PhantomReference.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ref_Reference.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ref_ReferenceQueue.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ref_SoftReference.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_ref_WeakReference.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_reflect_Array.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_reflect_Constructor.cpp">
@@ -146,19 +386,40 @@
     <ClCompile Include="..\native\classes\java_lang_reflect_Field.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_reflect_InvocationTargetException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_reflect_Method.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_RuntimeException.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\java_lang_SecurityException.cpp">
+    <ClCompile Include="..\native\classes\java_lang_Short.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_StackOverflowError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_StackTraceElement.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_String$1.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_String.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_StringBuffer.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_StringBuilder$Cell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_StringBuilder.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_System.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_ThreadDeath.cpp">
@@ -179,6 +440,282 @@
     <ClCompile Include="..\native\classes\java_lang_VerifyError.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_VirtualMachineError.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_Void.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractCollection.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractList.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractQueue.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractSequentialList.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_AbstractSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_ArrayList.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Arrays$1.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Arrays$2.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Arrays.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_BitSet$MaskInfo.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_BitSet$MaskInfoIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_BitSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Calendar$MyCalendar.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Calendar.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collection.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$ArrayListIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$IteratorEnumeration.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$KeyIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$ReverseComparator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$SynchronizedCollection.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$SynchronizedIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$SynchronizedMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$SynchronizedSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$UnmodifiableList.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$UnmodifiableMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$UnmodifiableSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections$ValueIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Collections.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Comparator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_ConcurrentModificationException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Date.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Enumeration.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_EnumSet$EnumSetIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_EnumSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_EventListener.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_EventObject.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$Cell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$EntrySet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$Helper.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$KeySet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$MyCell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$MyHelper.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$MyIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap$Values.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashSet$MyIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_HashSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Hashtable.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_IdentityHashMap$MyHelper.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_IdentityHashMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Iterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_LinkedList$Cell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_LinkedList$MyIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_LinkedList.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_List.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_ListIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Locale.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Map$Entry.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Map.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_MissingResourceException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_NoSuchElementException.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Properties$InputStreamParser.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Properties$Parser.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Properties$ReaderParser.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Properties.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Queue.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Random.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_RandomAccess.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_regex_Matcher.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_regex_Pattern.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Set.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_SortedSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Stack.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_StringTokenizer.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap$1.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap$2.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap$KeySet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap$MyEntry.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap$Values.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeSet$1.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeSet$2.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeSet$MyIterator.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_TreeSet.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_UUID.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_Vector.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_WeakHashMap$MyCell.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_WeakHashMap$MyHelper.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_util_WeakHashMap.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\native\vm\array.h">
@@ -192,6 +729,30 @@
     </ClInclude>
     <ClInclude Include="..\native\vm\time.h">
       <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_Cell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_Iso88591.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_PersistentSet$1.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_PersistentSet$Iterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_PersistentSet$Node.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_PersistentSet$Path.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_PersistentSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\avian_Utf8.h">
+      <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\classes.h">
       <Filter>classes</Filter>
@@ -238,7 +799,151 @@
     <ClInclude Include="..\native\classes\jack_Statics.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\jack_Strings.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_BufferedInputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_BufferedOutputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_BufferedReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_BufferedWriter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ByteArrayInputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ByteArrayOutputStream$Cell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ByteArrayOutputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_EOFException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_Externalizable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_File$Pair.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_File.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileDescriptor.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileInputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FilenameFilter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileNotFoundException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileOutputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FileWriter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_FilterOutputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_InputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_InputStreamReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_IOException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_LineNumberReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_NotSerializableException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ObjectInput.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ObjectOutput.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_ObjectStreamException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_OutputStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_OutputStreamWriter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_PrintStream$Static.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_PrintStream.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_PrintWriter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_PushbackReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_RandomAccessFile.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_Reader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_Serializable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_StreamCorruptedException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_StringReader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_StringWriter.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_UnsupportedEncodingException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_io_Writer.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_AbstractMethodError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Annotation.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_ElementType.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Retention.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_RetentionPolicy.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_Target.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Appendable.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_ArithmeticException.h">
@@ -248,6 +953,18 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_ArrayStoreException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Boolean.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Byte.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Character.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_CharSequence.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_Class.h">
@@ -265,10 +982,25 @@
     <ClInclude Include="..\native\classes\java_lang_ClassNotFoundException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Cloneable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Comparable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Double.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Enum.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_Error.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_Exception.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Float.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_IllegalAccessError.h">
@@ -277,7 +1009,13 @@
     <ClInclude Include="..\native\classes\java_lang_IllegalAccessException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IllegalArgumentException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_IllegalMonitorStateException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_IllegalStateException.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_IncompatibleClassChangeError.h">
@@ -292,10 +1030,22 @@
     <ClInclude Include="..\native\classes\java_lang_InstantiationException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Integer.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_InternalError.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Iterable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_LinkageError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Long.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Math.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_NegativeArraySizeException.h">
@@ -319,10 +1069,37 @@
     <ClInclude Include="..\native\classes\java_lang_NullPointerException.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Number.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_NumberFormatException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_Object.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_OutOfMemoryError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Override.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ref_PhantomReference.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ref_Reference.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ref_ReferenceQueue.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ref_SoftReference.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_ref_WeakReference.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_reflect_Array.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_reflect_Constructor.h">
@@ -331,19 +1108,40 @@
     <ClInclude Include="..\native\classes\java_lang_reflect_Field.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_reflect_InvocationTargetException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_reflect_Method.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_RuntimeException.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\java_lang_SecurityException.h">
+    <ClInclude Include="..\native\classes\java_lang_Short.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_StackOverflowError.h">
       <Filter>classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_StackTraceElement.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_String$1.h">
+      <Filter>classes</Filter>
+    </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_String.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_StringBuffer.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_StringBuilder$Cell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_StringBuilder.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_System.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_ThreadDeath.h">
@@ -362,6 +1160,282 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_VerifyError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_VirtualMachineError.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_Void.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractCollection.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractList.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractQueue.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractSequentialList.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_AbstractSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_ArrayList.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Arrays$1.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Arrays$2.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Arrays.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_BitSet$MaskInfo.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_BitSet$MaskInfoIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_BitSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Calendar$MyCalendar.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Calendar.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collection.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$ArrayListIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$IteratorEnumeration.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$KeyIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$ReverseComparator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$SynchronizedCollection.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$SynchronizedIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$SynchronizedMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$SynchronizedSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$UnmodifiableList.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$UnmodifiableMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$UnmodifiableSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections$ValueIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Collections.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Comparator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_ConcurrentModificationException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Date.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Enumeration.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_EnumSet$EnumSetIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_EnumSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_EventListener.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_EventObject.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$Cell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$EntrySet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$Helper.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$KeySet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$MyCell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$MyHelper.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$MyIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap$Values.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashSet$MyIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_HashSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Hashtable.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_IdentityHashMap$MyHelper.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_IdentityHashMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Iterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_LinkedList$Cell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_LinkedList$MyIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_LinkedList.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_List.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_ListIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Locale.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Map$Entry.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Map.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_MissingResourceException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_NoSuchElementException.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Properties$InputStreamParser.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Properties$Parser.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Properties$ReaderParser.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Properties.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Queue.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Random.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_RandomAccess.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_regex_Matcher.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_regex_Pattern.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Set.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_SortedSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Stack.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_StringTokenizer.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap$1.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap$2.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap$KeySet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap$MyEntry.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap$Values.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeMap.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeSet$1.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeSet$2.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeSet$MyIterator.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_TreeSet.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_UUID.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_Vector.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_WeakHashMap$MyCell.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_WeakHashMap$MyHelper.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_util_WeakHashMap.h">
       <Filter>classes</Filter>
     </ClInclude>
   </ItemGroup>

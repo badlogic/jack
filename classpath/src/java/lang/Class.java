@@ -1,13 +1,3 @@
-/* Copyright (c) 2008-2011, Avian Contributors
-
-   Permission to use, copy, modify, and/or distribute this software
-   for any purpose with or without fee is hereby granted, provided
-   that the above copyright notice and this permission notice appear
-   in all copies.
-
-   There is NO WARRANTY for this software.  See license.txt for
-   details. */
-
 package java.lang;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +6,14 @@ import java.lang.reflect.Method;
 
 // FIXME reflection
 public final class Class<T> {
+	String name;
+	Class superClass;
+	Class[] interfaces;
+	boolean isPrimitive = false;
+	boolean isInterface = false;
+	boolean isArray = false;
+	Class componentType;
+	
 	public String toString() {
 		return getName();
 	}
@@ -32,8 +30,7 @@ public final class Class<T> {
 		throw new UnsupportedOperationException();
 	}
 
-	public T newInstance() throws IllegalAccessException,
-			InstantiationException {
+	public T newInstance() throws IllegalAccessException, InstantiationException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -46,7 +43,7 @@ public final class Class<T> {
 	}
 
 	public Class getComponentType() {
-		throw new UnsupportedOperationException();
+		return componentType;
 	}
 
 	public boolean isAssignableFrom(Class c) {
@@ -110,7 +107,7 @@ public final class Class<T> {
 	}
 
 	public Class[] getInterfaces() {
-		throw new UnsupportedOperationException();
+		return interfaces;
 	}
 
 	public T[] getEnumConstants() {
@@ -126,19 +123,26 @@ public final class Class<T> {
 	}
 
 	public Class getSuperclass() {
-		throw new UnsupportedOperationException();
+		return superClass;
 	}
 
 	public boolean isArray() {
-		throw new UnsupportedOperationException();
+		return isArray;
 	}
 
 	public boolean isInstance(Object o) {
-		throw new UnsupportedOperationException();
+		if(this == o.getClass()) return true;
+		if(superClass != null && superClass != Object.class) {
+			if(superClass.isInstance(o)) return true;
+		}
+		for(Class itf: interfaces) {
+			if(itf.isInstance(o)) return true;
+		}
+		return false;
 	}
 
 	public boolean isPrimitive() {
-		throw new UnsupportedOperationException();
+		return isPrimitive;
 	}
 	
 	public boolean desiredAssertionStatus() {

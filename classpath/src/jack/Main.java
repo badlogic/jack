@@ -5,6 +5,4 @@ public class Main {
 	Arithmetic arithmetic;
 	Arrays arrays;
 	Primes primes;
-	Exceptions exceptions;
-	Strings strings;
 }

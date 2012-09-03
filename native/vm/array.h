@@ -9,6 +9,7 @@ class Array: public java_lang_Object {
 public:
 	Array(int size, bool isPrimitive) {		
 		this->length = size;
+		this->isPrimitive = isPrimitive;
 		if(size > 0) {
 			if(isPrimitive) {
 				this->elements = (T*)jack_gc_malloc(sizeof(T) * size);
@@ -20,9 +21,10 @@ public:
 		}
 	}
 
-	Array(T* elements, int size) {
+	Array(T* elements, int size, bool isPrimitive) {
 		this->length = size;
 		this->elements = elements;
+		this->isPrimitive = isPrimitive;
 	}
 
 	inline T get(int idx) {
@@ -40,6 +42,7 @@ public:
 	}
 
 	int length;
+	bool isPrimitive;
 private:
 	T* elements;	
 };
