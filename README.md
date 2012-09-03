@@ -5,6 +5,11 @@ Java bytecode to C++ transpiler to ahead-of-time compile Java code.
 This can be useful if you want to target operating systems that don't 
 allow setting the executable flag on memory pages.
 
+## Disclaimer
+If you open Compiler.java, you'll get eye cancer. This is due to the fact
+that i started this kind of as a joke. If this ever gets somewhere, i'll
+promise to refactor/rewrite things. Pinky promise!
+
 ## Goals
 Jack tries to provide a reasonable runtime environment for Java 
 applications. The following features should be supported:
