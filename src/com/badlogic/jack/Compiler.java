@@ -700,7 +700,8 @@ public class Compiler {
 		for(SootClass dependency: getDependencies(clazz)) {
 			wl(buffer, nor(dependency) + "::m_clinit();");
 		}		
-					
+		
+		// generate the method body
 		if(method != null) {
 			generateMethodBody(buffer, method);
 		}
