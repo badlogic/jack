@@ -34,6 +34,7 @@
     <ClInclude Include="..\native\classes\jack_Primes.h" />
     <ClInclude Include="..\native\classes\jack_Statics.h" />
     <ClInclude Include="..\native\classes\jack_Strings.h" />
+    <ClInclude Include="..\native\classes\jack_Synchronized.h" />
     <ClInclude Include="..\native\classes\java_io_BufferedInputStream.h" />
     <ClInclude Include="..\native\classes\java_io_BufferedOutputStream.h" />
     <ClInclude Include="..\native\classes\java_io_BufferedReader.h" />
@@ -275,6 +276,7 @@
     <ClCompile Include="..\native\classes\jack_Primes.cpp" />
     <ClCompile Include="..\native\classes\jack_Statics.cpp" />
     <ClCompile Include="..\native\classes\jack_Strings.cpp" />
+    <ClCompile Include="..\native\classes\jack_Synchronized.cpp" />
     <ClCompile Include="..\native\classes\java_io_BufferedInputStream.cpp" />
     <ClCompile Include="..\native\classes\java_io_BufferedOutputStream.cpp" />
     <ClCompile Include="..\native\classes\java_io_BufferedReader.cpp" />

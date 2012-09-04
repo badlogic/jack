@@ -1,16 +1,15 @@
 package com.badlogic.jack.info;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.badlogic.jack.utils.Mangling;
-
 import soot.SootClass;
 import soot.SootMethod;
 
+import com.badlogic.jack.utils.Mangling;
+
 /**
  * Stores additional information for a {@link SootMethod} such as
- * encountered literals, labels and so on.
+ * encountered literals, labels and so on. Determines if the method
+ * can be skipped, e.g. if it is a bridge method. The corresponding
+ * {@link #skip} field will be set to true in that case.
  * @author mzechner
  *
  */

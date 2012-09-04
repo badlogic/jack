@@ -3,6 +3,7 @@ package com.badlogic.jack.generators;
 import com.badlogic.jack.build.FileDescriptor;
 import com.badlogic.jack.info.ClassInfo;
 import com.badlogic.jack.info.MethodInfo;
+import com.badlogic.jack.utils.JavaSourceProvider;
 import com.badlogic.jack.utils.SourceWriter;
 
 import soot.SootClass;
@@ -16,16 +17,19 @@ import soot.SootMethod;
  */
 public class ImplementationGenerator {
 	final SootClass clazz;
+	final JavaSourceProvider sourceProvider;
 	final ClassInfo info;
 	final String fileName;
 	
-	public ImplementationGenerator(SootClass clazz, ClassInfo info, String fileName) {
+	public ImplementationGenerator(SootClass clazz, JavaSourceProvider sourceProvider, ClassInfo info, String fileName) {
 		this.clazz = clazz;
+		this.sourceProvider = sourceProvider;
 		this.info = info;
 		this.fileName = fileName;
 	}
 	
 	public void generate() {
+		System.out.println("Generating implementation for " + clazz.getName());
 		SourceWriter methodWriter = new SourceWriter();
 		// first we generate the methods themselves, as we collect
 		// data while emitting the statements, e.g. string literals,
@@ -41,15 +45,15 @@ public class ImplementationGenerator {
 			// generated later, including literal initialization.			
 			if(method.getName().equals("<clinit>")) {
 				clinitMethod = method;
-				new MethodGenerator(new SourceWriter(), info, method).generate();				
+				new MethodGenerator(new SourceWriter(), sourceProvider, info, method).generate();				
 			} else {
-				new MethodGenerator(methodWriter, info, method).generate();
+				new MethodGenerator(methodWriter, sourceProvider, info, method).generate();
 			}
 			methodWriter.wl("");
 		}
 		
 		// generate the clinit implementation
-		new ClinitGenerator(methodWriter, info, clinitMethod).generate();
+		new ClinitGenerator(methodWriter, sourceProvider, info, clinitMethod).generate();
 		
 		// generate the statics and include section of the .cpp file
 		// note that we do this after generating the methods themselves

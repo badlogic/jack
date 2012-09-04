@@ -3,6 +3,7 @@ package com.badlogic.jack.generators;
 import java.util.Map;
 
 import com.badlogic.jack.info.ClassInfo;
+import com.badlogic.jack.utils.JavaSourceProvider;
 import com.badlogic.jack.utils.Mangling;
 import com.badlogic.jack.utils.SourceWriter;
 
@@ -11,11 +12,13 @@ import soot.SootMethod;
 
 public class ClinitGenerator {
 	private final SourceWriter writer;
+	private final JavaSourceProvider sourceProvider;
 	private final ClassInfo info;
 	private final SootMethod clinitMethod;
 	
-	public ClinitGenerator(SourceWriter writer, ClassInfo info, SootMethod clinitMethod) {
+	public ClinitGenerator(SourceWriter writer, JavaSourceProvider sourceProvider, ClassInfo info, SootMethod clinitMethod) {
 		this.writer = writer;
+		this.sourceProvider = sourceProvider;
 		this.info = info;
 		this.clinitMethod = clinitMethod;
 	}
@@ -48,7 +51,7 @@ public class ClinitGenerator {
 		
 		// generate the method body
 		if(clinitMethod != null) {
-			new MethodBodyGenerator(writer, info, clinitMethod).generate();
+			new MethodBodyGenerator(writer, sourceProvider, info, clinitMethod).generate();
 		}
 		writer.pop();
 		writer.wl("}");

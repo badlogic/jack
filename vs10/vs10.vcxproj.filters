@@ -77,6 +77,9 @@
     <ClCompile Include="..\native\classes\jack_Strings.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\jack_Synchronized.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\java_io_BufferedInputStream.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -794,6 +797,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Strings.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_Synchronized.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_io_BufferedInputStream.h">

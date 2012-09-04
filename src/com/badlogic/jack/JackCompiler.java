@@ -1,6 +1,7 @@
 package com.badlogic.jack;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ public class JackCompiler {
 	private Set<SootClass> classes;
 	private final Map<SootClass, ClassInfo> classInfos = new HashMap<SootClass, ClassInfo>();
 	private JavaSourceProvider sourceProvider;
+	private Set<String> generatedFiles = new HashSet<String>();
 	
 	/**
 	 * Creates a new compiler, setting the classpath directory,
@@ -102,6 +104,16 @@ public class JackCompiler {
 		generateHeaders();
 		generateImplementations();
 		generateAuxiliary();
+		
+		// delete all files that aren't in the classpath
+		for(String f: new File(outputPath).list(new FilenameFilter() {
+			@Override
+			public boolean accept(File arg0, String name) {
+				return name.endsWith(".h") || name.endsWith(".cpp");
+			}
+		})) {
+			if(!generatedFiles.contains(f)) new File(outputPath + f).delete();
+		}
 	}
 
 	/**
@@ -112,6 +124,8 @@ public class JackCompiler {
 	private void generateClassInfo() {
 		for(SootClass clazz: classes) {
 			classInfos.put(clazz, new ClassInfo(clazz));
+			generatedFiles.add(Mangling.mangle(clazz) + ".h");
+			generatedFiles.add(Mangling.mangle(clazz) + ".cpp");
 		}
 	}
 	
@@ -132,7 +146,7 @@ public class JackCompiler {
 	private void generateImplementations() {
 		for(SootClass clazz: classes) {
 			ClassInfo info = classInfos.get(clazz);
-			ImplementationGenerator implGenerator = new ImplementationGenerator(clazz, info, outputPath + info.mangledName + ".cpp");
+			ImplementationGenerator implGenerator = new ImplementationGenerator(clazz, sourceProvider, info, outputPath + info.mangledName + ".cpp");
 			implGenerator.generate();
 		}
 	}

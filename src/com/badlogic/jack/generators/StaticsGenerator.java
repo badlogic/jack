@@ -34,6 +34,7 @@ public class StaticsGenerator {
 		writer.wl("#include <limits>");
 		writer.wl("#include \"vm/Array.h\"");
 		writer.wl("#include \"classes/java_lang_Class.h\"");
+		writer.wl("#include \"classes/java_lang_String.h\"");
 		
 		// include the header for this class and its dependencies
 		writer.wl("#include \"classes/" + info.mangledName + ".h\"");				
