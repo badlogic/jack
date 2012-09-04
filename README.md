@@ -5,11 +5,6 @@ Java bytecode to C++ transpiler to ahead-of-time compile Java code.
 This can be useful if you want to target operating systems that don't 
 allow setting the executable flag on memory pages.
 
-## Disclaimer
-If you open Compiler.java, you'll get eye cancer. This is due to the fact
-that i started this kind of as a joke. If this ever gets somewhere, i'll
-promise to refactor/rewrite things. Pinky promise!
-
 ## Goals
 Jack tries to provide a reasonable runtime environment for Java 
 applications. The following features should be supported:
@@ -27,6 +22,66 @@ applications. The following features should be supported:
 - full JRE, say good bye to all those EE classes
 - Java memory model for the most part (could potentially honor volatile fields/vars)
 - anything else that's not listed under goals
+
+## Code Overview
+Jack's code is organized as follows.
+
+### Packages
+- ```com.badlogic.jack```: main package, containing the main entry point, ```Jack```
+- ```com.badlogic.jack.info```: classes that store additional information for classes, methods and fields.
+- ```com.badlogic.jack.generators```: classes that generate parts of the c++ output.
+
+### Flow
+- ```Jack.java``` is the main entry point. It generates header and implementation files from a directory full of ```.class``` files.
+- As a first step metadata (aka info) is collected for all classes, methods and fields. See the ```com.badlogic.jack.info``` package
+- Based on that info, header files are generated for each class, see ```com.badlogic.jack.generators.HeaderGenerator```
+- Next, implementation files are generated for each class, see ```com.badlogic.jack.generators.ImplementationGenerator```. The process goes like this:
+  - Methods are emitted, via ```com.badlogic.jack.generators.MethodGenerator```, which in turn uses a series of other generators. During this phase additional information is added to the info classes, such as string literals.
+  - ```<clinit>``` is emitted, via ```com.badlogic.jack.generators.ClinitGenerator```, which emits static field initialization codes, string literal initialization code and the original ```<clinit>``` method body of the class if present.
+  - Header and static fields sections are emitted, via ```com.badlogic.jack.generators.StaticsGenerator```.
+- Finally, runtime startup functions and reflection information is generated, via ```com.badlogic.jack.generators.RuntimeGenerator```.
+
+### Runtime Library
+Jack contains two runtime library implementations, ```classpath/``` is the current full runtime library, ```classpath-test/``` is a minimal runtime library used for testing features.
+Both libraries come with Eclipse project files. Neither of them links to the normal JRE library since they themselve implement "All The Things".
+
+### Execution
+Currently Jack is tested through compiling and running parts of the classpath libraries. The simplest way to do this
+works as follows:
+
+- Import all three projects (jack itself, full classpath, test classpath) into Eclipse. This will put ```.class``` files for both library implementations in their respective bin/ folder.
+- Excecute ```Jack```, passing in three parameters specifying:
+  - the directory the ```.class``` files reside (e.g. ```classpath/bin```)
+  - the directory the ```.java``` files reside (e.g. ```classpath/src```). This is used to add Java source file lines to the C++ files for easier debugging.
+  - the output directory (use ```native/classes``` for now).
+- Once Jack is done, fire up Visual C++ 2010 (Express) or Xcode and load the corresponding project (```vs10```, ```xcode```).
+- Delete all the files in the ```classes``` filter/group and reimport everything from ```native/classes```. You'll have to redo this step everytime you add a new Java source file to the classpath
+- Open up ```native/jack.cpp```, mess around with the code to test classes or features, and compile, run and debug it.
+- If you change a classpath Java file, execute ```Jack``` again, and wait for Visual Studio/XCode to pick up the changes, then recompile.
+- If you add or remove a file, you'll have to reimport all .cpp files from the ```native/classes``` folder.
+
+This process is meant for developing Jack itself. End-users will get a nicer way to transpile and run their stuff.
+
+# Done
+- class hierarchy translation
+- method body translation
+- GC (Boehm GC for now)
+- initial classpath implementation based on Avian's classpath (misses JNI parts)
+
+# TODO 
+(in order, search for FIXME <task> in the code)
+- reflection: class descriptors for arrays
+- reflection: fix instanceof, what was i thinking :p
+- exceptions: set signal handlers, use setjmp, finally is thankfully 
+handled by javac
+- reflection: rest of class/constructor/method/field descriptors
+- reflection: method#invoke, newInstance, newArray, might get away with 
+not using libffi
+- jni: minimally viable product :p
+- threads
+- add the rest of Avian's classpath + JNI implementations.
+- add unit tests, get some from Avian, see if OpenJDK has anything 
+useful.
 
 ## Translation
 The following describes how the Java bytecode is translated to C++.
@@ -257,25 +312,3 @@ enough for this as well. All classes derrive from gc to override the new operato
 Primitive arrays are instantiated via GC_MALLOC_ATOMIC, anything else is allocated
 via GC_MALLOC. Since the Boehm GC is non-moving we can be a bit lazy on the JNI side
 of things.
-
-
-# Done
-- class hierarchy translation
-- method body translation
-- GC (Boehm GC for now)
-- initial classpath implementation based on Avian's classpath (misses JNI parts)
-
-# TODO 
-(in order, search for FIXME <task> in the code)
-- reflection: class descriptors for arrays
-- reflection: fix instanceof, what was i thinking :p
-- exceptions: set signal handlers, use setjmp, finally is thankfully 
-handled by javac
-- reflection: rest of class/constructor/method/field descriptors
-- reflection: method#invoke, newInstance, newArray, might get away with 
-not using libffi
-- jni: minimally viable product :p
-- threads
-- add the rest of Avian's classpath + JNI implementations.
-- add unit tests, get some from Avian, see if OpenJDK has anything 
-useful.
