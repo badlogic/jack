@@ -171,9 +171,53 @@ needed, Avian should give me some hints.
 
 Monitors are a different beast. Every class instance in Java is
 potentially a monitor. The mutex has to be stored somewhere, potentially
-bloating objects. Another area of research.
+bloating objects. Here's a nice starting point http://static.usenix.org/event/jvm01/full_papers/dice/dice.pdf
 
-Finally, locks need to be released in case of exceptions. Fun.
+Finally, locks need to be released in case of exceptions. Javac
+makes our live a bit easier again by automatically generating
+try/catch blocks around synchronized statements/methods:
+
+    public void test() {
+       synchronized(this) {
+          test2();
+       }
+	   }
+
+And the corresponding Jimple representation:
+
+```
+   (soot.jimple.JimpleBody)     public void test()
+    {
+        jack.Synchronized r0, r2;
+        java.lang.Throwable $r3;
+
+        r0 := @this: jack.Synchronized;
+        r2 = r0;
+        entermonitor r0;
+
+     label0:
+        virtualinvoke r0.<jack.Synchronized: void test2()>();
+        exitmonitor r2;
+
+     label1:
+        goto label5;
+
+     label2:
+        $r3 := @caughtexception;
+
+     label3:
+        exitmonitor r2;
+
+     label4:
+        throw $r3;
+
+     label5:
+        return;
+
+        catch java.lang.Throwable from label0 to label1 with label2;
+        catch java.lang.Throwable from label3 to label4 with label2;
+    }
+```
 
 ### JNI
 Given full reflection data and a non-moving GC, it should be almost
