@@ -309,8 +309,8 @@ public class ClassInfo {
 					dependencies.add(((RefType)type).getSootClass());
 				}
 			}
-			if(method.hasActiveBody()) {
-				Body body = method.getActiveBody();								
+			if(method.isConcrete()) {
+				Body body = method.retrieveActiveBody();								
 				for(ValueBox box: body.getUseAndDefBoxes()) {
 					if(box.getValue().getType() instanceof RefType) {
 						dependencies.add(((RefType)box.getValue().getType()).getSootClass());
