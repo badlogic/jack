@@ -1,4 +1,4 @@
-package com.badlogic.jack;
+package com.badlogic.jack.utils;
 
 import java.util.HashMap;
 import java.util.Map;

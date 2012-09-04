@@ -19,7 +19,6 @@
     <ClInclude Include="..\native\classes\avian_PersistentSet$Path.h" />
     <ClInclude Include="..\native\classes\avian_PersistentSet.h" />
     <ClInclude Include="..\native\classes\avian_Utf8.h" />
-    <ClInclude Include="..\native\classes\classes.h" />
     <ClInclude Include="..\native\classes\jack_Arithmetic.h" />
     <ClInclude Include="..\native\classes\jack_Arrays.h" />
     <ClInclude Include="..\native\classes\jack_ArrayTest.h" />
@@ -261,7 +260,6 @@
     <ClCompile Include="..\native\classes\avian_PersistentSet$Path.cpp" />
     <ClCompile Include="..\native\classes\avian_PersistentSet.cpp" />
     <ClCompile Include="..\native\classes\avian_Utf8.cpp" />
-    <ClCompile Include="..\native\classes\classes.cpp" />
     <ClCompile Include="..\native\classes\jack_Arithmetic.cpp" />
     <ClCompile Include="..\native\classes\jack_Arrays.cpp" />
     <ClCompile Include="..\native\classes\jack_ArrayTest.cpp" />

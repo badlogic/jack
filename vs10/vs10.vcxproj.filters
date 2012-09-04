@@ -32,9 +32,6 @@
     <ClCompile Include="..\native\classes\avian_Utf8.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\classes.cpp">
-      <Filter>classes</Filter>
-    </ClCompile>
     <ClCompile Include="..\native\classes\jack_Arithmetic.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -752,9 +749,6 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\avian_Utf8.h">
-      <Filter>classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\classes\classes.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_Arithmetic.h">

@@ -112,9 +112,10 @@ import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.Tag;
 
 import com.badlogic.jack.build.FileDescriptor;
+import com.badlogic.jack.utils.JavaSourceProvider;
 
 public class Compiler {
-	static boolean INCREMENTAL = true;
+	static boolean INCREMENTAL = false;
 	static int ident;
 	static JavaSourceProvider provider;
 	
