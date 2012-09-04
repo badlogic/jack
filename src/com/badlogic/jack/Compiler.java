@@ -114,7 +114,7 @@ import soot.tagkit.Tag;
 import com.badlogic.jack.build.FileDescriptor;
 
 public class Compiler {
-	static boolean INCREMENTAL = false;
+	static boolean INCREMENTAL = true;
 	static int ident;
 	static JavaSourceProvider provider;
 	
