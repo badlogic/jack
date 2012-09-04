@@ -56,6 +56,8 @@ public class ClassInfo {
 	public List<SyntheticMethodInfo> syntheticMethods;
 	/** string literals **/
 	public Map<String, String> literals = new HashMap<String, String>();
+	/** next literal id for this class **/
+	public int nextLiteralId;
 	
 	/**
 	 * Gathers all information necessary for the translation

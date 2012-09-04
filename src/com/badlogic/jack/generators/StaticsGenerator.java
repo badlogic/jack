@@ -70,7 +70,8 @@ public class StaticsGenerator {
 		writer.wl("");
 		
 		// output string literal array and java.lang.String delcarations.
-		// literal arrays are actually defined via j_short[].
+		// literal arrays are actually defined via j_short[]. They are
+		// initialized in ClinitGenerator
 		for(String literal: info.literals.keySet()) {
 			String id = info.literals.get(literal);
 			String literalDef = "";

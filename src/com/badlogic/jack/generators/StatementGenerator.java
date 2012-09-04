@@ -105,7 +105,6 @@ public class StatementGenerator {
 	private final JimpleBody body;
 	private final Map<Stmt, String> labels = new HashMap<Stmt, String>();
 	private int nextLabelId = 0;
-	private int nextLiteralId = 0;
 	private int lastEmittedSourceLine = 0;
 	
 	public StatementGenerator(SourceWriter writer, JavaSourceProvider sourceProvider, ClassInfo info, SootMethod method) {
@@ -361,7 +360,7 @@ public class StatementGenerator {
 			StringConstant v = (StringConstant)val;
 			String literalId = info.literals.get(v.value);
 			if(literalId == null) {
-				literalId = info.mangledName + "_literal" + (nextLiteralId++);
+				literalId = info.mangledName + "_literal" + (info.nextLiteralId++);
 				info.literals.put(v.value, literalId);
 			}
 			return literalId;			

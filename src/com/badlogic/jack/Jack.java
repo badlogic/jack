@@ -15,6 +15,7 @@ import soot.options.Options;
 import com.badlogic.jack.build.FileDescriptor;
 import com.badlogic.jack.generators.HeaderGenerator;
 import com.badlogic.jack.generators.ImplementationGenerator;
+import com.badlogic.jack.generators.RuntimeGenerator;
 import com.badlogic.jack.info.ClassInfo;
 import com.badlogic.jack.utils.JavaSourceProvider;
 import com.badlogic.jack.utils.Mangling;
@@ -27,7 +28,7 @@ import com.badlogic.jack.utils.Mangling;
  * @author mzechner
  *
  */
-public class JackCompiler {
+public class Jack {
 	private final String classPath;
 	private final String sourcePath;
 	private final String outputPath;
@@ -51,7 +52,7 @@ public class JackCompiler {
 	 * @param outputPath the output directory
 	 * @param incremental whether to incrementally translate files
 	 */
-	public JackCompiler(String classPath, String sourcePath, String outputPath, boolean incremental) {
+	public Jack(String classPath, String sourcePath, String outputPath, boolean incremental) {
 		this.classPath = classPath.endsWith("/")? classPath: classPath + "/";
 		this.sourcePath = sourcePath.endsWith("/")? sourcePath: sourcePath + "/";
 		this.outputPath = outputPath.endsWith("/")? outputPath: outputPath + "/";
@@ -156,10 +157,20 @@ public class JackCompiler {
 	 * of class initialization.
 	 */
 	private void generateAuxiliary() {
+		new RuntimeGenerator(classes, classInfos, outputPath).generate();
 	}
 	
 	public static void main(String[] args) {
-		JackCompiler compiler = new JackCompiler("classpath/bin", "classpath/src", "native/classes", false);
+		if(args.length != 3) {
+			System.out.println("Usage: Jack <classpath> <sources> <outputdir>");
+			System.exit(0);
+		}
+		
+		String classpath = args[0].endsWith("/")? args[0]: args[0] + "/";
+		String sources = args[1].endsWith("/")? args[1]: args[1] + "/";
+		String outputDir = args[2].endsWith("/")? args[2]: args[2] + "/";
+		
+		Jack compiler = new Jack(classpath, sources, outputDir, true);
 		compiler.compile();
 	}
 }
