@@ -58,6 +58,8 @@ public class ClassInfo {
 	public Map<String, String> literals = new HashMap<String, String>();
 	/** next literal id for this class **/
 	public int nextLiteralId;
+	/** whether to skip this class **/
+	public boolean skip;
 	
 	/**
 	 * Gathers all information necessary for the translation
@@ -76,7 +78,9 @@ public class ClassInfo {
 		generateClassHeaderInfo();
 		generateFieldInfo();
 		generateMethodInfo();
-		gatherDependencies();
+		// FIXME this is invoked in the implementation stage in Jack#generateImplementation()
+		// to avoid loading all the Jimple code for already up to date classes.
+//		gatherDependencies();
 	}
 	
 	private void generateFieldInfo() {
@@ -290,7 +294,7 @@ public class ClassInfo {
 	 * @param clazz the {@link SootClass} to find the dependencies for
 	 * @return the dependencies
 	 */
-	private void gatherDependencies() {
+	public void gatherDependencies() {
 		if(clazz.hasSuperclass()) dependencies.add(clazz.getSuperclass());
 		if(clazz.hasOuterClass()) dependencies.add(clazz.getOuterClass());
 		for(SootClass itf: clazz.getInterfaces()) {

@@ -77,13 +77,14 @@ public class Jack {
 		for(SootClass clazz: Scene.v().getClasses()) {		
 			generatedFiles.add(Mangling.mangle(clazz) + ".h");
 			generatedFiles.add(Mangling.mangle(clazz) + ".cpp");
-			if(!incremental) {
-				classes.add(clazz);
-			} else {
+			classes.add(clazz);
+			ClassInfo info = new ClassInfo(clazz);
+			classInfos.put(clazz, info);
+			if(incremental) {
 				String classFile = classPath + clazz.getName().replace(".", "/") + ".class";
 				String headerFile = outputPath + Mangling.mangle(clazz) + ".h";
-				if(new File(classFile).lastModified() > new File(headerFile).lastModified()) {
-					classes.add(clazz);
+				if(new File(classFile).lastModified() < new File(headerFile).lastModified()) {
+					info.skip = true;
 				}
 			}			
 		}
@@ -101,7 +102,6 @@ public class Jack {
 		sourceProvider = new JavaSourceProvider();
 		sourceProvider.load(new FileDescriptor(sourcePath));
 
-		generateClassInfo();
 		generateHeaders();
 		generateImplementations();
 		generateAuxiliary();
@@ -119,17 +119,6 @@ public class Jack {
 			}
 		}
 	}
-
-	/**
-	 * Generates {@link ClassInfo} instances for each class. These
-	 * contain additional information needed for the translation
-	 * process.
-	 */
-	private void generateClassInfo() {
-		for(SootClass clazz: classes) {
-			classInfos.put(clazz, new ClassInfo(clazz));
-		}
-	}
 	
 	/**
 	 * Generates the header file for each class
@@ -137,6 +126,10 @@ public class Jack {
 	private void generateHeaders() {
 		for(SootClass clazz: classes) {
 			ClassInfo info = classInfos.get(clazz);
+			if(info.skip) {
+				System.out.println("skipping generation of header for " + clazz.getName());
+				continue; 
+			}
 			HeaderGenerator headerGenerator = new HeaderGenerator(clazz, info, outputPath + info.mangledName + ".h");
 			headerGenerator.generate();
 		}
@@ -148,6 +141,13 @@ public class Jack {
 	private void generateImplementations() {
 		for(SootClass clazz: classes) {
 			ClassInfo info = classInfos.get(clazz);
+			if(info.skip) {
+				System.out.println("skipping generation of implementation for " + clazz.getName());
+				continue;
+			}
+			// FIXME hack so the dependencies and Jimple codes aren't loaded
+			// for files that are up to date.
+			info.gatherDependencies();
 			ImplementationGenerator implGenerator = new ImplementationGenerator(clazz, sourceProvider, info, outputPath + info.mangledName + ".cpp");
 			implGenerator.generate();
 		}
@@ -157,7 +157,7 @@ public class Jack {
 	 * Generates auxiliary file, such as the implementation
 	 * of class initialization.
 	 */
-	private void generateAuxiliary() {
+	private void generateAuxiliary() {		
 		new RuntimeGenerator(classes, classInfos, outputPath).generate();
 	}
 	
