@@ -57,10 +57,6 @@ public class Jack {
 		this.sourcePath = sourcePath.endsWith("/")? sourcePath: sourcePath + "/";
 		this.outputPath = outputPath.endsWith("/")? outputPath: outputPath + "/";
 		this.incremental = incremental;
-		
-		// FIXME for testing only
-		new FileDescriptor(outputPath).deleteDirectory();
-		new FileDescriptor(outputPath).mkdirs();
 	}
 	
 	/**
@@ -78,7 +74,9 @@ public class Jack {
 		Scene.v().loadDynamicClasses();
 		
 		Set<SootClass> classes = new HashSet<SootClass>();
-		for(SootClass clazz: Scene.v().getClasses()) {			
+		for(SootClass clazz: Scene.v().getClasses()) {		
+			generatedFiles.add(Mangling.mangle(clazz) + ".h");
+			generatedFiles.add(Mangling.mangle(clazz) + ".cpp");
 			if(!incremental) {
 				classes.add(clazz);
 			} else {
@@ -89,6 +87,8 @@ public class Jack {
 				}
 			}			
 		}
+		generatedFiles.add("classes.h");
+		generatedFiles.add("classes.cpp");
 		return classes;
 	}
 	
@@ -113,7 +113,10 @@ public class Jack {
 				return name.endsWith(".h") || name.endsWith(".cpp");
 			}
 		})) {
-			if(!generatedFiles.contains(f)) new File(outputPath + f).delete();
+			if(!generatedFiles.contains(f)) {
+				System.out.println("deleting " + outputPath + f);
+				new File(outputPath + f).delete();
+			}
 		}
 	}
 
@@ -125,8 +128,6 @@ public class Jack {
 	private void generateClassInfo() {
 		for(SootClass clazz: classes) {
 			classInfos.put(clazz, new ClassInfo(clazz));
-			generatedFiles.add(Mangling.mangle(clazz) + ".h");
-			generatedFiles.add(Mangling.mangle(clazz) + ".cpp");
 		}
 	}
 	
