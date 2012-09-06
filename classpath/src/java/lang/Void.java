@@ -11,7 +11,8 @@
 package java.lang;
 
 public final class Void {
-  public static final Class TYPE = Class.forCanonicalName("V");
+  // this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+  public static final Class TYPE = null;
 
   private Void() { }
 }

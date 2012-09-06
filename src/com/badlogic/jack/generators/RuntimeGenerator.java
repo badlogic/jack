@@ -53,7 +53,7 @@ public class RuntimeGenerator {
 		writer.push();
 		
 		// generate all the reflection info
-		new ReflectionGenerator(writer, infos);
+		new ReflectionGenerator(writer, infos).generate();
 		
 		// call all m_clinit methods, this should cascade
 		// FIXME clinit (propagation correct?)

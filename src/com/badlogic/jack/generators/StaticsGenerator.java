@@ -74,8 +74,8 @@ public class StaticsGenerator {
 		// initialized in ClinitGenerator
 		for(String literal: info.literals.keySet()) {
 			String id = info.literals.get(literal);
-			String literalDef = "";
-						
+			String literalDef = "// literal: " + literal + "\n";
+									
 			literalDef += "j_char " + id + "_array[] = {";
 			if(literal.length() == 0) {
 				literalDef += "0";

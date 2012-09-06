@@ -11,7 +11,8 @@
 package java.lang;
 
 public final class Byte extends Number implements Comparable<Byte> {
-	public static final Class TYPE = Class.forCanonicalName("B");
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 
 	private final byte value;
 

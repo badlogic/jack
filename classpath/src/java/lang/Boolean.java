@@ -11,7 +11,8 @@
 package java.lang;
 
 public final class Boolean implements Comparable<Boolean> {
-	public static final Class TYPE = Class.forCanonicalName("Z");
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 
 	public static final Boolean FALSE = new Boolean(false);
 	public static final Boolean TRUE = new Boolean(true);

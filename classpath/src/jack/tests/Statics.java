@@ -1,4 +1,4 @@
-package jack;
+package jack.tests;
 
 public class Statics {
 	static final boolean z = true;

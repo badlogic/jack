@@ -14,7 +14,8 @@ public final class Character implements Comparable<Character> {
 	public static final int MIN_RADIX = 2;
 	public static final int MAX_RADIX = 36;
 
-	public static final Class TYPE = Class.forCanonicalName("C");
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 
 	private final char value;
 

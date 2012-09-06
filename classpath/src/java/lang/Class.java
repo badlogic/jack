@@ -3,9 +3,17 @@ package java.lang;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 // FIXME reflection
 public final class Class<T> {
+	private static Map<String, Class> classes = new HashMap<String, Class>();
+	
+	public static Class forName(String name) throws ClassNotFoundException {
+		throw new UnsupportedOperationException();
+	}
+	
 	String name;
 	Class superClass;
 	Class[] interfaces;
@@ -31,14 +39,6 @@ public final class Class<T> {
 	}
 
 	public T newInstance() throws IllegalAccessException, InstantiationException {
-		throw new UnsupportedOperationException();
-	}
-
-	public static Class forName(String name) throws ClassNotFoundException {
-		throw new UnsupportedOperationException();
-	}
-
-	public static Class forCanonicalName(String name) {
 		throw new UnsupportedOperationException();
 	}
 

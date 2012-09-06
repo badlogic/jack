@@ -1,4 +1,4 @@
-package jack;
+package jack.tests;
 
 public class Arrays {
 	int[] ia = new int[10];

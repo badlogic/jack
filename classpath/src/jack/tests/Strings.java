@@ -1,4 +1,4 @@
-package jack;
+package jack.tests;
 
 public class Strings {
 	static String staticString = "static string";

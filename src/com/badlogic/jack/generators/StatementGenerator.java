@@ -5,12 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.Immediate;
 import soot.Local;
 import soot.NullType;
 import soot.PrimType;
+import soot.Scene;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
@@ -87,6 +90,7 @@ import soot.tagkit.Tag;
 import com.badlogic.jack.info.ClassInfo;
 import com.badlogic.jack.utils.CTypes;
 import com.badlogic.jack.utils.JavaSourceProvider;
+import com.badlogic.jack.utils.JavaTypes;
 import com.badlogic.jack.utils.Mangling;
 import com.badlogic.jack.utils.SourceWriter;
 
@@ -345,7 +349,7 @@ public class StatementGenerator {
 	private String translateImmediate(Immediate val) {
 		if(val instanceof ClassConstant) {
 			ClassConstant v = (ClassConstant)val;
-			return v.getValue().replace('/', '_') + "::clazz";
+			return translateClassConstant(v);
 		} else if(val instanceof MetaConstant) {
 //			MetaConstant v = (MetaConstant)val;
 			throw new UnsupportedOperationException();
@@ -358,18 +362,31 @@ public class StatementGenerator {
 			else return v.toString();
 		} else if(val instanceof StringConstant) {
 			StringConstant v = (StringConstant)val;
-			String literalId = info.literals.get(v.value);
-			if(literalId == null) {
-				literalId = info.mangledName + "_literal" + (info.nextLiteralId++);
-				info.literals.put(v.value, literalId);
-			}
-			return literalId;			
+			return generateLiteral(v.value);			
 		} else if(val instanceof Local) {
 			Local v = (Local)val;
 			return v.getName();
 		} else throw new RuntimeException("Unknown Immediate Value " + val);
 	}
+	
+	private String translateClassConstant(ClassConstant constant) {
+		if(constant.value.contains("[")) {
+			String literal = generateLiteral(constant.value);
+			return "java_lang_Class::m_forName(" + literal + ");";
+		} else {
+			addDependency(constant.value);
+			return constant.getValue().replace('/', '_') + "::clazz";
+		}
+	}
 
+	private String generateLiteral(String literal) {
+		String literalId = info.literals.get(literal);
+		if(literalId == null) {
+			literalId = info.mangledName + "_literal" + (info.nextLiteralId++);
+			info.literals.put(literal, literalId);
+		}
+		return literalId;
+	}
 	
 	/**
 	 * Translates access to a local variable
@@ -395,6 +412,7 @@ public class StatementGenerator {
 			return "(*" + target + ")[" + index + "]";
 		} else if(val instanceof StaticFieldRef) {
 			StaticFieldRef v = (StaticFieldRef)val;
+			addDependency(v.getField().getDeclaringClass());
 			return Mangling.mangle(v.getField().getDeclaringClass()) + "::" + Mangling.mangle(v.getField());
 		} else if(val instanceof InstanceFieldRef) {
 			InstanceFieldRef v = (InstanceFieldRef)val;
@@ -538,10 +556,23 @@ public class StatementGenerator {
 			}
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
-			String type = translateValue(v.getOp());
-			String checkType = v.getCheckType().toString().replace('.', '_');
-			// FIXME reflection
-			return checkType + "::clazz->m_isInstance(" + type + ")";					
+			String type = translateValue(v.getOp());			
+			Type checkType = v.getCheckType();	
+			// need to special case for arrays and primitive types
+			// we resolve those via Class#forName(String). This methods
+			// semantics have been extended so #<primitivetype> returns
+			// the corresponding Class, e.g. #int -> int.class, #byte -> byte.class.
+			if(checkType instanceof ArrayType) {
+				ArrayType arrayType = (ArrayType)checkType;
+				String className = JavaTypes.toClassName(arrayType);
+				return "java_lang_Class::m_forName(" + generateLiteral(className) + ")";				
+			} else if(checkType instanceof PrimType) {
+				throw new RuntimeException("This should not happen, primitive types are referenced via Type#f_TYPE");
+			} else {
+				String checkTypeStr = checkType.toString().replace('.', '_');
+				addDependency(checkType.toString());
+				return checkTypeStr + "::clazz->m_isInstance(" + type + ")";
+			}
 		} else if(val instanceof DynamicInvokeExpr) {
 //			DynamicInvokeExpr v = (DynamicInvokeExpr)val;
 			throw new UnsupportedOperationException();
@@ -574,7 +605,8 @@ public class StatementGenerator {
 			invoke += ");";
 			return invoke;
 		} else if(val instanceof StaticInvokeExpr) {
-			StaticInvokeExpr v = (StaticInvokeExpr)val;			
+			StaticInvokeExpr v = (StaticInvokeExpr)val;
+			addDependency(v.getMethod().getDeclaringClass());
 			String target = Mangling.mangle(v.getMethod().getDeclaringClass());
 			String method = Mangling.mangle(v.getMethod());
 			String invoke = target + "::" + method + "(";
@@ -587,6 +619,7 @@ public class StatementGenerator {
 			boolean isPrimitive = v.getBaseType() instanceof PrimType;
 			String size = translateValue(v.getSize());
 			// FIXME GC
+			
 			return "new Array<" + type + ">(" + size + ", " + isPrimitive + ")";
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
@@ -603,7 +636,7 @@ public class StatementGenerator {
 			return "-" + translateValue(v.getOp());
 		} else throw new RuntimeException("Unkown Expr Value " + val);
 	}
-	
+
 	private String outputArguments(String output, List<Value> args, @SuppressWarnings("rawtypes") List types) {
 		int i = 0;
 		for(Value arg: args) {
@@ -620,12 +653,29 @@ public class StatementGenerator {
 	 * @param stmt
 	 * @return
 	 */
-	private static int getLineNumber(Stmt stmt) {
+	private int getLineNumber(Stmt stmt) {
 		for(Tag tag: stmt.getTags()) {
 			if(tag instanceof LineNumberTag) {
 				return ((LineNumberTag) tag).getLineNumber();
 			}
 		}
 		return -1;
+	}
+	
+	/**
+	 * Adds a dependency to the class given by the name. Assumes
+	 * names are encoded like "java/lang/Object".
+	 * @param className
+	 */
+	private void addDependency(String className) {
+		info.dependencies.add(Scene.v().loadClassAndSupport(className.replace('/', '.')));
+	}
+	
+	/**
+	 * Adds a dependency to the class given.
+	 * @param declaringClass
+	 */
+	private void addDependency(SootClass declaringClass) {
+		info.dependencies.add(declaringClass);
 	}
 }

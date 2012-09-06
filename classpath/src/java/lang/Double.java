@@ -11,7 +11,8 @@
 package java.lang;
 
 public final class Double extends Number {
-	public static final Class TYPE = Class.forCanonicalName("D");
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 
 	public static final double NEGATIVE_INFINITY = -1.0 / 0.0;
 	public static final double POSITIVE_INFINITY = 1.0 / 0.0;

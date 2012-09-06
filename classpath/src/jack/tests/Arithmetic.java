@@ -1,4 +1,4 @@
-package jack;
+package jack.tests;
 
 public class Arithmetic {
 	public int arithmetic() {

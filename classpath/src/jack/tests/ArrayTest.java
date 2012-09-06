@@ -1,4 +1,4 @@
-package jack;
+package jack.tests;
 
 public class ArrayTest {
 	public static final Object[] staticArray = new Object[1000000];

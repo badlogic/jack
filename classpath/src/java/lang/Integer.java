@@ -11,8 +11,8 @@
 package java.lang;
 
 public final class Integer extends Number implements Comparable<Integer> {
-	public static final Class TYPE = Class.forCanonicalName("I");
-
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 	public static final int MIN_VALUE = 0x80000000;
 	public static final int MAX_VALUE = 0x7FFFFFFF;
 

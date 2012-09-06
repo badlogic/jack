@@ -11,7 +11,8 @@
 package java.lang;
 
 public final class Float extends Number {
-	public static final Class TYPE = Class.forCanonicalName("F");
+	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
+	public static final Class TYPE = null;
 	private static final int EXP_BIT_MASK = 0x7F800000;
 	private static final int SIGNIF_BIT_MASK = 0x007FFFFF;
 

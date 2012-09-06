@@ -32,52 +32,58 @@
     <ClCompile Include="..\native\classes\avian_Utf8.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Arithmetic.cpp">
+    <ClCompile Include="..\native\classes\classes.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Arrays.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Arithmetic.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_ArrayTest.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Arrays.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Exceptions.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_ArrayTest.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$A.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Exceptions.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$B.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$A.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$C.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$B.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$IA.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$C.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$IB.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$IA.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf$IC.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$IB.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_InstanceOf.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf$IC.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Main.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_InstanceOf.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Primes.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Main.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Statics.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Primes.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Strings.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Reflection.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\classes\jack_Synchronized.cpp">
+    <ClCompile Include="..\native\classes\jack_tests_Statics.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_tests_Strings.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_tests_Synchronized.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_io_BufferedInputStream.cpp">
@@ -754,52 +760,58 @@
     <ClInclude Include="..\native\classes\avian_Utf8.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Arithmetic.h">
+    <ClInclude Include="..\native\classes\classes.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Arrays.h">
+    <ClInclude Include="..\native\classes\jack_tests_Arithmetic.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_ArrayTest.h">
+    <ClInclude Include="..\native\classes\jack_tests_Arrays.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Exceptions.h">
+    <ClInclude Include="..\native\classes\jack_tests_ArrayTest.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$A.h">
+    <ClInclude Include="..\native\classes\jack_tests_Exceptions.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$B.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$A.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$C.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$B.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$IA.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$C.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$IB.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$IA.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf$IC.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$IB.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_InstanceOf.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf$IC.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Main.h">
+    <ClInclude Include="..\native\classes\jack_tests_InstanceOf.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Primes.h">
+    <ClInclude Include="..\native\classes\jack_tests_Main.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Statics.h">
+    <ClInclude Include="..\native\classes\jack_tests_Primes.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Strings.h">
+    <ClInclude Include="..\native\classes\jack_tests_Reflection.h">
       <Filter>classes</Filter>
     </ClInclude>
-    <ClInclude Include="..\native\classes\jack_Synchronized.h">
+    <ClInclude Include="..\native\classes\jack_tests_Statics.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_tests_Strings.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_tests_Synchronized.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_io_BufferedInputStream.h">
