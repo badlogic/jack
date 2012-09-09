@@ -1,6 +1,9 @@
 package java.lang;
 
+import java.lang.annotation.DirectNative;
+
 // FIXME vm
+@DirectNative
 public class Object {
 	protected Object clone() {
 		return null;
@@ -17,9 +20,7 @@ public class Object {
 		return null;
 	}
 	
-	public int hashCode() {
-		return 0;
-	}
+	public native int hashCode();
 	
 	public void notify() {
 	}

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.badlogic.jack.generators.LiteralsGenerator;
 import com.badlogic.jack.utils.Mangling;
 
 import soot.ArrayType;
@@ -52,12 +53,10 @@ public class ClassInfo {
 	public final Map<SootMethod, MethodInfo> methodInfos = new HashMap<SootMethod, MethodInfo>();
 	/** whether the class has a custom clinit implementation **/
 	public boolean hasClinit;
+	/** {@link LiteralsGenerator} used to keep track of all string literals in the class **/
+	public final LiteralsGenerator literals;
 	/** synthetic methods to be generated **/
 	public List<SyntheticMethodInfo> syntheticMethods;
-	/** string literals **/
-	public Map<String, String> literals = new HashMap<String, String>();
-	/** next literal id for this class **/
-	public int nextLiteralId;
 	/** whether to skip this class **/
 	public boolean skip;
 	
@@ -69,6 +68,7 @@ public class ClassInfo {
 	 */
 	public ClassInfo(SootClass clazz) {
 		this.clazz = clazz;
+		this.literals = new LiteralsGenerator(Mangling.mangle(clazz));
 		generateClassInfo();
 	}
 	

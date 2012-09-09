@@ -8,6 +8,7 @@ public class Reflection {
 		c = int.class;
 		c = Object.class;
 		c = Class.forName("[C");
+		Object[] arr = new Object[0];
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException {

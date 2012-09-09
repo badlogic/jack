@@ -80,6 +80,7 @@
     <ClInclude Include="..\native\classes\java_io_Writer.h" />
     <ClInclude Include="..\native\classes\java_lang_AbstractMethodError.h" />
     <ClInclude Include="..\native\classes\java_lang_annotation_Annotation.h" />
+    <ClInclude Include="..\native\classes\java_lang_annotation_DirectNative.h" />
     <ClInclude Include="..\native\classes\java_lang_annotation_ElementType.h" />
     <ClInclude Include="..\native\classes\java_lang_annotation_Retention.h" />
     <ClInclude Include="..\native\classes\java_lang_annotation_RetentionPolicy.h" />
@@ -250,7 +251,10 @@
     <ClInclude Include="..\native\classes\java_util_WeakHashMap$MyHelper.h" />
     <ClInclude Include="..\native\classes\java_util_WeakHashMap.h" />
     <ClInclude Include="..\native\vm\array.h" />
+    <ClInclude Include="..\native\vm\classmanager.h" />
     <ClInclude Include="..\native\vm\garbagecollection.h" />
+    <ClInclude Include="..\native\vm\list.h" />
+    <ClInclude Include="..\native\vm\stringmap.h" />
     <ClInclude Include="..\native\vm\time.h" />
     <ClInclude Include="..\native\vm\types.h" />
   </ItemGroup>
@@ -324,6 +328,7 @@
     <ClCompile Include="..\native\classes\java_io_Writer.cpp" />
     <ClCompile Include="..\native\classes\java_lang_AbstractMethodError.cpp" />
     <ClCompile Include="..\native\classes\java_lang_annotation_Annotation.cpp" />
+    <ClCompile Include="..\native\classes\java_lang_annotation_DirectNative.cpp" />
     <ClCompile Include="..\native\classes\java_lang_annotation_ElementType.cpp" />
     <ClCompile Include="..\native\classes\java_lang_annotation_Retention.cpp" />
     <ClCompile Include="..\native\classes\java_lang_annotation_RetentionPolicy.cpp" />
@@ -494,7 +499,9 @@
     <ClCompile Include="..\native\classes\java_util_WeakHashMap$MyHelper.cpp" />
     <ClCompile Include="..\native\classes\java_util_WeakHashMap.cpp" />
     <ClCompile Include="..\native\jack.cpp" />
+    <ClCompile Include="..\native\vm\classmanager.cpp" />
     <ClCompile Include="..\native\vm\garbagecollection.cpp" />
+    <ClCompile Include="..\native\vm\java_lang.cpp" />
     <ClCompile Include="..\native\vm\time.cpp" />
   </ItemGroup>
   <ItemGroup>

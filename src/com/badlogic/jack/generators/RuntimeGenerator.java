@@ -49,14 +49,23 @@ public class RuntimeGenerator {
 		writer = new SourceWriter();
 		writer.wl("#include \"classes/classes.h\"");
 		writer.wl("");
-		writer.wl("void jack_init() {");
-		writer.push();
+		
+		// generate signal handlers
+		new SignalHandlerGenerator().generate(writer);
 		
 		// generate all the reflection info
 		new ReflectionGenerator(writer, infos).generate();
 		
+		writer.wl("void jack_init() {");
+		writer.push();
+		writer.wl("jack_register_signal_handlers();"); // assumed to be written by SignalHandlerGenerator above
+		writer.wl("jack_init_reflection();"); // assumed to be written by ReflectionGenerator above
 		// call all m_clinit methods, this should cascade
 		// FIXME clinit (propagation correct?)
+		// start with Object so the base classes are all 
+		// initialized
+		writer.wl("java_lang_Object::m_clinit();");
+		
 		for(SootClass c: classes) {
 			writer.wl(Mangling.mangle(c) + "::m_clinit();");
 		}

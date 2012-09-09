@@ -32,7 +32,7 @@ public class MethodGenerator {
 	public void generate() {
 		if(!method.isConcrete()) {
 			if(method.isNative()) {
-				new NativeMethodGenerator(writer, info, method);
+				new NativeMethodGenerator(writer, info, method).generate();
 			}
 		} else {
 			String methodSig = "";

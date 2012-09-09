@@ -1,14 +1,12 @@
 package com.badlogic.jack.generators;
 
-import java.util.Map;
+import soot.SootClass;
+import soot.SootMethod;
 
 import com.badlogic.jack.info.ClassInfo;
 import com.badlogic.jack.utils.JavaSourceProvider;
 import com.badlogic.jack.utils.Mangling;
 import com.badlogic.jack.utils.SourceWriter;
-
-import soot.SootClass;
-import soot.SootMethod;
 
 public class ClinitGenerator {
 	private final SourceWriter writer;
@@ -36,15 +34,15 @@ public class ClinitGenerator {
 		// set the clinit flag of this class as a guard
 		writer.wl(Mangling.mangle(info.clazz) + "::clinit = true;");
 		
-		// generate java.lang.String instances for string literals
-		Map<String, String> literals = info.literals;
-		for(String literal: literals.keySet()) {
-			String id = literals.get(literal);
-			writer.wl(id + " = new java_lang_String();");
-			writer.wl(id + "->m_init(new Array<j_char>(" + id + "_array, " + literal.length() + ", true));");
-		}
+		// generate the string literal definitions
+		info.literals.generateDefinitions(writer);
 		
 		// emit calls to all classes and interfaces' clinit this class references
+		// start with the super class
+		if(!info.superClass.equals("gc")) {
+			writer.wl(info.superClass + "::m_clinit();");
+		}
+		
 		for(SootClass dependency: info.dependencies) {
 			writer.wl(Mangling.mangle(dependency) + "::m_clinit();");
 		}		

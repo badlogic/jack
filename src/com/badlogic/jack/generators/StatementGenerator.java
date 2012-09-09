@@ -229,7 +229,7 @@ public class StatementGenerator {
 					Value arraySize = (Value)size;
 					sizes.add(translateValue(arraySize));
 				}
-				// FIXME GC
+				info.dependencies.add(JavaTypes.getClassFromType(v.getBaseType().baseType));
 				writer.wl(CTypes.generateMultiArray(target, elementType, isPrimitive, sizes));
 			} 
 			// null type need special treatment too, can't assign void* to class*
@@ -303,9 +303,8 @@ public class StatementGenerator {
 			writer.pop();
 			writer.wl("}");
 		} else if(stmt instanceof ThrowStmt) {
-//			ThrowStmt s = (ThrowStmt)stmt;
-			// FIXME exceptions
-			writer.wl("throw \"exception\";");
+			ThrowStmt s = (ThrowStmt)stmt;		
+			writer.wl("throw " + translateValue(s.getOp()) + ";");
 		} else {
 			throw new RuntimeException("Unkown statement " + stmt);
 		}
@@ -362,7 +361,7 @@ public class StatementGenerator {
 			else return v.toString();
 		} else if(val instanceof StringConstant) {
 			StringConstant v = (StringConstant)val;
-			return generateLiteral(v.value);			
+			return info.literals.addLiteral(v.value);			
 		} else if(val instanceof Local) {
 			Local v = (Local)val;
 			return v.getName();
@@ -371,7 +370,7 @@ public class StatementGenerator {
 	
 	private String translateClassConstant(ClassConstant constant) {
 		if(constant.value.contains("[")) {
-			String literal = generateLiteral(constant.value);
+			String literal = info.literals.addLiteral(constant.value);
 			return "java_lang_Class::m_forName(" + literal + ");";
 		} else {
 			addDependency(constant.value);
@@ -379,15 +378,6 @@ public class StatementGenerator {
 		}
 	}
 
-	private String generateLiteral(String literal) {
-		String literalId = info.literals.get(literal);
-		if(literalId == null) {
-			literalId = info.mangledName + "_literal" + (info.nextLiteralId++);
-			info.literals.put(literal, literalId);
-		}
-		return literalId;
-	}
-	
 	/**
 	 * Translates access to a local variable
 	 * @param val the local variable
@@ -552,7 +542,12 @@ public class StatementGenerator {
 			if(v.getCastType() instanceof PrimType) {
 				return "static_cast<" + type + ">(" + target + ")";
 			} else {
-				return "reinterpret_cast<" + type + ">(" + target + ")";
+				// for assignments like Object[] v = null;
+				if(target.equals("0")) {
+					return "0";
+				} else {
+					return "dynamic_cast<" + type + ">(" + target + ")";
+				}
 			}
 		} else if(val instanceof InstanceOfExpr) {
 			InstanceOfExpr v = (InstanceOfExpr)val;
@@ -565,7 +560,7 @@ public class StatementGenerator {
 			if(checkType instanceof ArrayType) {
 				ArrayType arrayType = (ArrayType)checkType;
 				String className = JavaTypes.toClassName(arrayType);
-				return "java_lang_Class::m_forName(" + generateLiteral(className) + ")";				
+				return "java_lang_Class::m_forName(" + info.literals.addLiteral(className) + ")";				
 			} else if(checkType instanceof PrimType) {
 				throw new RuntimeException("This should not happen, primitive types are referenced via Type#f_TYPE");
 			} else {
@@ -619,8 +614,8 @@ public class StatementGenerator {
 			boolean isPrimitive = v.getBaseType() instanceof PrimType;
 			String size = translateValue(v.getSize());
 			// FIXME GC
-			
-			return "new Array<" + type + ">(" + size + ", " + isPrimitive + ")";
+			info.dependencies.add(JavaTypes.getClassFromType(v.getBaseType()));
+			return CTypes.generateArray(size, type, isPrimitive);
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
 			// FIXME GC

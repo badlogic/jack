@@ -722,6 +722,15 @@
     <ClCompile Include="..\native\classes\java_util_WeakHashMap.cpp">
       <Filter>classes</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\vm\classmanager.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_DirectNative.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\vm\java_lang.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\native\vm\array.h">
@@ -1449,6 +1458,18 @@
     </ClInclude>
     <ClInclude Include="..\native\classes\java_util_WeakHashMap.h">
       <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\classmanager.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_DirectNative.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\stringmap.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\list.h">
+      <Filter>vm</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

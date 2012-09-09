@@ -69,26 +69,9 @@ public class StaticsGenerator {
 		writer.wl("bool " + info.mangledName + "::clinit = 0;");
 		writer.wl("");
 		
-		// output string literal array and java.lang.String delcarations.
-		// literal arrays are actually defined via j_short[]. They are
-		// initialized in ClinitGenerator
-		for(String literal: info.literals.keySet()) {
-			String id = info.literals.get(literal);
-			String literalDef = "// literal: " + literal + "\n";
-									
-			literalDef += "j_char " + id + "_array[] = {";
-			if(literal.length() == 0) {
-				literalDef += "0";
-			} else {
-				for(int i = 0; i < literal.length(); i++) {
-					if(i > 0) literalDef += ", ";
-					literalDef += Short.toString((short)literal.charAt(i)); // FIXME type conversion/promotion
-				}
-			}
-			literalDef += "};\n";
-			literalDef += "java_lang_String* " + id + " = 0;";
-			writer.wl(literalDef);
-		}
+		// output string literal array and java.lang.String declarations.
+		info.literals.generateDeclarations(writer);
+		
 		writer.wl("");
 	}
 }

@@ -15,5 +15,9 @@ public class Arrays {
 		Object[][][] oa = new Object[a][b][c];
 		fa[0][1] = 123.3f;
 		oa[0][0][0] = null;
+		
+		byte[] i = { 0, 1, 2, 3, 4 };
+		String[] s = { "hello", "world" };
+		String[][] o = {{"hello"}, {"world"}};
 	}
 }

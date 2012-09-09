@@ -9,7 +9,10 @@ import soot.FloatType;
 import soot.IntType;
 import soot.LongType;
 import soot.PrimType;
+import soot.Scene;
 import soot.ShortType;
+import soot.SootClass;
+import soot.Type;
 
 /**
  * Converts Java canonical names to 
@@ -40,5 +43,18 @@ public class JavaTypes {
 		if(type instanceof LongType) return "J";
 		if(type instanceof ShortType) return "S";
 		throw new RuntimeException("Unknown primitive type " + type);
+	}
+
+	public static SootClass getClassFromType(Type type) {
+		if(type instanceof ArrayType) type = ((ArrayType)type).baseType;
+		if(type instanceof BooleanType) return Scene.v().loadClassAndSupport("java.lang.Boolean");
+		if(type instanceof ByteType) return Scene.v().loadClassAndSupport("java.lang.Byte");
+		if(type instanceof CharType) return Scene.v().loadClassAndSupport("java.lang.Character");
+		if(type instanceof DoubleType) return Scene.v().loadClassAndSupport("java.lang.Double");
+		if(type instanceof FloatType) return Scene.v().loadClassAndSupport("java.lang.Float");
+		if(type instanceof IntType) return Scene.v().loadClassAndSupport("java.lang.Integer");
+		if(type instanceof LongType) return Scene.v().loadClassAndSupport("java.lang.Long");
+		if(type instanceof ShortType) return Scene.v().loadClassAndSupport("java.lang.Short");
+		return Scene.v().loadClassAndSupport(type.toString());
 	}
 }

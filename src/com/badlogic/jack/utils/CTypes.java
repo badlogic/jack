@@ -78,16 +78,40 @@ public class CTypes {
 		return array;
 	}
 	
+	public static String generateArray(int size, String elementType, boolean isPrimitive) {
+		return generateArray(Integer.toString(size), elementType, isPrimitive);
+	}
+	
+	public static String generateArray(String size, String elementType, boolean isPrimitive) {
+		String clazz = getElementTypeClass(elementType);
+		return "new Array<" + elementType + ">(" + size + ", " + isPrimitive + ", 1, " + clazz + ")";
+	}
+	
+	private static String getElementTypeClass(String elementType) {
+		if(elementType.equals("j_byte")) return "&java_lang_Byte::f_TYPE";
+		else if(elementType.equals("j_bool")) return "&java_lang_Boolean::f_TYPE";
+		else if(elementType.equals("j_char")) return "&java_lang_Character::f_TYPE"; 
+		else if(elementType.equals("j_short")) return "&java_lang_Short::f_TYPE";
+		else if(elementType.equals("j_int")) return "&java_lang_Integer::f_TYPE";
+		else if(elementType.equals("j_long")) return "&java_lang_Long::f_TYPE";
+		else if(elementType.equals("j_float")) return "&java_lang_Float::f_TYPE";
+		else if(elementType.equals("j_double")) return "&java_lang_Double::f_TYPE";
+		else {			
+			return "&" + elementType.replace("*", "") + "::clazz";
+		}
+	}
+	
 	/**
 	 * Generates C++ code to instantiate a multidimensional array
-	 * @param target
-	 * @param elementType
-	 * @param isPrimitive
-	 * @param sizes
+	 * @param target the variable to assign the array to
+	 * @param elementType the element type
+	 * @param isPrimitive whether it's a primitive type array
+	 * @param sizes array containing the sizes for each dimensions
 	 * @return
 	 */
 	public static String generateMultiArray(String target, String elementType, boolean isPrimitive, List<String> sizes) {
-		String newMultiArray = target + " = new " + generateArraySignature(elementType, sizes.size()) + "(" + sizes.get(0) + ", false);\n";
+		String clazz = getElementTypeClass(elementType);
+		String newMultiArray = target + " = new " + generateArraySignature(elementType, sizes.size()) + "(" + sizes.get(0) + ", false, " + sizes.size() + ", " + clazz  + ");\n";
 		String counter = target + "_c0";
 		int depth = 0;
 		for(int i = 0; i < sizes.size() - 1; i++) {
@@ -106,9 +130,9 @@ public class CTypes {
 					newMultiArray += "[" + target + "_c" + j + "]";
 			}
 			if(i == sizes.size() - 2) {
-				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", " + isPrimitive + ");\n";
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", " + isPrimitive + ", " +  + ((sizes.size() - 1) - i) + ", " + clazz + ");\n";
 			} else {
-				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", false);\n";
+				newMultiArray += " = new " + subArray + "(" + sizes.get(i+1) + ", false, " + ((sizes.size() - 1) - i) + ", " + clazz + ");\n";
 			}
 			counter = target + "_c" + (i+1);
 		}

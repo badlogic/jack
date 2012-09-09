@@ -1,8 +1,12 @@
 package com.badlogic.jack.generators;
 
+import java.util.List;
+
+import soot.Scene;
 import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
+import soot.tagkit.Tag;
 
 import com.badlogic.jack.info.ClassInfo;
 import com.badlogic.jack.utils.CTypes;
@@ -25,7 +29,19 @@ public class NativeMethodGenerator {
 		this.method = method;
 	}
 	
+	private boolean isDirect(List<Tag> tags) {
+		for(Tag tag: tags) {
+			if(tag.toString().contains("DirectNative")) return true;
+		}
+		return false;
+	}
+	
 	public void generate() {
+		// if this method or it's class is tagged with
+		// @DirectNative, omit generation of the native
+		// method wrapper.
+		if(isDirect(method.getTags()) || isDirect(method.getDeclaringClass().getTags())) return;
+		
 		// output the signature
 		String methodSig = "";
 		methodSig += CTypes.toCType(method.getReturnType());
@@ -43,13 +59,10 @@ public class NativeMethodGenerator {
 		writer.wl(methodSig);
 		
 		// FIXME JNI, add function pointer loading and invocation
-		// output the body 
+		// output the body
+		info.dependencies.add(Scene.v().getSootClass("java.lang.UnsupportedOperationException"));
 		writer.push();
-		if(method.getReturnType() instanceof VoidType) {
-			writer.wl("return;");
-		} else {
-			writer.wl("return 0;");
-		}
+		writer.wl("throw new java_lang_UnsupportedOperationException();");
 		writer.pop();
 		writer.wl("}");
 	}

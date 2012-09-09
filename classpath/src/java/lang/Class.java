@@ -1,5 +1,6 @@
 package java.lang;
 
+import java.lang.annotation.DirectNative;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -7,12 +8,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 // FIXME reflection
+@DirectNative
 public final class Class<T> {
-	private static Map<String, Class> classes = new HashMap<String, Class>();
 	
-	public static Class forName(String name) throws ClassNotFoundException {
-		throw new UnsupportedOperationException();
-	}
+	public native static Class forName(String name) throws ClassNotFoundException;
+	
+	/**
+	 * Custom method for creating array classes. Called in Array#m_getClass(), see
+	 * vm/array.h.
+	 * @param dimensions number of dimensions of the array
+	 * @param elementType the element type of the array
+	 * @return
+	 */
+	private native static Class forArray(int dimensions, Class elementType);
 	
 	String name;
 	Class superClass;
