@@ -26,6 +26,8 @@ java_lang_Class* ClassManager::forArray(java_lang_String* arrayName) {
 
 	java_lang_Class* elementType = 0;
 	bool isPrimitive = true;
+	Array<j_char>* typeName = 0;
+	java_lang_String* typeNameStr = 0;
 	switch(this->classes->charAt(arrayName, dimensions)) {
 	case 'Z': 
 		elementType = java_lang_Boolean::f_TYPE; 
@@ -53,7 +55,20 @@ java_lang_Class* ClassManager::forArray(java_lang_String* arrayName) {
 		break;
 	case 'L': 
 		isPrimitive = false;
-		throw new java_lang_ClassNotFoundException();
+		typeName = new Array<j_char>(arrayName->f_length - dimensions - 2, true, 1, &java_lang_Character::f_TYPE);
+		for(int i = 0; i < arrayName->f_length - dimensions - 2; i++) {
+			j_char c = arrayName->m_charAt(i + dimensions + 1);
+			if(c == '/') c = '.';
+			typeName->set(i, c);
+		}
+		typeNameStr = new java_lang_String();
+		typeNameStr->m_init();
+		typeNameStr->f_length = typeName->length;
+		typeNameStr->f_data = typeName;
+		elementType = classes->get(typeNameStr);
+		if(!elementType) {
+			throw new java_lang_ClassNotFoundException();
+		}
 		break;
 	default: throw new java_lang_ClassNotFoundException();
 	}

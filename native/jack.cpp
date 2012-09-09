@@ -15,7 +15,7 @@ void testPrimes() {
 	primes->m_init();
 	j_long sum = 0;
 	j_long start = getCurrentTimeMillis();
-	for(int i = 0; i < 50000; i++) {
+	for(int i = 0; i < 5000; i++) {
 		sum += primes->m_next();
 		if(i % 1000 == 0) printf("%lld\n", sum);
 	}
@@ -62,6 +62,18 @@ void testUtils() {
 	printf("%d\n", 0 == map->get(str2));
 }
 
+void testArrays() {
+	jack_tests_Arrays* obj = new jack_tests_Arrays();
+	obj->m_init();
+	obj->m_arrays();
+}
+
+void testReflection() {
+	jack_tests_Reflection* obj = new jack_tests_Reflection();
+	obj->m_init();
+	obj->m_test();
+}
+
 void testInstanceOf() {
 	jack_tests_InstanceOf* obj = new jack_tests_InstanceOf();
 	obj->m_init();
@@ -69,8 +81,10 @@ void testInstanceOf() {
 }
 
 int main() {	
-	jack_gc_init();
-	//testUtils();
+	jack_gc_init();	
 	jack_init();
+	testUtils();
+	testArrays();
+	testReflection();
 	testPrimes();
 }

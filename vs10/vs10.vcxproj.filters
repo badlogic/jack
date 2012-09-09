@@ -731,6 +731,9 @@
     <ClCompile Include="..\native\vm\java_lang.cpp">
       <Filter>vm</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\classes\jack_tests_Reflection$Inner.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\native\vm\array.h">
@@ -1470,6 +1473,9 @@
     </ClInclude>
     <ClInclude Include="..\native\vm\list.h">
       <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_tests_Reflection$Inner.h">
+      <Filter>classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

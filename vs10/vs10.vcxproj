@@ -33,6 +33,7 @@
     <ClInclude Include="..\native\classes\jack_tests_InstanceOf.h" />
     <ClInclude Include="..\native\classes\jack_tests_Main.h" />
     <ClInclude Include="..\native\classes\jack_tests_Primes.h" />
+    <ClInclude Include="..\native\classes\jack_tests_Reflection$Inner.h" />
     <ClInclude Include="..\native\classes\jack_tests_Reflection.h" />
     <ClInclude Include="..\native\classes\jack_tests_Statics.h" />
     <ClInclude Include="..\native\classes\jack_tests_Strings.h" />
@@ -281,6 +282,7 @@
     <ClCompile Include="..\native\classes\jack_tests_InstanceOf.cpp" />
     <ClCompile Include="..\native\classes\jack_tests_Main.cpp" />
     <ClCompile Include="..\native\classes\jack_tests_Primes.cpp" />
+    <ClCompile Include="..\native\classes\jack_tests_Reflection$Inner.cpp" />
     <ClCompile Include="..\native\classes\jack_tests_Reflection.cpp" />
     <ClCompile Include="..\native\classes\jack_tests_Statics.cpp" />
     <ClCompile Include="..\native\classes\jack_tests_Strings.cpp" />

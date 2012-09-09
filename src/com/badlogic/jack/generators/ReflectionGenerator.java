@@ -107,6 +107,7 @@ public class ReflectionGenerator {
 		writer.wl(clazz + "::f_TYPE = new java_lang_Class();");
 		writer.wl(clazz + "::f_TYPE->m_init();");
 		writer.wl(clazz + "::f_TYPE->f_name = " + literals.addLiteral(name) + ";");
+		writer.wl(clazz + "::f_TYPE->f_isPrimitive = true;");
 	}
 	
 	private void generateClassReflectionData(SourceWriter writer, SootClass c) {
