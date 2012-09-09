@@ -24,14 +24,26 @@ j_int hashCode(java_lang_String* str) {
 }
 
 ClassManager* ClassManager::getInstance() {
-	if(instance != 0) {
+	if(!instance) {
 		instance = new ClassManager();
 	}
 	return instance;
 }
 
+ClassManager::ClassManager() {
+	this->classes = new StringMap<java_lang_Class*>(256);
+}
+
 java_lang_Class* ClassManager::forName(java_lang_String* name) {
-	return 0;
+	java_lang_Class* clazz = instance->classes->get(name);
+	if(clazz == 0) {
+		if(classes->charAt(name, 0) == '[') {
+		} else {
+			throw new java_lang_ClassNotFoundException();
+		}
+	} else {
+		return clazz;
+	}
 }
 
 java_lang_Class* ClassManager::forArray(int dimensions, java_lang_Class* elementType) {

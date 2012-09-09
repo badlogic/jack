@@ -62,25 +62,12 @@ public:
 		if(str == 0) return 0;
 		if(str->f_hashCode) return str->f_hashCode;
 
-		if(dynamic_cast<Array<j_char>*>(str->f_data)) {
-			Array<j_char>* data = dynamic_cast<Array<j_char>*>(str->f_data);
-			int hashCode = 0;
-			for(int i = str->f_offset; i < str->f_offset + str->f_length; i++) {
-				hashCode = (hashCode * 31) + (*data)[i];
-			}
-			str->f_hashCode = hashCode;
-			return (unsigned int)hashCode;
+		int hashCode = 0;
+		for(int i = 0; i < str->f_length; i++) {
+			hashCode = (hashCode * 31) + charAt(str, i);
 		}
-
-		if(dynamic_cast<Array<j_byte>*>(str->f_data)) {
-			Array<j_byte>* data = dynamic_cast<Array<j_byte>*>(str->f_data);
-			int hashCode = 0;
-			for(int i = str->f_offset; i < str->f_offset + str->f_length; i++) {
-				hashCode = (hashCode * 31) + (*data)[i];
-			}
-			str->f_hashCode = hashCode;
-			return (unsigned int)hashCode;
-		}
+		str->f_hashCode = hashCode;
+		return (unsigned int)hashCode;
 	}
 
 	bool equals(java_lang_String* str, java_lang_String* str2) {
@@ -94,11 +81,11 @@ public:
 
 	int charAt(java_lang_String* str, int index) {
 		if(str == 0) return 0;
-		if(dynamic_cast<Array<j_char>*>(str)) {
-			return dynamic_cast<Array<j_char>*>(str)->get(str->f_offset + index);
+		if(dynamic_cast<Array<j_char>*>(str->f_data)) {
+			return dynamic_cast<Array<j_char>*>(str->f_data)->get(str->f_offset + index);
 		}
-		if(dynamic_cast<Array<j_byte>*>(str)) {
-			return dynamic_cast<Array<j_byte>*>(str)->get(str->f_offset + index);
+		if(dynamic_cast<Array<j_byte>*>(str->f_data)) {
+			return dynamic_cast<Array<j_byte>*>(str->f_data)->get(str->f_offset + index);
 		}
 	}
 };
