@@ -17,7 +17,9 @@ private:
 public:
 	static ClassManager* getInstance();
 	java_lang_Class* forName(java_lang_String* name);
-	java_lang_Class* forArray(int dimensions, java_lang_Class* elementType);	
+	java_lang_Class* forArray(int dimensions, java_lang_Class* elementType);
+	java_lang_Class* forArray(java_lang_String* arrayName);
+	void addClass(java_lang_Class* clazz);
 };
 
 #endif

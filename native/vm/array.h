@@ -46,7 +46,7 @@ public:
 		return elements[idx];
 	}
 
-	inline T set(int idx, T val) {
+	inline void set(int idx, T val) {
 		// TODO add bounds check		
 		elements[idx] = val;
 	}

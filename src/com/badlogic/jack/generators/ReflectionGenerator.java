@@ -31,13 +31,15 @@ public class ReflectionGenerator {
 				
 		fWriter.push();
 		initializeClasses(fWriter);
-		generatePrimitiveClasses(fWriter);		
-		addClassesToClassMap(fWriter);
+		generatePrimitiveClasses(fWriter);				
 		
 		// fill out their reflection data for each class
 		for(SootClass c: infos.keySet()) {
 			generateClassReflectionData(fWriter, c);
 		}
+		
+		// add all the classes to the ClassManager, see classmanager.h/.cpp
+		addClassesToClassMap(fWriter);
 		fWriter.pop();
 		
 		// output the jack_initialize_reflection method
@@ -56,7 +58,19 @@ public class ReflectionGenerator {
 	 * to the Class#classes map.
 	 */
 	private void addClassesToClassMap(SourceWriter writer) {
-		
+		for(SootClass c: infos.keySet()) {
+			String var = Mangling.mangle(c) + "::clazz";
+			writer.wl("java_lang_Class::m_addClass(" + var + ");");
+		}
+		writer.wl("java_lang_Class::m_addClass(java_lang_Byte::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Character::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Short::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Integer::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Long::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Float::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Double::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Boolean::f_TYPE);");
+		writer.wl("java_lang_Class::m_addClass(java_lang_Void::f_TYPE);");
 	}
 
 	/**

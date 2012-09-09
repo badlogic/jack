@@ -15,7 +15,7 @@ public final class Character implements Comparable<Character> {
 	public static final int MAX_RADIX = 36;
 
 	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
-	public static final Class TYPE = null;
+	public static Class TYPE;
 
 	private final char value;
 

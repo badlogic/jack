@@ -26,6 +26,7 @@ public:
 				newElements[i] = elements[i];
 			}
 			elements = newElements;
+			numElements *= 2;
 		}
 		
 		elements[length] = el;
@@ -33,10 +34,12 @@ public:
 	}
 
 	T get(int index) {
+		if(index < 0 || index >= length) throw new java_lang_IndexOutOfBoundsException();
 		return elements[index];
 	}
 
 	void set(int index, T el) {
+		if(index < 0 || index >= length) throw new java_lang_IndexOutOfBoundsException();
 		elements[index] = el;
 	}
 

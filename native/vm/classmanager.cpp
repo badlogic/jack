@@ -3,26 +3,6 @@
 
 ClassManager* ClassManager::instance = 0;
 
-j_int hashCode(java_lang_String* str) {
-	if(str == 0) return 0;
-	if(str->f_hashCode) return str->f_hashCode;
-	if(dynamic_cast<Array<j_char>*>(str->f_data)) {
-		Array<j_char>* data = dynamic_cast<Array<j_char>*>(str->f_data);
-		j_int hashCode = 0;
-
-		str->f_hashCode = hashCode;
-		return hashCode;
-	} 
-	
-	if(dynamic_cast<Array<j_byte>*>(str->f_data)) {
-		Array<j_char>* data = dynamic_cast<Array<j_char>*>(str->f_data);
-		j_int hashCode = 0;
-
-		str->f_hashCode = hashCode;
-		return hashCode;
-	}
-}
-
 ClassManager* ClassManager::getInstance() {
 	if(!instance) {
 		instance = new ClassManager();
@@ -34,10 +14,69 @@ ClassManager::ClassManager() {
 	this->classes = new StringMap<java_lang_Class*>(256);
 }
 
+java_lang_Class* ClassManager::forArray(java_lang_String* arrayName) {
+	int dimensions = 0;
+	while(true) {
+		if(this->classes->charAt(arrayName, dimensions) == '[') {
+			dimensions++;
+		} else {
+			break;
+		}
+	}
+
+	java_lang_Class* elementType = 0;
+	bool isPrimitive = true;
+	switch(this->classes->charAt(arrayName, dimensions)) {
+	case 'Z': 
+		elementType = java_lang_Boolean::f_TYPE; 
+		break;
+	case 'B': 
+		elementType = java_lang_Byte::f_TYPE; 
+		break;
+	case 'C': 
+		elementType = java_lang_Character::f_TYPE; 
+		break;
+	case 'D': 
+		elementType = java_lang_Double::f_TYPE; 
+		break;
+	case 'F': 
+		elementType = java_lang_Float::f_TYPE; 
+		break;
+	case 'I': 
+		elementType = java_lang_Integer::f_TYPE; 
+		break;
+	case 'J': 
+		elementType = java_lang_Long::f_TYPE; 
+		break;
+	case 'S': 
+		elementType = java_lang_Short::f_TYPE; 
+		break;
+	case 'L': 
+		isPrimitive = false;
+		throw new java_lang_ClassNotFoundException();
+		break;
+	default: throw new java_lang_ClassNotFoundException();
+	}
+
+	java_lang_Class* clazz = new java_lang_Class();
+	clazz->m_init();
+	clazz->f_name = arrayName;
+	clazz->f_superClass = java_lang_Object::clazz;
+	clazz->f_interfaces = new Array<java_lang_Class*>(0, false, 1, &java_lang_Class::clazz);
+	clazz->f_isArray = true;
+	clazz->f_componentType = elementType;
+
+	return clazz;
+}
+
 java_lang_Class* ClassManager::forName(java_lang_String* name) {
+	if(name == 0) throw new java_lang_ClassNotFoundException();
 	java_lang_Class* clazz = instance->classes->get(name);
 	if(clazz == 0) {
 		if(classes->charAt(name, 0) == '[') {
+			java_lang_Class* clazz = forArray(name);
+			classes->put(name, clazz);
+			return clazz;
 		} else {
 			throw new java_lang_ClassNotFoundException();
 		}
@@ -48,4 +87,8 @@ java_lang_Class* ClassManager::forName(java_lang_String* name) {
 
 java_lang_Class* ClassManager::forArray(int dimensions, java_lang_Class* elementType) {
 	return 0;
+}
+
+void ClassManager::addClass(java_lang_Class* clazz) {
+	this->classes->put(clazz->f_name, clazz);
 }

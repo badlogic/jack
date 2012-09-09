@@ -72,5 +72,5 @@ int main() {
 	jack_gc_init();
 	//testUtils();
 	jack_init();
-	//testPrimes();
+	testPrimes();
 }

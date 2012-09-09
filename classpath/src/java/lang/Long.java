@@ -15,7 +15,7 @@ public final class Long extends Number implements Comparable<Long> {
 	public static final long MAX_VALUE = 9223372036854775807l;
 
 	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
-	public static final Class TYPE = null;
+	public static Class TYPE;
 
 	private final long value;
 

@@ -29,7 +29,7 @@ public:
 		this->bucketSize = bucketSize;
 		buckets = new List<List<StringMapCell<T>*>*>();
 		for(int i = 0; i < bucketSize; i++) {
-			buckets->set(i, new List<StringMapCell<T>*>());
+			buckets->add(new List<StringMapCell<T>*>());
 		}
 	}
 

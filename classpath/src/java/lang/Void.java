@@ -12,7 +12,7 @@ package java.lang;
 
 public final class Void {
   // this field is filled by ReflectionGenerator#initializePrimitiveTypes()
-  public static final Class TYPE = null;
+  public static Class TYPE;
 
   private Void() { }
 }

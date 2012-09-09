@@ -12,7 +12,7 @@ package java.lang;
 
 public final class Byte extends Number implements Comparable<Byte> {
 	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
-	public static final Class TYPE = null;
+	public static Class TYPE;
 
 	private final byte value;
 

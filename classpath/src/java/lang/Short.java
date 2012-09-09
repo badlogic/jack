@@ -12,7 +12,7 @@ package java.lang;
 
 public final class Short extends Number implements Comparable<Short> {
 	// this field is filled by ReflectionGenerator#initializePrimitiveTypes()
-	public static final Class TYPE = null;
+	public static Class TYPE;
 	public static final short MAX_VALUE = 32767;
 
 	private final short value;

@@ -22,6 +22,14 @@ public final class Class<T> {
 	 */
 	private native static Class forArray(int dimensions, Class elementType);
 	
+	/**
+	 * Adds a class, used after all class instances are generated, to
+	 * register them with the ClassManager, see classmanager.h/.cpp and
+	 * ReflectionGenerator.
+	 * @param clazz
+	 */
+	private native static void addClass(Class clazz);
+	
 	String name;
 	Class superClass;
 	Class[] interfaces;
