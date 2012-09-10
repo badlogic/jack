@@ -370,7 +370,7 @@ public class StatementGenerator {
 	
 	private String translateClassConstant(ClassConstant constant) {
 		if(constant.value.contains("[")) {
-			String literal = info.literals.addLiteral(constant.value);
+			String literal = info.literals.addLiteral(constant.value.replace('/', '.'));
 			return "java_lang_Class::m_forName(" + literal + ");";
 		} else {
 			addDependency(constant.value);

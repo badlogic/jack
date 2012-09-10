@@ -171,7 +171,7 @@ public class Jack {
 		String sources = args[1].endsWith("/")? args[1]: args[1] + "/";
 		String outputDir = args[2].endsWith("/")? args[2]: args[2] + "/";
 		
-		Jack compiler = new Jack(classpath, sources, outputDir, true);
+		Jack compiler = new Jack(classpath, sources, outputDir, false);
 		compiler.compile();
 	}
 }

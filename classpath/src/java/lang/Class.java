@@ -43,7 +43,7 @@ public final class Class<T> {
 	}
 
 	public String getName() {
-		throw new UnsupportedOperationException();
+		return name;
 	}
 
 	public String getCanonicalName() {
