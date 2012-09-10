@@ -1,6 +1,8 @@
 #include "vm/classmanager.h"
 #include "classes/classes.h"
 
+// FIXME vm synchronization!
+
 ClassManager* ClassManager::instance = 0;
 
 ClassManager* ClassManager::getInstance() {

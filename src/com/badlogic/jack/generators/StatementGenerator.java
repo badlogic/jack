@@ -613,12 +613,10 @@ public class StatementGenerator {
 			String type = CTypes.toCType(v.getBaseType());
 			boolean isPrimitive = v.getBaseType() instanceof PrimType;
 			String size = translateValue(v.getSize());
-			// FIXME GC
 			info.dependencies.add(JavaTypes.getClassFromType(v.getBaseType()));
 			return CTypes.generateArray(size, type, isPrimitive);
 		} else if(val instanceof NewExpr) {
 			NewExpr v = (NewExpr)val;
-			// FIXME GC
 			return "new " + Mangling.mangle(v.getType()) + "()";
 		} else if(val instanceof NewMultiArrayExpr) {
 			throw new UnsupportedOperationException("Should never process NewMultiArrayExpr here, implemented in translateStatement()");

@@ -61,7 +61,6 @@ public class RuntimeGenerator {
 		writer.wl("jack_register_signal_handlers();"); // assumed to be written by SignalHandlerGenerator above
 		writer.wl("jack_init_reflection();"); // assumed to be written by ReflectionGenerator above
 		// call all m_clinit methods, this should cascade
-		// FIXME clinit (propagation correct?)
 		// start with Object so the base classes are all 
 		// initialized
 		writer.wl("java_lang_Object::m_clinit();");
