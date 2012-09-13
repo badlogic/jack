@@ -87,4 +87,5 @@ int main() {
 	testArrays();
 	testReflection();
 	testPrimes();
+	testInstanceOf();
 }

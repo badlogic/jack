@@ -28,7 +28,7 @@ public class JavaTypes {
 		if(type.baseType instanceof PrimType) {
 			name += toAbbreviatedType((PrimType)type.baseType);
 		} else {
-			name += type.toString() + ";";
+			name += "L" + type.baseType.toString() + ";";
 		}
 		return name;
 	}

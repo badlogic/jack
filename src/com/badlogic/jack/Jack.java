@@ -165,13 +165,13 @@ public class Jack {
 		if(args.length != 3) {
 			System.out.println("Usage: Jack <classpath> <sources> <outputdir>");
 			System.exit(0);
-		}
+		}			
 		
 		String classpath = args[0].endsWith("/")? args[0]: args[0] + "/";
 		String sources = args[1].endsWith("/")? args[1]: args[1] + "/";
 		String outputDir = args[2].endsWith("/")? args[2]: args[2] + "/";
 		
-		Jack compiler = new Jack(classpath, sources, outputDir, true);
+		Jack compiler = new Jack(classpath, sources, outputDir, false);
 		compiler.compile();
 	}
 }

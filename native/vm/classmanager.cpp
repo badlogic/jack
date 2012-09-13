@@ -64,8 +64,10 @@ java_lang_Class* ClassManager::forArray(int dimensions, java_lang_Class* element
 		clazz->m_init();
 		clazz->f_name = nameStr;
 		clazz->f_superClass = java_lang_Object::clazz;
-		clazz->f_interfaces = new Array<java_lang_Class*>(0, false, 1, &java_lang_Class::clazz);
-		clazz->f_isArray = true;
+		clazz->f_interfaces = new Array<java_lang_Class*>(2, false, 1, &java_lang_Class::clazz);
+		(*clazz->f_interfaces)[0] = java_lang_Cloneable::clazz;
+		(*clazz->f_interfaces)[1] = java_io_Serializable::clazz;
+		clazz->f_isArray = true;		
 		clazz->f_componentType = elementType;
 		classes->put(nameStr, clazz);
 	}
@@ -134,8 +136,10 @@ java_lang_Class* ClassManager::forArray(java_lang_String* arrayName) {
 	clazz->m_init();
 	clazz->f_name = arrayName;
 	clazz->f_superClass = java_lang_Object::clazz;
-	clazz->f_interfaces = new Array<java_lang_Class*>(0, false, 1, &java_lang_Class::clazz);
-	clazz->f_isArray = true;
+	clazz->f_interfaces = new Array<java_lang_Class*>(2, false, 1, &java_lang_Class::clazz);
+	(*clazz->f_interfaces)[0] = java_lang_Cloneable::clazz;
+	(*clazz->f_interfaces)[1] = java_io_Serializable::clazz;
+	clazz->f_isArray = true;				
 	clazz->f_componentType = elementType;
 
 	return clazz;

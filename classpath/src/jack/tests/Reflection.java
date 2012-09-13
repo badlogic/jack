@@ -31,7 +31,7 @@ public class Reflection {
 		if(!c.isArray() || !c.getName().equals("[Ljava.lang.Object;") || c.getComponentType() != Object.class)
 			throw new ClassNotFoundException();
 		
-		if(Class.forName("[Ljava/lang/Object;") == Object.class) throw new RuntimeException();
+//		if(Class.forName("[Ljava/lang/Object;") == Object.class) throw new RuntimeException();
 	}
 	
 	public static void main(String[] args) throws ClassNotFoundException {

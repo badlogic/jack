@@ -8,6 +8,12 @@
     <ClCompile Include="..\native\vm\time.cpp">
       <Filter>vm</Filter>
     </ClCompile>
+    <ClCompile Include="..\native\vm\classmanager.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\vm\java_lang.cpp">
+      <Filter>vm</Filter>
+    </ClCompile>
     <ClCompile Include="..\native\classes\avian_Cell.cpp">
       <Filter>classes</Filter>
     </ClCompile>
@@ -72,6 +78,9 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\jack_tests_Primes.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\jack_tests_Reflection$Inner.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\jack_tests_Reflection.cpp">
@@ -213,6 +222,9 @@
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_annotation_Annotation.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\native\classes\java_lang_annotation_DirectNative.cpp">
       <Filter>classes</Filter>
     </ClCompile>
     <ClCompile Include="..\native\classes\java_lang_annotation_ElementType.cpp">
@@ -722,18 +734,6 @@
     <ClCompile Include="..\native\classes\java_util_WeakHashMap.cpp">
       <Filter>classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\native\vm\classmanager.cpp">
-      <Filter>vm</Filter>
-    </ClCompile>
-    <ClCompile Include="..\native\classes\java_lang_annotation_DirectNative.cpp">
-      <Filter>classes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\native\vm\java_lang.cpp">
-      <Filter>vm</Filter>
-    </ClCompile>
-    <ClCompile Include="..\native\classes\jack_tests_Reflection$Inner.cpp">
-      <Filter>classes</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\native\vm\array.h">
@@ -746,6 +746,15 @@
       <Filter>vm</Filter>
     </ClInclude>
     <ClInclude Include="..\native\vm\time.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\classmanager.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\stringmap.h">
+      <Filter>vm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\vm\list.h">
       <Filter>vm</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\avian_Cell.h">
@@ -812,6 +821,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_tests_Primes.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\jack_tests_Reflection$Inner.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\jack_tests_Reflection.h">
@@ -953,6 +965,9 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_annotation_Annotation.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\native\classes\java_lang_annotation_DirectNative.h">
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_lang_annotation_ElementType.h">
@@ -1460,21 +1475,6 @@
       <Filter>classes</Filter>
     </ClInclude>
     <ClInclude Include="..\native\classes\java_util_WeakHashMap.h">
-      <Filter>classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\vm\classmanager.h">
-      <Filter>vm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\classes\java_lang_annotation_DirectNative.h">
-      <Filter>classes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\vm\stringmap.h">
-      <Filter>vm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\vm\list.h">
-      <Filter>vm</Filter>
-    </ClInclude>
-    <ClInclude Include="..\native\classes\jack_tests_Reflection$Inner.h">
       <Filter>classes</Filter>
     </ClInclude>
   </ItemGroup>

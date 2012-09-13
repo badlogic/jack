@@ -560,7 +560,7 @@ public class StatementGenerator {
 			if(checkType instanceof ArrayType) {
 				ArrayType arrayType = (ArrayType)checkType;
 				String className = JavaTypes.toClassName(arrayType);
-				return "java_lang_Class::m_forName(" + info.literals.addLiteral(className) + ")";				
+				return "java_lang_Class::m_forName(" + info.literals.addLiteral(className) + ")->m_isInstance(" + type + ")";				
 			} else if(checkType instanceof PrimType) {
 				throw new RuntimeException("This should not happen, primitive types are referenced via Type#f_TYPE");
 			} else {

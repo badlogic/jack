@@ -115,8 +115,7 @@ public class ReflectionGenerator {
 		writer.wl(var + "->m_init();");
 		// FIXME reflection
 		writer.wl(var + "->f_name = " + literals.addLiteral(c.getName()) + ";");
-		writer.wl(var + "->f_isPrimitive = false;"); // generate in generatePrimitiveClasses
-		writer.wl(var + "->f_isArray = false;"); // generated in classmanager.cpp
+		writer.wl(var + "->f_isInterface = " + c.isInterface() + ";");
 		if(c.hasSuperclass()) {
 			writer.wl(var + "->f_superClass = " + Mangling.mangle(c.getSuperclass()) + "::clazz;");
 		}
