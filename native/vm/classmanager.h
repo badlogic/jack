@@ -20,6 +20,8 @@ public:
 	java_lang_Class* forArray(int dimensions, java_lang_Class* elementType);
 	java_lang_Class* forArray(java_lang_String* arrayName);
 	void addClass(java_lang_Class* clazz);
+private:
+	java_lang_Class* initArrayClass(java_lang_String* nameStr, int dimensions, java_lang_Class* elementType);
 };
 
 #endif

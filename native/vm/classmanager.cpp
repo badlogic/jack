@@ -32,6 +32,24 @@ java_lang_Class* ClassManager::forName(java_lang_String* name) {
 	}
 }
 
+java_lang_Class* ClassManager::initArrayClass(java_lang_String* nameStr, int dimensions, java_lang_Class* elementType) {	
+	java_lang_Class* clazz = new java_lang_Class();
+	clazz->m_init();
+	clazz->f_name = nameStr;
+	clazz->f_superClass = java_lang_Object::clazz;
+	clazz->f_interfaces = new Array<java_lang_Class*>(2, false, 1, &java_lang_Class::clazz);
+	(*clazz->f_interfaces)[0] = java_lang_Cloneable::clazz;
+	(*clazz->f_interfaces)[1] = java_io_Serializable::clazz;
+	clazz->f_isArray = true;
+	if(dimensions > 1) {
+		clazz->f_componentType = forArray(dimensions - 1,elementType);
+	} else {
+		clazz->f_componentType = elementType;
+	}
+	classes->put(nameStr, clazz);
+	return clazz;
+}
+
 java_lang_Class* ClassManager::forArray(int dimensions, java_lang_Class* elementType) {
 	int numChars = dimensions + (elementType->f_isPrimitive?1:2 + elementType->f_name->f_length);
 	Array<j_char>* name = new Array<j_char>(numChars, true, 1, &java_lang_Character::f_TYPE);
@@ -60,16 +78,7 @@ java_lang_Class* ClassManager::forArray(int dimensions, java_lang_Class* element
 	nameStr->f_data = name;
 	java_lang_Class* clazz = classes->get(nameStr);
 	if(clazz == 0) {
-		clazz = new java_lang_Class();
-		clazz->m_init();
-		clazz->f_name = nameStr;
-		clazz->f_superClass = java_lang_Object::clazz;
-		clazz->f_interfaces = new Array<java_lang_Class*>(2, false, 1, &java_lang_Class::clazz);
-		(*clazz->f_interfaces)[0] = java_lang_Cloneable::clazz;
-		(*clazz->f_interfaces)[1] = java_io_Serializable::clazz;
-		clazz->f_isArray = true;		
-		clazz->f_componentType = elementType;
-		classes->put(nameStr, clazz);
+		clazz = initArrayClass(nameStr, dimensions, elementType);
 	}
 	return clazz;
 }
@@ -132,16 +141,7 @@ java_lang_Class* ClassManager::forArray(java_lang_String* arrayName) {
 	default: throw new java_lang_ClassNotFoundException();
 	}
 
-	java_lang_Class* clazz = new java_lang_Class();
-	clazz->m_init();
-	clazz->f_name = arrayName;
-	clazz->f_superClass = java_lang_Object::clazz;
-	clazz->f_interfaces = new Array<java_lang_Class*>(2, false, 1, &java_lang_Class::clazz);
-	(*clazz->f_interfaces)[0] = java_lang_Cloneable::clazz;
-	(*clazz->f_interfaces)[1] = java_io_Serializable::clazz;
-	clazz->f_isArray = true;				
-	clazz->f_componentType = elementType;
-
+	java_lang_Class* clazz = initArrayClass(arrayName, dimensions, elementType);
 	return clazz;
 }
 
