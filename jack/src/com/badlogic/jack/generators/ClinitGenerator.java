@@ -1,5 +1,7 @@
 package com.badlogic.jack.generators;
 
+import java.util.TreeMap;
+
 import soot.SootClass;
 import soot.SootMethod;
 
@@ -43,7 +45,15 @@ public class ClinitGenerator {
 			writer.wl(info.superClass + "::m_clinit();");
 		}
 		
+		// generate clinit calls for dependencies, sorted
+		TreeMap<String, SootClass> dependencies = new TreeMap<String, SootClass>();
 		for(SootClass dependency: info.dependencies) {
+			String name = Mangling.mangle(dependency);
+			if(!dependencies.containsKey(name)) {
+				dependencies.put(name, dependency);
+			}
+		}
+		for(SootClass dependency: dependencies.values()) {
 			writer.wl(Mangling.mangle(dependency) + "::m_clinit();");
 		}		
 		
