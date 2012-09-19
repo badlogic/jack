@@ -19,5 +19,14 @@ public class Arrays {
 		byte[] i = { 0, 1, 2, 3, 4 };
 		String[] s = { "hello", "world" };
 		String[][] o = {{"hello"}, {"world"}};
+		
+		
+		// FIXME array covariance, gah :(
+//		Object[] t = newStringArray();
+//		t[0] = "";
 	}
+	
+//	public Object[] newStringArray() {
+//		return new String[10];
+//	}
 }

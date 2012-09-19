@@ -66,6 +66,10 @@ void testArrays() {
 	jack_tests_Arrays* obj = new jack_tests_Arrays();
 	obj->m_init();
 	obj->m_arrays();
+
+	jack_tests_ArrayTest* obj2 = new jack_tests_ArrayTest();
+	obj2->m_init();
+	obj->m_arrays();
 }
 
 void testReflection() {

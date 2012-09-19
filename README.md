@@ -24,7 +24,7 @@ applications. The following features should be supported:
 - anything else that's not listed under goals
 
 ## Code Overview
-Jack's code is organized as follows.
+Jack's code is found in the jack/ folder and is organized as follows.
 
 ### Packages
 - ```com.badlogic.jack```: main package, containing the main entry point, ```Jack```
@@ -42,22 +42,23 @@ Jack's code is organized as follows.
 - Finally, runtime startup functions and reflection information is generated, via ```com.badlogic.jack.generators.RuntimeGenerator```.
 
 ### Runtime Library
-Jack contains two runtime library implementations, ```classpath/``` is the current full runtime library, ```classpath-test/``` is a minimal runtime library used for testing features.
-Both libraries come with Eclipse project files. Neither of them links to the normal JRE library since they themselve implement "All The Things".
+Jack contains a minimal runtime library in runtime/jack-kernel. It heavily borrows from Avian VM. The runtime/jack-tests folder contains
+a few basic tests that check language feature implementation and the runtime library. Neither of them links to the normal JRE library 
+since they themselve implement "All The Things".
 
 ### Execution
-Currently Jack is tested through compiling and running parts of the classpath libraries. The simplest way to do this
+Currently Jack is tested through compiling and running parts of the runtime library and tests. The simplest way to do this
 works as follows:
 
-- Import all three projects (jack itself, full classpath, test classpath) into Eclipse. This will put ```.class``` files for both library implementations in their respective bin/ folder.
+- Import all three projects (jack/, runtime/jack-kernel/, runtime/jack-tests) into Eclipse. This will put ```.class``` files for both library implementations in their respective bin/ folder.
 - Excecute ```Jack```, passing in three parameters specifying:
-  - the directory the ```.class``` files reside (e.g. ```classpath/bin```)
-  - the directory the ```.java``` files reside (e.g. ```classpath/src```). This is used to add Java source file lines to the C++ files for easier debugging.
+  - the directory the ```.class``` files reside in (e.g. ```../runtime/jack-kernel/bin;../runtime/jack-tests/bin```, to include both the runtime library and the tests)
+  - the directory the ```.java``` files reside in (e.g. ```../runtime/jack-kernel/src;../runtime/jack-tests/src```). This is used to add Java source file lines to the C++ files for easier debugging.
   - the output directory (use ```native/classes``` for now).
 - Once Jack is done, fire up Visual C++ 2010 (Express) or Xcode and load the corresponding project (```vs10```, ```xcode```).
-- Delete all the files in the ```classes``` filter/group and reimport everything from ```native/classes```. You'll have to redo this step everytime you add a new Java source file to the classpath
+- Delete all the files in the ```classes``` filter/group and reimport everything from ```native/classes```. You'll have to redo this step everytime you add a new Java source file to the projects you translate to C++.
 - Open up ```native/jack.cpp```, mess around with the code to test classes or features, and compile, run and debug it.
-- If you change a classpath Java file, execute ```Jack``` again, and wait for Visual Studio/XCode to pick up the changes, then recompile.
+- If you change a runtime library or test Java file, execute ```Jack``` again, and wait for Visual Studio/XCode to pick up the changes, then recompile.
 - If you add or remove a file, you'll have to reimport all .cpp files from the ```native/classes``` folder.
 
 This process is meant for developing Jack itself. End-users will get a nicer way to transpile and run their stuff.
@@ -67,11 +68,14 @@ This process is meant for developing Jack itself. End-users will get a nicer way
 - method body translation
 - GC (Boehm GC for now)
 - initial classpath implementation based on Avian's classpath (misses JNI parts)
+- reflection: fix instanceof, what was i thinking :p
+- reflection: class descriptors for arrays
+- custom native code bridge (add @DirectNative to class or method, implement missing native methods directly in C++, see jack/native/vm/java_lang.cpp for implementations of Object and Class native methods.
+- partial recompilation, means we only touch .h/.cpp files that actually changed. brings down c++ compile times enormously.
 
 # TODO 
 (in order, search for FIXME <task> in the code)
-- reflection: class descriptors for arrays
-- reflection: fix instanceof, what was i thinking :p
+- array covariance, e.g. Object[] arr = new String[10]. Damn it.
 - exceptions: set signal handlers, use setjmp, finally is thankfully 
 handled by javac
 - reflection: rest of class/constructor/method/field descriptors
