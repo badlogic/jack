@@ -3,6 +3,6 @@ bin/
 classpath/bin/
 libs/windows32/
 vs10/
-native/classes/
-native/target/
+jack/native/classes/
+jack/native/target/
 xcode/build
