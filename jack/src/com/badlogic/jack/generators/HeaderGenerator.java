@@ -120,8 +120,16 @@ public class HeaderGenerator {
 		writer.wl("};");
 		writer.wl("#endif");
 		
-		FileDescriptor file = new FileDescriptor(fileName);
-		file.writeString(writer.toString(), false);
+		// only update header if content changed
+		if(needsUpdate(fileName, writer.toString())) {
+			new FileDescriptor(fileName).writeString(writer.toString(), false);
+		} else {
+			System.out.println("Skipped '" + fileName + "', up-to-date");
+		}
+	}
+	
+	private boolean needsUpdate(String fileName, String newContent) {
+		return !new FileDescriptor(fileName).readString().equals(newContent);
 	}
 	
 	private void generateMethod(SootMethod method, MethodInfo info) {

@@ -29,10 +29,9 @@ import com.badlogic.jack.utils.Mangling;
  *
  */
 public class Jack {
-	private final String classPath;
-	private final String sourcePath;
+	private final String[] classPath;
+	private final String[] sourcePath;
 	private final String outputPath;
-	private final boolean incremental;
 	private Set<SootClass> classes;
 	private final Map<SootClass, ClassInfo> classInfos = new HashMap<SootClass, ClassInfo>();
 	private JavaSourceProvider sourceProvider;
@@ -53,10 +52,26 @@ public class Jack {
 	 * @param incremental whether to incrementally translate files
 	 */
 	public Jack(String classPath, String sourcePath, String outputPath, boolean incremental) {
-		this.classPath = classPath.endsWith("/")? classPath: classPath + "/";
-		this.sourcePath = sourcePath.endsWith("/")? sourcePath: sourcePath + "/";
+		this.classPath = parsePath(classPath);
+		this.sourcePath = parsePath(sourcePath);
 		this.outputPath = outputPath.endsWith("/")? outputPath: outputPath + "/";
-		this.incremental = incremental;
+	}
+	
+	private String[] parsePath(String path) {
+		String[] paths = path.split(";");
+		for(int i = 0; i < paths.length; i++) {
+			paths[i] = paths[i].endsWith("/")? paths[i]: paths[i] + "/";
+		}
+		return paths;
+	}
+	
+	private String concatenatePath(String[] paths) {
+		StringBuffer buffer = new StringBuffer();
+		for(int i = 0; i < paths.length; i++) {
+			buffer.append(paths[i]);
+			if(i != paths.length -1) buffer.append(";");
+		}
+		return buffer.toString();
 	}
 	
 	/**
@@ -69,7 +84,7 @@ public class Jack {
 	private Set<SootClass> loadClasses() {		
 		Options.v().set_keep_line_number(true);
 		Options.v().set_process_dir(Arrays.asList(classPath));
-		Scene.v().setSootClassPath(classPath);
+		Scene.v().setSootClassPath(concatenatePath(classPath));
 		Scene.v().loadNecessaryClasses();
 		Scene.v().loadDynamicClasses();
 		
@@ -80,13 +95,6 @@ public class Jack {
 			classes.add(clazz);
 			ClassInfo info = new ClassInfo(clazz);
 			classInfos.put(clazz, info);
-			if(incremental) {
-				String classFile = classPath + clazz.getName().replace(".", "/") + ".class";
-				String headerFile = outputPath + Mangling.mangle(clazz) + ".h";
-				if(new File(classFile).lastModified() < new File(headerFile).lastModified()) {
-					info.skip = true;
-				}
-			}			
 		}
 		generatedFiles.add("classes.h");
 		generatedFiles.add("classes.cpp");
@@ -100,7 +108,9 @@ public class Jack {
 		// load the classes and source files
 		classes = loadClasses();
 		sourceProvider = new JavaSourceProvider();
-		sourceProvider.load(new FileDescriptor(sourcePath));
+		for(String path: sourcePath) {
+			sourceProvider.load(new FileDescriptor(path));
+		}
 
 		generateHeaders();
 		generateImplementations();
@@ -126,10 +136,6 @@ public class Jack {
 	private void generateHeaders() {
 		for(SootClass clazz: classes) {
 			ClassInfo info = classInfos.get(clazz);
-			if(info.skip) {
-				System.out.println("skipping generation of header for " + clazz.getName());
-				continue; 
-			}
 			HeaderGenerator headerGenerator = new HeaderGenerator(clazz, info, outputPath + info.mangledName + ".h");
 			headerGenerator.generate();
 		}
@@ -141,12 +147,6 @@ public class Jack {
 	private void generateImplementations() {
 		for(SootClass clazz: classes) {
 			ClassInfo info = classInfos.get(clazz);
-			if(info.skip) {
-				System.out.println("skipping generation of implementation for " + clazz.getName());
-				continue;
-			}
-			// FIXME hack so the dependencies and Jimple codes aren't loaded
-			// for files that are up to date.
 			info.gatherDependencies();
 			ImplementationGenerator implGenerator = new ImplementationGenerator(clazz, sourceProvider, info, outputPath + info.mangledName + ".cpp");
 			implGenerator.generate();

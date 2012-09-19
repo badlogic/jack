@@ -64,6 +64,14 @@ public class ImplementationGenerator {
 		// add the methods after the includes and statics
 		// and write it to the file
 		writer.wl(methodWriter.toString());
-		new FileDescriptor(fileName).writeString(writer.toString(), false);
+		if(needsUpdate(fileName, writer.toString())) {
+			new FileDescriptor(fileName).writeString(writer.toString(), false);
+		} else {
+			System.out.println("Skipped '" + fileName + "', up-to-date");
+		}
+	}
+	
+	private boolean needsUpdate(String fileName, String newContent) {
+		return !new FileDescriptor(fileName).readString().equals(newContent);
 	}
 }

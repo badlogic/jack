@@ -57,8 +57,6 @@ public class ClassInfo {
 	public final LiteralsGenerator literals;
 	/** synthetic methods to be generated **/
 	public List<SyntheticMethodInfo> syntheticMethods;
-	/** whether to skip this class **/
-	public boolean skip;
 	
 	/**
 	 * Gathers all information necessary for the translation

@@ -1,5 +1,8 @@
 package com.badlogic.jack.generators;
 
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import soot.SootClass;
 import soot.SootField;
 import soot.tagkit.DoubleConstantValueTag;
@@ -37,8 +40,18 @@ public class StaticsGenerator {
 		writer.wl("#include \"classes/java_lang_String.h\"");
 		
 		// include the header for this class and its dependencies
-		writer.wl("#include \"classes/" + info.mangledName + ".h\"");				
+		// we sort the dependencies and remove duplicates. This is
+		// needed so the checks whether a .cpp file needs updating
+		// works.
+		writer.wl("#include \"classes/" + info.mangledName + ".h\"");
+		TreeMap<String, SootClass> dependencies = new TreeMap<String, SootClass>();
 		for(SootClass dependency: info.dependencies) {
+			String name = Mangling.mangle(dependency);
+			if(!dependencies.containsKey(name)) {
+				dependencies.put(name, dependency);
+			}
+		}
+		for(SootClass dependency: dependencies.values()) {
 			writer.wl("#include \"classes/" + Mangling.mangle(dependency) + ".h\"");			
 		}
 		writer.wl("");
