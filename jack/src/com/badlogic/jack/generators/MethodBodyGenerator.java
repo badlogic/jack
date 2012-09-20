@@ -38,7 +38,8 @@ public class MethodBodyGenerator {
 	}
 
 	/**
-	 * Declares all local variables.
+	 * Declares all local variables plus a variable called _exception that 
+	 * holds a pointer to any exception thrown.
 	 */
 	private void declareLocals() {
 		// declare locals
@@ -54,5 +55,6 @@ public class MethodBodyGenerator {
 			}
 			writer.wl(cType + " " + local.getName() + " = 0;");
 		}
+		writer.wl("java_lang_Object* _exception = 0;");
 	}
 }

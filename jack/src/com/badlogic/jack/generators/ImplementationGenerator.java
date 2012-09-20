@@ -72,6 +72,8 @@ public class ImplementationGenerator {
 	}
 	
 	private boolean needsUpdate(String fileName, String newContent) {
-		return !new FileDescriptor(fileName).readString().equals(newContent);
+		FileDescriptor file = new FileDescriptor(fileName);
+		if(!file.exists()) return true;
+		return !file.readString().equals(newContent);
 	}
 }

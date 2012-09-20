@@ -84,6 +84,12 @@ void testInstanceOf() {
 	obj->m_test();
 }
 
+void testExceptions() {
+	jack_tests_Exceptions* obj = new jack_tests_Exceptions();
+	obj->m_init();
+	obj->m_simpleCatch();
+}
+
 int main() {	
 	jack_gc_init();	
 	jack_init();
@@ -92,4 +98,5 @@ int main() {
 	testReflection();
 	testPrimes();
 	testInstanceOf();
+	testExceptions();
 }

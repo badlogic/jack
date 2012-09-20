@@ -15,6 +15,7 @@ import soot.PrimType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -82,6 +83,7 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
+import soot.jimple.internal.JCaughtExceptionRef;
 import soot.jimple.internal.JInstanceFieldRef;
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.tagkit.LineNumberTag;
@@ -110,16 +112,19 @@ public class StatementGenerator {
 	private final Map<Stmt, String> labels = new HashMap<Stmt, String>();
 	private int nextLabelId = 0;
 	private int lastEmittedSourceLine = 0;
+	private Map<Stmt, List<Trap>> tries = new HashMap<Stmt, List<Trap>>();
+	private Map<Stmt, List<Trap>> catches = new HashMap<Stmt, List<Trap>>();
 	
 	public StatementGenerator(SourceWriter writer, JavaSourceProvider sourceProvider, ClassInfo info, SootMethod method) {
 		this.writer = writer;
 		this.sourceProvider = sourceProvider;
 		this.info = info;
-		this.body = (JimpleBody)method.retrieveActiveBody();
+		this.body = (JimpleBody)method.retrieveActiveBody();		
 	}
 	
 	public void generate() {
 		generateLabels();
+		generateTryCatches();
 		generateStatements();
 	}
 	
@@ -148,8 +153,45 @@ public class StatementGenerator {
 					newLabel((Stmt)target);
 				}
 			}
-			// FIXME exceptions labels for handlers
-		}		
+		}
+		
+		// generate label for begin/end statements of try/catch/finally
+		for(Trap trap: body.getTraps()) {
+			Stmt begin = (Stmt)trap.getBeginUnit();
+			Stmt end = (Stmt)trap.getEndUnit();
+			Stmt handler = (Stmt)trap.getHandlerUnit();
+			newLabel(begin);
+			newLabel(end);
+			newLabel(handler);			
+		}
+	}
+	
+	private void generateTryCatches() {
+		// generate label for begin/end statements of try/catch/finally
+		for(Trap trap: body.getTraps()) {
+			Stmt begin = (Stmt)trap.getBeginUnit();
+			Stmt end = (Stmt)trap.getEndUnit();
+			newTry(begin, trap);
+			newCatch(end, trap);
+		}
+	}
+	
+	private void newTry(Stmt stmt, Trap trap) {
+		List<Trap> traps = tries.get(stmt);
+		if(traps == null) {
+			traps = new ArrayList<Trap>();
+			tries.put(stmt, traps);
+		}
+		traps.add(trap);
+	}
+	
+	private void newCatch(Stmt stmt, Trap trap) {
+		List<Trap> traps = catches.get(stmt);
+		if(traps == null) {
+			traps = new ArrayList<Trap>();
+			catches.put(stmt, traps);
+		}
+		traps.add(trap);
 	}
 	
 	/**
@@ -193,6 +235,14 @@ public class StatementGenerator {
 			writer.pop();
 			writer.wl(labels.get(stmt) + ":");
 			writer.push();
+		}
+		
+		// emit tries if any
+		if(tries.containsKey(stmt)) {
+			List<Trap> traps = tries.get(stmt);
+			for(Trap trap: traps) {
+				writer.wl("try {");
+			}
 		}
 		
 		// translate statements and emit as C++
@@ -248,7 +298,11 @@ public class StatementGenerator {
 			Value rightOp = s.getRightOp();
 			String l = translateValue(leftOp);
 			String r = translateValue(rightOp);
-			writer.wl(l + " = " + r + ";");
+			if(rightOp instanceof JCaughtExceptionRef) {
+				writer.wl(l + " = dynamic_cast<" + CTypes.toCType(leftOp.getType()) + ">(" + r + ");");
+			} else {
+				writer.wl(l + " = " + r + ";");
+			}
 		} else if(stmt instanceof GotoStmt) {
 			GotoStmt s = (GotoStmt)stmt;
 			String label = labels.get((Stmt)s.getTarget());
@@ -307,6 +361,14 @@ public class StatementGenerator {
 			writer.wl("throw " + translateValue(s.getOp()) + ";");
 		} else {
 			throw new RuntimeException("Unkown statement " + stmt);
+		}
+		
+		// emit catches if any
+		if(catches.containsKey(stmt)) {
+			List<Trap> traps = catches.get(stmt);
+			for(Trap trap: traps) {
+				writer.wl("} catch(" + Mangling.mangle(trap.getException()) + "* e) { _exception = e; goto " + labels.get(trap.getHandlerUnit()) + "; }");
+			}
 		}
 	}
 	
@@ -411,7 +473,7 @@ public class StatementGenerator {
 		} else if(val instanceof IdentityRef) {
 			IdentityRef v = (IdentityRef)val;
 			if(v instanceof ThisRef) return "this";
-			if(v instanceof CaughtExceptionRef) return "(0)"; // FIXME exceptions
+			if(v instanceof CaughtExceptionRef) return "_exception";
 			else return "param" + ((ParameterRef)v).getIndex();
 		} else throw new RuntimeException("Unknown Ref Value " + val);
 	}
