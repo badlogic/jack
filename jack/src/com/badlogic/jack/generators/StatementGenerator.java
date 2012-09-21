@@ -242,6 +242,7 @@ public class StatementGenerator {
 			List<Trap> traps = tries.get(stmt);
 			for(Trap trap: traps) {
 				writer.wl("try {");
+				writer.push();
 			}
 		}
 		
@@ -366,6 +367,7 @@ public class StatementGenerator {
 		// emit catches if any
 		if(catches.containsKey(stmt)) {
 			List<Trap> traps = catches.get(stmt);
+			writer.pop();
 			for(Trap trap: traps) {
 				writer.wl("} catch(" + Mangling.mangle(trap.getException()) + "* e) { _exception = e; goto " + labels.get(trap.getHandlerUnit()) + "; }");
 			}
